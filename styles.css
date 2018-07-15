@@ -1,0 +1,74 @@
+#header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	background-color: black;
+	color: white;
+	font-size: 250%;
+	padding: 1% 2% 1% 2%;
+
+	-webkit-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+}
+
+.link-span {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+#header-desc {
+	font-size: 50%;
+	padding-left: 1%;
+	position: relative;
+	top: 5px
+}
+
+.article {
+	width: 800px;
+	height: 250px;
+	transform: translateX(-50%);
+	position: relative;
+	left: 50%;
+	cursor: pointer;
+	border-radius: 5px;
+
+	background-color: rgb(240, 240, 240);
+
+	-webkit-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+}
+
+.column {
+	margin-top: 7%;
+	border-radius: 5px;
+	width: 800px;
+	transform: translateX(-50%);
+	position: relative;
+	left: 50%;
+	cursor: pointer;
+	font-size: 150%;
+}
+
+.column-title {
+	font-size: 200%;
+	text-align: center;
+}
+
+.article-title {
+	position: absolute;
+	color: black;
+	top: 0;
+	margin: 60px;
+	font-size: 200%;
+}
+
+.article:nth-child(2) {
+	margin-top: 7%
+}
