@@ -1,3 +1,7 @@
+body {
+	overflow-x: hidden
+}
+
 #header {
 	position: fixed;
 	top: 0;
@@ -67,12 +71,14 @@
 .column {
 	margin-top: 10%;
 	border-radius: 5px;
-	width: 800px;
+	max-width: 800px;
 	transform: translateX(-50%);
 	position: relative;
 	left: 50%;
 	font-size: 150%;
 	margin-bottom: 100px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 .column-title {
@@ -93,6 +99,27 @@
 
 .start {
 	margin-bottom: 2.5em;
+}
+
+.carousel {
+	margin: auto;
+	//width: fit-content;
+}
+
+.carousel-caption {
+	text-shadow: 0 5px 5px rgb(0, 0, 0)
+}
+
+.code {
+	background-color: rgb(240, 240, 240);
+	padding: 10px;
+	margin: 1px;
+	border-style: solid;
+	border-color: rgb(200, 200, 200);
+	white-space: pre;
+	border-radius: 10px;
+	border-width: 2px;
+	font-size: 90%;
 }
 
 .article-title {

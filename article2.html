@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+
+<head>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<title>AntiProjects</title>
+	<link rel="icon" type="image/png" href="./pics/icon.png">
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+</head>
+
+<body>
+	<div id="header" class="shadow">
+		<a href="./index.html">AntiProjects</a>
+		<span id="header-desc">
+			Antioch Sanders
+		</span>
+	</div>
+	<div class="column">
+		<p class="column-title">It Hurts:<br>Programming the Longboard's Arduino</p>
+		<div class="written start">Written 7/17/2018</div>
+		
+		I controlled the longboard's motor and lights with an Arduino, a bluetooth module, and my Android phone.
+		It was a pain. All of it - especially because certain android accessories don't work well together. But
+		I got it working, so I'd like to make life easier for other people interested in mixing lights and motors.
+		I'm going to make another post about wiring and connecting the bluetooth to a phone, this post will be
+		concerned with largely concerned with the arduino programming of the lights. The parts list is at the end.
+	
+		<br><br>I used the Bluetooth Mate Gold from Sparkfun to connect to my phone. It uses two-pin
+		serial-communication, which is also used by USB. In fact, on many Arduino devices, the USB port is linked
+		to the RX/TX pins, so both cannot be used in conjunction. For those looking to work around this limitation,
+		there are various libraries that enable serial communication on other pins, namely SoftwareSerial, AltSoftSerial,
+		and NewSoftSerial. Each library has its respective drawbacks, and I never got SoftwareSerial to work with
+		the Uno or Pro Micro. Fortunately, the <a href="https://store.arduino.cc/usa/arduino-micro">Pro Micro's
+		serial pins are separate from the USB interface (see the first bullet under "Input and Output" under
+		documentation)</a>. So I used my Pro Micro to 
+		<br><br>
+		<div class="code"><code class="prettyprint linenums:1">
+void setup() {
+  String out = "";
+
+  Serial.begin(115200);  // Begin the serial monitor at 9600bps
+  delay(1000);
+
+  Serial.print(out);
+
+  Serial.print("$$$");
+  delay(100);
+
+  Serial.print("x\r");
+  delay(300);
+
+  while(Serial.available()) {
+    out += (char) Serial.read();
+  }
+
+ Serial.print("---\r");
+  delay(100);
+
+  while (Serial.available()) {
+    out += (char) Serial.read();
+  }
+
+  Serial.print("\nsaid: \"" + out + "\"");
+
+}
+
+void loop() {
+  delay(1000);
+  digitalWrite(13, HIGH);
+  delay(1000);
+  digitalWrite(13, LOW);
+}
+
+/*
+
+A program to send the RN-41 into 
+command mode and retrieve some device
+data. Device must be programmed while
+RX/TX are disconnected.
+
+*/</code></div>
+		<br><br>First off, don't use the
+		<a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-use">NeoPixel Library</a>.
+		Instead download <a href="https://github.com/FastLED/FastLED">FastLED</a>. The FastLED interface
+		is a lot nicer in my opinion. Also, FastLED fixes errors it causes in the Arduino timing functions
+		(NeoPixel doesn't), and all around seems the more modern option.
+			<div class="center-img">
+				<img src="./pics/fixture1.png" width="500px" height="350px">
+			</div>
+		<br><b>Parts</b>
+		<ul>
+			<li><b>Arduino Pro Micro - </b>The arduino controls pretty much everything under the longboard.
+				I chose the pro micro because it's small and cheap ($6 on amazon/ebay). It also happens
+				to have dedicated TX/RX pins for when software serial doesn't work, but that belongs
+				in a different longboard post.<br><img class="list" src="./pics/pro-micro.jpg"></img>
+			</li>
+			</li>
+		</ul>
+		Parts Total: ~$78
+		<br><br><b>Tools</b>
+		<ul>
+		</ul>
+		Tools Total: ~$73
+	</div>
+</body>
