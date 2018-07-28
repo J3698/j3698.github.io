@@ -42,8 +42,12 @@
 -->
     <h2>Setting Up the Bluetooth Module</h2>
     First, hook up RX on the Bluetooth module to TX on the Arduino, TX on the Bluetooth module to RX on the Arduino, VCC on the Bluetooth module to VCC on the Arduino, and ground on the Bluetooth to ground on the Arduino.
+    
+    <div class="center-img">
+        <img src="../pics/bt-hookup.png" alt="Connection diagram for bluetooth">
+    </div>
+    
     <br><br>Now it's time to program the Arduino. The first program we are going to write will be used to send and retrieve the Bluetooth module's settings:
-
     <br><br><script src="https://gist.github.com/J3698/ab69434e4eb814a8f70d96cdeba57c2a.js"></script>
 
     After uploading this code, make sure the serial monitor's baud rate is 115200, and that the serial monitor's line-ending mode is set to none. Next, send "$$$" through the serial monitor. The red light on the Bluetooth module should start blinking faster, and the serial monitor should print "CMD".
