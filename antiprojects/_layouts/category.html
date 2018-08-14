@@ -1,0 +1,13 @@
+---
+layout: wrapper
+---
+
+{% for post in site.posts %}
+	{% if post.categories contains page.title %}
+		<div class="article">
+			<a href= {{ post.url }}><span class="link-span"></span></a>
+			<span><img width="250px" height="250px" src={{ post.thumb }} alt={{ post.thumbalt }}></span>
+			<span class="article-title">{{ post.title }}</span>
+		</div>
+	{% endif %}
+{% endfor %}

@@ -1,0 +1,139 @@
+body {
+	overflow-x: hidden
+}
+
+hr {
+    border-top-color: black;
+}
+
+#header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	background-color: black;
+	color: white;
+	font-size: 250%;
+	padding: 1% 2% 1% 2%;
+	z-index: 1;
+
+	-webkit-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+}
+
+.center-img {
+	width: 100%;
+	height: auto;
+	text-align: center;
+	padding: 20px;
+}
+
+#header a {
+	color: inherit;
+	text-decoration: inherit
+}
+
+.link-span {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+#header-desc {
+	font-size: 50%;
+	padding-left: 1%;
+	position: relative;
+	top: 5px
+}
+
+.article {
+	width: 800px;
+	height: 250px;
+	transform: translateX(-50%);
+	position: relative;
+	left: 50%;
+	cursor: pointer;
+	border-radius: 5px;
+	margin-bottom: 20px;
+
+	background-color: rgb(240, 240, 240);
+
+	-webkit-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+}
+
+.list {
+	width: 150px;
+	height: 150px;
+}
+
+.column {
+	margin-top: 10%;
+	border-radius: 5px;
+	max-width: 800px;
+	transform: translateX(-50%);
+	position: relative;
+	left: 50%;
+	font-size: 150%;
+	margin-bottom: 100px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.column-title {
+	font-size: 200%;
+	text-align: center;
+	margin-bottom: 0
+}
+
+.written {
+	color: rgb(100, 100, 100);
+	text-align: center;
+}
+
+.edited {
+	color: rgb(100, 100, 100);
+	text-align: center;
+}
+
+.start {
+	margin-bottom: 2.5em;
+}
+
+.carousel {
+	margin: auto;
+	//width: fit-content;
+}
+
+.carousel-caption {
+	text-shadow: 0 5px 5px rgb(0, 0, 0)
+}
+
+.code {
+	background-color: rgb(240, 240, 240);
+	padding: 10px;
+	margin: 1px;
+	border-style: solid;
+	border-color: rgb(200, 200, 200);
+	white-space: pre;
+	border-radius: 10px;
+	border-width: 2px;
+	font-size: 90%;
+}
+
+.article-title {
+	position: absolute;
+	color: black;
+	top: 0;
+	margin: 60px;
+	font-size: 200%;
+}
+
+.article:nth-child(2) {
+	margin-top: 12%
+}

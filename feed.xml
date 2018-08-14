@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://antiprojects.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://antiprojects.com/" rel="alternate" type="text/html" /><updated>2018-08-14T16:27:27-04:00</updated><id>https://antiprojects.com/</id><title type="html">AntiProjects</title><subtitle>Where I document my projects.</subtitle><author><name>Antioch Sanders</name></author><entry><title type="html">It Hurts: Setting Up the Bluetooth Module</title><link href="https://antiprojects.com/longboard/it-hurts-setting-up-the-bluetooth-module" rel="alternate" type="text/html" title="It Hurts: Setting Up the Bluetooth Module" /><published>2018-07-17T00:00:00-04:00</published><updated>2018-07-17T00:00:00-04:00</updated><id>https://antiprojects.com/longboard/it-hurts-setting-up-the-bluetooth-module</id><content type="html" xml:base="https://antiprojects.com/longboard/it-hurts-setting-up-the-bluetooth-module">&lt;p&gt;I control my longboard’s motor and lights with an Arduino, a Bluetooth module, and my Android phone. It was a pain, but I got it working, so I’d like to make life easier for other people interested in doing what I did. This post is about setting up the Bluetooth module - the phone part will come later. An exhaustive parts list is at the end.&lt;/p&gt;
+
+&lt;h2 id=&quot;important-notes&quot;&gt;&lt;strong&gt;Important Notes&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;RX/TX Issues ●&lt;/strong&gt; The Bluetooth module used here uses two-pin serial-communication, which is also used by USB. In fact, on many Arduino devices, the USB port is linked to the RX/TX pins. This means that if the Arduino serial-monitor and Bluetooth module are used at the same time, data sent to one also gets sent to the other. For those looking to work around this limitation, there are various libraries that enable serial communication on pins other than RX/TX, such as SoftwareSerial, NewSoftSerial, and AltSoftSerial. Each library has its respective drawbacks, and I never got SoftwareSerial to work with the Arduino Uno or Arduino Pro Micro. Fortunately, the &lt;a href=&quot;https://store.arduino.cc/usa/arduino-micro&quot;&gt;Pro Micro’s serial pins are separate from the USB interface (see the first bullet under “Input and Output” under “documentation”&lt;/a&gt;. So I used the Pro Micro. If you choose to use an Arduino that does not have this separation, such as the Uno (and most others), either use one of the libraries I mentioned, or append debug info to a string while the program runs, and print that string once the program is done. That way, the Bluetooth only recieves information that it’s not meant to see once it’s no longer needed for testing. &lt;a href=&quot;https://gist.github.com/J3698/3d1e19666feb7a5fd9ae1324314fc29d&quot;&gt;This is an example&lt;/a&gt;. Keep that in mind if you use the Uno; the rest of this post is based around the Pro Micro.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Programming Issues ●&lt;/strong&gt; Reguardless of the model used, I sometimes had problems programming Arduinos when the Bluetooth module was connected to RX/TX. My fix was to cut power to anything connected to RX/TX, program the Arduino, reconnect whatever was on RX/TX, and then reset the program (I reset the Pro Micro by unplugging and replugging its USB connection).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Soldering Issues ●&lt;/strong&gt; When I first soldered the header pins onto my Arduino, the headers were stable, but the solder joints didn’t have enough solder, causing pins to randomly lose connection. For people who mostly program, trying to find this bug in your code will not be fun - make sure your hardware is setup correctly.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Setting Up the Bluetooth Module&lt;/strong&gt;
+First, hook up RX on the Bluetooth module to TX on the Arduino, TX on the Bluetooth module to RX on the Arduino, VCC on the Bluetooth module to VCC on the Arduino, and ground on the Bluetooth to ground on the Arduino.&lt;/p&gt;
+
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/bt-hookup.png&quot; alt=&quot;Connection diagram for bluetooth&quot; width=&quot;&quot; height=&quot;&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now it’s time to program the Arduino. The first program we are going to write will be used to send and retrieve the Bluetooth module’s settings:
+&lt;script src=&quot;https://gist.github.com/J3698/ab69434e4eb814a8f70d96cdeba57c2a.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;After uploading this code, make sure the serial monitor’s baud rate is 115200, and that the serial monitor’s line-ending mode is set to none. Next, send “$$$” through the serial monitor. The red light on the Bluetooth module should start blinking faster, and the serial monitor should print “CMD”.&lt;/p&gt;
+&lt;h5 id=&quot;troubleshooting--talking-to-the-bluetooth-module-is-often-the-hardest-part-if-the-light-doesnt-blink-faster-the-bluetooth-module-either-didnt-get-the-message-or-couldnt-understand-the-message-if-the-light-blinks-faster-but-nothing-appears-in-the-serial-monitor-the-arduinoserial-monitor-did-not-read-what-the-bluetooth-module-sent-back-if-trash-other-than-cmd-appears-in-the-serial-monitor-the-serial-monitor-incorrectly-interpreted-what-was-sent-back---the-serial-monitors-baud-rate-is-likely-wrong-if-only-part-of-cmd-appears-try-again---sometimes-data-is-lost-at-high-baud-rates-if-the-output-is-incorrect-but-the-light-blinks-faster-as-a-last-resort-you-can-follow-along-with-the-post---you-may-be-able-to-change-the-bluetooth-modules-baud-rate-fixing-your-issue&quot;&gt;&lt;strong&gt;Troubleshooting ●&lt;/strong&gt; Talking to the Bluetooth module is often the hardest part. If the light doesn’t blink faster, the Bluetooth module either didn’t get the message, or couldn’t understand the message. If the light blinks faster but nothing appears in the serial monitor, the Arduino/serial monitor did not read what the Bluetooth module sent back. If trash other than “CMD” appears in the serial monitor, the serial monitor incorrectly interpreted what was sent back - the serial monitor’s baud rate is likely wrong. If only part of “CMD” appears, try again - sometimes data is lost at high baud rates. If the output is incorrect but the light blinks faster, as a last resort you can follow along with the post - you may be able to change the Bluetooth module’s baud rate, fixing your issue.&lt;/h5&gt;
+&lt;p&gt;Now that the light is blinking faster, the bluetooth is in command mode. In command mode every command needs to be terminated with a carriage return, so change the line-ending mode in serial monitor to carriage return. Enter “x”, and the Bluetooth module should respond with its settings. Now enter “SU,96”, which will lower the baud rate of the Bluetooth module. Enter “—”, which will exit command mode, and the Bluetooth module should then blink more slowly. Power off the Arduino, change instances of 115200 in your code to 9600, reprogram the Arduino, open serial monitor, change the line-ending mode back to none, and change the serial monitor baud rate to 9600.&lt;/p&gt;
+
+&lt;p&gt;You’re done! For some reason, this part of my longboard project took me forever. From here you can continue to explore the Bluetooth module, which has further documentation &lt;a href=&quot;https://cdn.sparkfun.com/assets/1/e/e/5/d/5217b297757b7fd3748b4567.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Parts&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Arduino Pro Micro -&lt;/strong&gt; The Arduino controls pretty much everything under the longboard.
+I chose the pro micro because it’s small and cheap ($6 on amazon/ebay). It also happens
+to have dedicated TX/RX pins for when software serial doesn’t work, but that belongs
+in a different longboard post.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/pro-micro.jpg&quot; alt=&quot;Arduino Pro Micro&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Bluetooth Mate Gold -&lt;/strong&gt; The Bluetooth module is what we’ll be setting up today, at $35. The
+Bluetooth Mate Silver also works, it’s only $25 but has a much smaller range.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Parts Total: ~$41&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tools&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Computer -&lt;/strong&gt; Anything with an OS and a free USB port will work.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Micro-USB Plug -&lt;/strong&gt; You’ll need to program the Arduino.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Antioch Sanders</name></author><summary type="html">I control my longboard’s motor and lights with an Arduino, a Bluetooth module, and my Android phone. It was a pain, but I got it working, so I’d like to make life easier for other people interested in doing what I did. This post is about setting up the Bluetooth module - the phone part will come later. An exhaustive parts list is at the end.</summary></entry><entry><title type="html">Building a Personal Website</title><link href="https://antiprojects.com/website/building-a-personal-website" rel="alternate" type="text/html" title="Building a Personal Website" /><published>2018-07-15T00:00:00-04:00</published><updated>2018-07-15T00:00:00-04:00</updated><id>https://antiprojects.com/website/building-a-personal-website</id><content type="html" xml:base="https://antiprojects.com/website/building-a-personal-website">&lt;p&gt;I’m creating a personal website because I think it’s a great way to showcase my work. I have three goals for this website. First, I want the website to feel professional. Second, I want my articles to read well. Third, I want my content to impress.&lt;/p&gt;
+
+&lt;p&gt;To make sure the website looked professional, I had to have a custom domain. So I bought a domain from Google Domains, and used Github Pages as a host. Curtis Larson has an excellent guide for connecting Github Pages and Google Domains, so I followed  &lt;a href=&quot;http://www.curtismlarson.com/blog/2015/04/12/github-pages-google-domains/&quot;&gt;his advice&lt;/a&gt;. The only issue with his article is that the ip addresses he lists are out of date - I found newer addresses &lt;a href=&quot;https://help.github.com/articles/setting-up-an-apex-domain/&quot;&gt;here&lt;/a&gt;, under “configuring A records with your DNS provider.” I also benefited greatly from Github’s &lt;a href=&quot;https://pages.github.com/&quot;&gt;Github Pages guide&lt;/a&gt;. The only thing I had to pay for was the domain name (which is pretty much unavoidable), and that was just $12.00 a year.&lt;/p&gt;
+
+&lt;p&gt;Because I want my articles to read well, there aren’t a lot of extras on the website - no ads or widgets. The bar at the top of the page is only used to get to the home page. Writing doesn’t take up the full width of the page, which makes articles easier to read.&lt;/p&gt;
+
+&lt;p&gt;As for impressing people? The website is a good start, but the rest of my content is yet to come. My next post is probably going to be about my electric longboard.&lt;/p&gt;</content><author><name>Antioch Sanders</name></author><summary type="html">I’m creating a personal website because I think it’s a great way to showcase my work. I have three goals for this website. First, I want the website to feel professional. Second, I want my articles to read well. Third, I want my content to impress.</summary></entry><entry><title type="html">Do It Right: Attaching Lights to The Longboard</title><link href="https://antiprojects.com/longboard/do-it-right-attaching-lights-to-the-longboard" rel="alternate" type="text/html" title="Do It Right: Attaching Lights to The Longboard" /><published>2018-07-15T00:00:00-04:00</published><updated>2018-07-15T00:00:00-04:00</updated><id>https://antiprojects.com/longboard/do-it-right-attaching-lights-to-the-longboard</id><content type="html" xml:base="https://antiprojects.com/longboard/do-it-right-attaching-lights-to-the-longboard">&lt;p&gt;Out of all of the bits and pieces of this electric longboard project, working with lights has been one of the most difficult and exciting parts.  Disclaimer, yes my friend &lt;a href=&quot;http://shihaocao.com&quot;&gt;Shihao&lt;/a&gt; did the mechanical assembly for the motor, but still - a lot of longboards have nice motors, not a lot of longboard have wicked lights. So let’s dive in.  I’ve included a list of parts at the end.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Light Fixture #0&lt;/strong&gt; For my first attempt at attaching lights to the longboard, I cut out small squares of wood using my highschool’s bandsaw. Then I hot glued the squares onto the longboard, and the lights onto the squares. At first it worked out… but the hot glue connections would suddenly come loose.&lt;/p&gt;
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/fixture0.jpeg&quot; alt=&quot;Longboard with weak light fixtures&quot; width=&quot;300px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Light Fixture #1&lt;/strong&gt; Hot glue wasn’t working, so I turned to using wood screws. I also replaced some of the wooden squares with longer wooden strips, so there was more surface area to attach the lights. To connect the wooden pieces to the board, I would drill a pilot hole all the way through the wood and then longboard, and then I would drive the wood screws in after.&lt;/p&gt;
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/fixture1.png&quot; alt=&quot;Longboard with better light fixtures&quot; width=&quot;500px&quot; height=&quot;350px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Longer pieces of wood I could clamp down before drilling, but the smaller pieces would spin when I drilled them down, so I used a clamp to twist them to their correct orientation after they were drilled down.&lt;/p&gt;
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/twist.jpg&quot; alt=&quot;Twisting a block of wood to orientation&quot; width=&quot;350px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Sometimes a wood screw would go all the way through the longboard, making for a dangerous point that came up through the grip tape, so I ground the points down with a dremel.&lt;/p&gt;
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/grinding0.gif&quot; alt=&quot;Grinding a dangerous screw point down&quot; width=&quot;300px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Applying Velcro&lt;/strong&gt; Cutting Velcro was the messiest part of attaching the lights. After just one cut, Velcro’s industrial strength adhesive catches in scissors. I used a pair of Cutco Super Shears to start each cut of the Velcro, but did the rest of the cut with an X-Acto knife. Before putting velcro on the wooden blocks, I cleaned the blocks with rubbing alcohol and let them dry.&lt;br /&gt;&lt;br /&gt;There are two parts to velcro.  The fuzzy part is called the “loop” side - it resembles a carpet, which is made up of loops. The stiffer side is called the “hook” side. Generally the loops pick up trash more easily, and need to be replaced more often - so they are put on the side where the Velcro is easier to replace. I thought it would be easier to replace the Velcro on the lights, so I put the loops on the lights, and the hooks on the board.&lt;/p&gt;
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/loops.jpeg&quot; alt=&quot;&quot; width=&quot;500px&quot; height=&quot;350px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/hooks.jpeg&quot; alt=&quot;&quot; width=&quot;300px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After that, I was done! Next it was time to perfect the programming for the lights.&lt;/p&gt;
+
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/attached0.jpeg&quot; alt=&quot;Front Lights View&quot; width=&quot;533px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/attached1.jpeg&quot; alt=&quot;Bottom Lights View&quot; width=&quot;533px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/attached2.jpeg&quot; alt=&quot;Top Lights View&quot; width=&quot;400px&quot; height=&quot;533px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/attached3.jpeg&quot; alt=&quot;Side Lights View&quot; width=&quot;533px&quot; height=&quot;400px&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;Parts&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Wood (~1/2” thick) -&lt;/strong&gt; This is for mounting the lights. I got some for free from a scrap pile at school,
+and then used part of a bigger plank I’d gotten for $10 at home depot.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/wood.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;LED RGB Strip - Addressable, Sealed (1m) (2x) -&lt;/strong&gt; I got these from sparkfun for $50 total.
+These are WS2812s, with a wire for ground, power, and data. LEDs with two data wires
+(5060 LEDs) will probably play better with other arduino accessories, but check the reviews
+on durability first, and decide if you want your lights to be addressable
+(i.e do you want cool patterns, i.e. yes).
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/leds.jpg&quot; alt=&quot;LED Light Strips&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;1” Self-Drilling Wood-Screws -&lt;/strong&gt; To connect the light fixtures to the board! I got 100 of these
+from Home Depoot for $8, although I can’t find them on the website. It’s okay if the screws
+aren’t self-drilling.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/screws.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;4 ft. x 2 in. Industrial Strength Velcro -&lt;/strong&gt; This stuff is great, so the $10 is worth being
+able to safely attach and detach your $50 worth of ligts.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/velcro.jpg&quot; alt=&quot;Industrial Strength Velcro&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Parts Total: ~$78&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tools&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Jig Saw -&lt;/strong&gt; A bandsaw or even handsaw will work, but you need to be able to cut 1/2” thickwood, so
+I got a Hypertough jigsaw from walmart for only $20.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/jigsaw.jpeg&quot; alt=&quot;HyperTough Jig Saw&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Electric Drill -&lt;/strong&gt; If you can drill by hand, congratulations - you’ll be connecting 1/2” thick
+pieces of wood together. Again I went with Hypertough, it was the cheapest I saw at Walmart, at $20. Mine
+is corded, cordless drills are generally more expensive.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/drill.jpeg&quot; alt=&quot;HyperTough Electric Drill&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Drill Bit Set -&lt;/strong&gt; I only ended up using the 7/64” drill bit and the 1/4” hex drive bit, but I’m sure the
+109 piece drill bit set I got for $13 will come in handy again.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/bits.jpeg&quot; alt=&quot;Drill Bit Set&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Dremel -&lt;/strong&gt; I used the Dremel as a grinder and sander. I got it from Walmart for $20.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/dremel.jpeg&quot; alt=&quot;Dremel&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Tools Total: ~$73&lt;/p&gt;</content><author><name>Antioch Sanders</name></author><summary type="html">Out of all of the bits and pieces of this electric longboard project, working with lights has been one of the most difficult and exciting parts. Disclaimer, yes my friend Shihao did the mechanical assembly for the motor, but still - a lot of longboards have nice motors, not a lot of longboard have wicked lights. So let’s dive in. I’ve included a list of parts at the end.</summary></entry></feed>

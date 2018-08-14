@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<head>
+        <title>Antiprojects</title>
+        <link rel="icon" type="image/png" href="../pics/icon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../styles.css"
+</head>
+<body>
+	<div id="header" class="shadow">
+	<a href="../index.html">AntiProjects</a>
+	<span id="header-desc">
+		Antioch Sanders
+	</span>
+</div>
+
+
+        <div class="column">
+	<p class="column-title">Do It Right: Attaching Lights to The Longboard</p>
+	
+		<div class="written">Written 2018-07-15</div>
+		<div class="edited start">Edited 2018-07-16</div>
+	
+	<p>Out of all of the bits and pieces of this electric longboard project, working with lights has been one of the most difficult and exciting parts.  Disclaimer, yes my friend <a href="http://shihaocao.com">Shihao</a> did the mechanical assembly for the motor, but still - a lot of longboards have nice motors, not a lot of longboard have wicked lights. So let’s dive in.  I’ve included a list of parts at the end.</p>
+
+<p><strong>Light Fixture #0</strong> For my first attempt at attaching lights to the longboard, I cut out small squares of wood using my highschool’s bandsaw. Then I hot glued the squares onto the longboard, and the lights onto the squares. At first it worked out… but the hot glue connections would suddenly come loose.</p>
+<div class="center-img">
+	<img src="../pics/fixture0.jpeg" alt="Longboard with weak light fixtures" width="300px" height="400px" style="max-width:100%" />
+</div>
+
+<p><strong>Light Fixture #1</strong> Hot glue wasn’t working, so I turned to using wood screws. I also replaced some of the wooden squares with longer wooden strips, so there was more surface area to attach the lights. To connect the wooden pieces to the board, I would drill a pilot hole all the way through the wood and then longboard, and then I would drive the wood screws in after.</p>
+<div class="center-img">
+	<img src="../pics/fixture1.png" alt="Longboard with better light fixtures" width="500px" height="350px" style="max-width:100%" />
+</div>
+
+<p>Longer pieces of wood I could clamp down before drilling, but the smaller pieces would spin when I drilled them down, so I used a clamp to twist them to their correct orientation after they were drilled down.</p>
+<div class="center-img">
+	<img src="../pics/twist.jpg" alt="Twisting a block of wood to orientation" width="350px" height="400px" style="max-width:100%" />
+</div>
+
+<p>Sometimes a wood screw would go all the way through the longboard, making for a dangerous point that came up through the grip tape, so I ground the points down with a dremel.</p>
+<div class="center-img">
+	<img src="../pics/grinding0.gif" alt="Grinding a dangerous screw point down" width="300px" height="400px" style="max-width:100%" />
+</div>
+
+<p><strong>Applying Velcro</strong> Cutting Velcro was the messiest part of attaching the lights. After just one cut, Velcro’s industrial strength adhesive catches in scissors. I used a pair of Cutco Super Shears to start each cut of the Velcro, but did the rest of the cut with an X-Acto knife. Before putting velcro on the wooden blocks, I cleaned the blocks with rubbing alcohol and let them dry.<br /><br />There are two parts to velcro.  The fuzzy part is called the “loop” side - it resembles a carpet, which is made up of loops. The stiffer side is called the “hook” side. Generally the loops pick up trash more easily, and need to be replaced more often - so they are put on the side where the Velcro is easier to replace. I thought it would be easier to replace the Velcro on the lights, so I put the loops on the lights, and the hooks on the board.</p>
+<div class="center-img">
+	<img src="../pics/loops.jpeg" alt="" width="500px" height="350px" style="max-width:100%" />
+</div>
+
+<div class="center-img">
+	<img src="../pics/hooks.jpeg" alt="" width="300px" height="400px" style="max-width:100%" />
+</div>
+
+<p>After that, I was done! Next it was time to perfect the programming for the lights.</p>
+
+<div class="center-img">
+	<img src="../pics/attached0.jpeg" alt="Front Lights View" width="533px" height="400px" style="max-width:100%" />
+</div>
+
+<div class="center-img">
+	<img src="../pics/attached1.jpeg" alt="Bottom Lights View" width="533px" height="400px" style="max-width:100%" />
+</div>
+
+<div class="center-img">
+	<img src="../pics/attached2.jpeg" alt="Top Lights View" width="400px" height="533px" style="max-width:100%" />
+</div>
+
+<div class="center-img">
+	<img src="../pics/attached3.jpeg" alt="Side Lights View" width="533px" height="400px" style="max-width:100%" />
+</div>
+
+<hr />
+
+<p><strong>Parts</strong></p>
+<ul>
+  <li>
+    <p><strong>Wood (~1/2” thick) -</strong> This is for mounting the lights. I got some for free from a scrap pile at school,
+and then used part of a bigger plank I’d gotten for $10 at home depot.
+<br />
+<img class="list" src="../pics/wood.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>LED RGB Strip - Addressable, Sealed (1m) (2x) -</strong> I got these from sparkfun for $50 total.
+These are WS2812s, with a wire for ground, power, and data. LEDs with two data wires
+(5060 LEDs) will probably play better with other arduino accessories, but check the reviews
+on durability first, and decide if you want your lights to be addressable
+(i.e do you want cool patterns, i.e. yes).
+<br />
+<img class="list" src="../pics/leds.jpg" alt="LED Light Strips" /></p>
+  </li>
+  <li>
+    <p><strong>1” Self-Drilling Wood-Screws -</strong> To connect the light fixtures to the board! I got 100 of these
+from Home Depoot for $8, although I can’t find them on the website. It’s okay if the screws
+aren’t self-drilling.
+<br />
+<img class="list" src="../pics/screws.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>4 ft. x 2 in. Industrial Strength Velcro -</strong> This stuff is great, so the $10 is worth being
+able to safely attach and detach your $50 worth of ligts.
+<br />
+<img class="list" src="../pics/velcro.jpg" alt="Industrial Strength Velcro" /></p>
+  </li>
+</ul>
+
+<p>Parts Total: ~$78</p>
+
+<p><strong>Tools</strong></p>
+<ul>
+  <li>
+    <p><strong>Jig Saw -</strong> A bandsaw or even handsaw will work, but you need to be able to cut 1/2” thickwood, so
+I got a Hypertough jigsaw from walmart for only $20.
+<br />
+<img class="list" src="../pics/jigsaw.jpeg" alt="HyperTough Jig Saw" /></p>
+  </li>
+  <li>
+    <p><strong>Electric Drill -</strong> If you can drill by hand, congratulations - you’ll be connecting 1/2” thick
+pieces of wood together. Again I went with Hypertough, it was the cheapest I saw at Walmart, at $20. Mine
+is corded, cordless drills are generally more expensive.
+<br />
+<img class="list" src="../pics/drill.jpeg" alt="HyperTough Electric Drill" /></p>
+  </li>
+  <li>
+    <p><strong>Drill Bit Set -</strong> I only ended up using the 7/64” drill bit and the 1/4” hex drive bit, but I’m sure the
+109 piece drill bit set I got for $13 will come in handy again.
+<br />
+<img class="list" src="../pics/bits.jpeg" alt="Drill Bit Set" /></p>
+  </li>
+  <li>
+    <p><strong>Dremel -</strong> I used the Dremel as a grinder and sander. I got it from Walmart for $20.
+<br />
+<img class="list" src="../pics/dremel.jpeg" alt="Dremel" /></p>
+  </li>
+</ul>
+
+<p>Tools Total: ~$73</p>
+
+</div>
+
+</body>
+

@@ -2,6 +2,10 @@ body {
 	overflow-x: hidden
 }
 
+hr {
+    border-top-color: black;
+}
+
 #header {
 	position: fixed;
 	top: 0;
