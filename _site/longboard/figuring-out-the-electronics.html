@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<head>
+        <title>Antiprojects</title>
+        <link rel="icon" type="image/png" href="../pics/icon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../styles.css"
+</head>
+<body>
+	<div id="header" class="shadow">
+	<a href="../index.html">AntiProjects</a>
+	<span id="header-desc">
+		Antioch Sanders
+	</span>
+</div>
+
+
+        <div class="column">
+	<p class="column-title">Figuring Out the Electronics</p>
+	
+		<div class="written start">Written 2018-08-14</div>
+	
+	<p>This post is all about the electronics - first I’ll detail how I planned the electronics, and then I’ll show I mounted the electronics under the board. As usual, I include a parts list at the end.</p>
+
+<h2 id="the-big-picture"><strong>The Big Picture</strong></h2>
+<div class="center-img">
+	<img src="../pics/elec-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<p>The big picture for the electronics is for a charging system to supply power to two different battery systems. One battery system will power the motor, and the other will be for the lower power electronics, such as the lights, bluetooth reciever, and circuitry used to control the motor.</p>
+
+<h2 id="battery-and-charging"><strong>Battery and Charging</strong></h2>
+<div class="center-img">
+	<img src="../pics/charging-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<p>Let’s take a deeper look at the charging system. On the accessory side of the electronics, we have a buck conveter - this efficiently changes the 24 volts from the power jack to the 11.1 the 3S battery expects while charging. The buck converter I got is also CC CV. This means that in addition to having a knob to adjust voltage output (CV - constant voltage), the buck converter has a knob to limit output current (CC - constant current). Lipo batteries are generally charged using a CC CV supply.</p>
+
+<p>On the motor side of the electronics, we have a boost converter. This will efficiently change 24 volts to the 25.6 expected by the bigger 6S battery. The diode following the boost converter will stop current from travelling backwards towards the other side of the electronics. If the diode wasn’t present, the 6S battery would end up charging the 3S battery, potentially damaging itself in the process, as its own voltage sank lower and lower.</p>
+
+<p>Note that each battery also has a voltage monitor and a balance connected. The balance makes sure that the cells in the batteries are at the same voltage (this increases the lifepsan of the battery), and the monitor goes off if a battery is dangerously low on charge.</p>
+
+<h2 id="low-power-electronics"><strong>Low Power Electronics</strong></h2>
+<div class="center-img">
+	<img src="../pics/lowp-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<p>Zooming in on low power electronics side, after the battery, we have a switch to power the board on and off. Then a buck converter changes the 3S’s 11.1 volts to 6 volts, which the lights and Arduino are happy with. The piezo horn and bluetooth module get 5 volts from the Arduino, but the relay board uses a regulator for its 5 volts because the Arduino can’t give it the current that it wants.</p>
+
+<p>The Arduino is the brains of the board - it runs code to control everything else. It takes input from the bluetooth module, which it also powers. Because everything depends on the arduino, everything stops if the Arduino becomes too busy with one particular task. For this reasons, it might be wise to use two Arduinos in the future.</p>
+
+<p>The lights are controlled by the Arduino, but powered from the buck converter, as they can use up to 7 amps of current. For the most part, they’re just for show.</p>
+
+<p>The piezo horn is pretty straight forward - it takes a DC voltage in, and makes a loud noise. It might be wise to power it through a relay in the future - it can operate with anywhere from 5 volts to 8 volts, so it doesn’t reach its loudness potential using the Arduino’s 5 volts.</p>
+
+<p>The motor relay is actually two relays. The first is</p>
+
+
+</div>
+
+</body>
+
