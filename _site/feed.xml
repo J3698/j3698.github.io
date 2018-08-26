@@ -1,37 +1,124 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-08-19T14:30:26-04:00</updated><id>http://localhost:4000/</id><title type="html">AntiProjects</title><subtitle>Where I document my projects.</subtitle><author><name>Antioch Sanders</name></author><entry><title type="html">Figuring Out the Electronics</title><link href="http://localhost:4000/longboard/figuring-out-the-electronics" rel="alternate" type="text/html" title="Figuring Out the Electronics" /><published>2018-08-14T00:00:00-04:00</published><updated>2018-08-14T00:00:00-04:00</updated><id>http://localhost:4000/longboard/figuring-out-the-electronics</id><content type="html" xml:base="http://localhost:4000/longboard/figuring-out-the-electronics">&lt;p&gt;This post is all about the electronics - first I’ll detail how I planned the electronics, and then I’ll show I mounted the electronics under the board. As usual, I include a parts list at the end.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-08-26T12:00:34-04:00</updated><id>http://localhost:4000/</id><title type="html">AntiProjects</title><subtitle>Where I document my projects.</subtitle><author><name>Antioch Sanders</name></author><entry><title type="html">The Plan: Diagramming the Electronics</title><link href="http://localhost:4000/longboard/the-plan-diagramming-the-electronics" rel="alternate" type="text/html" title="The Plan: Diagramming the Electronics" /><published>2018-08-26T00:00:00-04:00</published><updated>2018-08-26T00:00:00-04:00</updated><id>http://localhost:4000/longboard/the-plan-diagramming-the-electronics</id><content type="html" xml:base="http://localhost:4000/longboard/the-plan-diagramming-the-electronics">&lt;p&gt;This post is a high level description of the electronics I used - it’s not necessary to make the build that I did, but it’s meant to be helpful in understanding why I made certain decisions.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-big-picture&quot;&gt;&lt;strong&gt;The Big Picture&lt;/strong&gt;&lt;/h2&gt;
 &lt;div class=&quot;center-img&quot;&gt;
 	&lt;img src=&quot;../pics/elec-vision.png&quot; alt=&quot;diagram&quot; width=&quot;&quot; height=&quot;&quot; style=&quot;max-width:100%&quot; /&gt;
 &lt;/div&gt;
 
-&lt;p&gt;The big picture for the electronics is for a charging system to supply power to two different battery systems. One battery system will power the motor, and the other will be for the lower power electronics, such as the lights, bluetooth reciever, and circuitry used to control the motor.&lt;/p&gt;
+&lt;p&gt;The big picture for the electronics is for a charging system to supply power to two different battery systems. One battery system will power the motor, and the other will be for the lower power electronics, such as the lights, bluetooth reciever, and circuitry used to control the motor. The high power and low power electronics are run off of different batteries mostly because I had three different batteries. You could just use the bigger battery system and run the lower power electronics off of regulators and buck converters, such as in the following diagram:&lt;/p&gt;
+&lt;div class=&quot;center-img&quot;&gt;
+	&lt;img src=&quot;../pics/sselec-vision.png&quot; alt=&quot;diagram&quot; width=&quot;&quot; height=&quot;&quot; style=&quot;max-width:100%&quot; /&gt;
+&lt;/div&gt;
 
 &lt;h2 id=&quot;battery-and-charging&quot;&gt;&lt;strong&gt;Battery and Charging&lt;/strong&gt;&lt;/h2&gt;
 &lt;div class=&quot;center-img&quot;&gt;
 	&lt;img src=&quot;../pics/charging-vision.png&quot; alt=&quot;diagram&quot; width=&quot;&quot; height=&quot;&quot; style=&quot;max-width:100%&quot; /&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Let’s take a deeper look at the charging system. On the accessory side of the electronics, we have a buck conveter - this efficiently changes the 24 volts from the power jack to the 11.1 the 3S battery expects while charging. The buck converter I got is also CC CV. This means that in addition to having a knob to adjust voltage output (CV - constant voltage), the buck converter has a knob to limit output current (CC - constant current). Lipo batteries are generally charged using a CC CV supply.&lt;/p&gt;
+&lt;p&gt;Let’s take a deeper look at the charging system. On the low power side of the electronics, we have a buck conveter - this efficiently changes the 24 volts from the power jack to the 11.1 volts the 3S battery expects while charging. The buck converter I got is also CC CV. This means that in addition to having a knob to adjust voltage output (CV - constant voltage), the buck converter has a knob to limit output current (CC - constant current). Lipo batteries are generally charged using a CC CV supply, as an excess of charging voltage or current can harm them.&lt;/p&gt;
 
-&lt;p&gt;On the motor side of the electronics, we have a boost converter. This will efficiently change 24 volts to the 25.6 expected by the bigger 6S battery. The diode following the boost converter will stop current from travelling backwards towards the other side of the electronics. If the diode wasn’t present, the 6S battery would end up charging the 3S battery, potentially damaging itself in the process, as its own voltage sank lower and lower.&lt;/p&gt;
+&lt;p&gt;On the motor side of the electronics, we have a boost converter. This will efficiently change a lower input voltage (24 volts from the laptop charger I have) to the 25.6 volts expected by the bigger 6S battery. The diode following the boost converter will stop current from travelling backwards towards the other side of the electronics. If the diode wasn’t present, the 6S battery would end up charging the 3S battery, damaging itself as its own voltage sank lower and lower.&lt;/p&gt;
 
-&lt;p&gt;Note that each battery also has a voltage monitor and a balance connected. The balance makes sure that the cells in the batteries are at the same voltage (this increases the lifepsan of the battery), and the monitor goes off if a battery is dangerously low on charge.&lt;/p&gt;
+&lt;p&gt;Each battery also has a voltage monitor and a balance connected. The balances ensure that the cells in a given battery are at the same voltage (this increases the lifepsan of the battery), and the monitors go off if the battery they’re connected to is dangerously low on charge.&lt;/p&gt;
 
 &lt;h2 id=&quot;low-power-electronics&quot;&gt;&lt;strong&gt;Low Power Electronics&lt;/strong&gt;&lt;/h2&gt;
 &lt;div class=&quot;center-img&quot;&gt;
 	&lt;img src=&quot;../pics/lowp-vision.png&quot; alt=&quot;diagram&quot; width=&quot;&quot; height=&quot;&quot; style=&quot;max-width:100%&quot; /&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Zooming in on low power electronics side, after the battery, we have a switch to power the board on and off. Then a buck converter changes the 3S’s 11.1 volts to 6 volts, which the lights and Arduino are happy with. The piezo horn and bluetooth module get 5 volts from the Arduino, but the relay board uses a regulator for its 5 volts because the Arduino can’t give it the current that it wants.&lt;/p&gt;
+&lt;p&gt;Zooming in on low power electronics side, after the battery, we have a switch to power the board on and off. Then a buck converter changes the 3S battery’s 11.1 volts to 6 volts, which the lights and Arduino are happy with. It’s important that the buck is after the switch. If the switch was after the buck, then even when the board was off, the buck would consume available power for its indicator light.&lt;/p&gt;
 
-&lt;p&gt;The Arduino is the brains of the board - it runs code to control everything else. It takes input from the bluetooth module, which it also powers. Because everything depends on the arduino, everything stops if the Arduino becomes too busy with one particular task. For this reasons, it might be wise to use two Arduinos in the future.&lt;/p&gt;
+&lt;p&gt;The Arduino is the brains of the board - it runs code to control everything else. This is because optimally, all of the electronics on the board would be controllable via Bluetooth. The Arduino takes input from the Bluetooth module, which it also powers. It also has a control wire running to the speed controller for the motor. One drawback to the Arduino’s centrality is that if the Arduino becomes too busy with one particular task, everything stops. For this reason, it might be wise to use two Arduinos in the future.&lt;/p&gt;
 
-&lt;p&gt;The lights are controlled by the Arduino, but powered from the buck converter, as they can use up to 7 amps of current. For the most part, they’re just for show.&lt;/p&gt;
+&lt;p&gt;The lights are controlled by the Arduino, but powered from the buck converter, as they can use up to 7 amps of current. They’re just for show.&lt;/p&gt;
 
-&lt;p&gt;The piezo horn is pretty straight forward - it takes a DC voltage in, and makes a loud noise. It might be wise to power it through a relay in the future - it can operate with anywhere from 5 volts to 8 volts, so it doesn’t reach its loudness potential using the Arduino’s 5 volts.&lt;/p&gt;
+&lt;p&gt;The piezo horn is pretty straight forward - it takes a DC voltage in, and makes a loud noise. It might be wise to power it through a relay in the future - it operates with 5 volts to 8 volts, so it doesn’t reach its noise potential using the Arduino’s 5 volts.&lt;/p&gt;
 
-&lt;p&gt;The motor relay is actually two relays. The first is&lt;/p&gt;</content><author><name>Antioch Sanders</name></author><summary type="html">This post is all about the electronics - first I’ll detail how I planned the electronics, and then I’ll show I mounted the electronics under the board. As usual, I include a parts list at the end.</summary></entry><entry><title type="html">It Hurts: Setting Up the Bluetooth Module</title><link href="http://localhost:4000/longboard/it-hurts-setting-up-the-bluetooth-module" rel="alternate" type="text/html" title="It Hurts: Setting Up the Bluetooth Module" /><published>2018-07-17T00:00:00-04:00</published><updated>2018-07-17T00:00:00-04:00</updated><id>http://localhost:4000/longboard/it-hurts-setting-up-the-bluetooth-module</id><content type="html" xml:base="http://localhost:4000/longboard/it-hurts-setting-up-the-bluetooth-module">&lt;p&gt;I control my longboard’s motor and lights with an Arduino, a Bluetooth module, and my Android phone. It was a pain, but I got it working, so I’d like to make life easier for other people interested in doing what I did. This post is about setting up the Bluetooth module - the phone part will come later. An exhaustive parts list is at the end.&lt;/p&gt;
+&lt;p&gt;The motor relay is actually two relays. The first relay controls the programming button on the speed controller, and the other can be used to switch the speed controller on and off. The relay board is powered using a 5 volt regulator, since the board pulls more current than the Arduino can handle&lt;/p&gt;
+
+&lt;h2 id=&quot;high-power-electronics&quot;&gt;&lt;strong&gt;High Power Electronics&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;The electronics on the high power side are pretty simple - the 6S battery powers the electronic speed controller, which powers and controls the motor. The speed controller is controlled in every way by the Arduino using relays.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Parts&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Boost Converter -&lt;/strong&gt; Ebay lists 150W DC-DC boost converters for $6 that look just like this one.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/boost.jpg&quot; alt=&quot;Boost Converter&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Buck Converter (2) -&lt;/strong&gt; Ebay lists 150W DC-DC CC CV buck converters for $4 that look like this one.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/buck.jpeg&quot; alt=&quot;Buck Converter&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Diode &amp;gt;=10A, &amp;gt;=30V -&lt;/strong&gt; Microcenter has the NTE5812HC for $1.70
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/diode.jpg&quot; alt=&quot;diode&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;3S Lipo Battery -&lt;/strong&gt; Ebay, Amazon, or HobbyKing will stock 3S batteries. The battery’s C rating multiplied by its capacity should be at least 20, however most will be quite a bit bigger (e.g 20C * 5000mAh = 100A). If the low power electronics suck up around 10A with the lights fully on (low power battery life will go up 10x with the lights off), you will get (60h r/min * Capacity / 10A) minutes of battery life (e.g. 60 min/hr * 5000 mAh / 10 A = 30 min). A 5000mAh 3S will be about $30.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/3S.jpg&quot; alt=&quot;3S Lipo Battery&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;6S Lipo Battery (or two more 3S) -&lt;/strong&gt; The battery or batteries for the high power side should have capacity times C rating at at least 100 (e.g. 20C * 5000mAh = 100A). The bigger the better - the 6S battery capacity will determine the longboard’s range. A 5000 mAh 6S will be about $60.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/6S.jpg&quot; alt=&quot;6S Lipo Battery&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Voltage Monitor (One for each battery) -&lt;/strong&gt; These are available at any big online retailer and most RC retailers. I have two from two different companies - both are inaccurate in the mid range by about 0.1 volts. Fortunately the inaccuracy is consistent, and the voltage alarm can be set to different voltages. I purchased 4 for $14. 
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/lipo-monitor.jpg&quot; alt=&quot;Lipo Battery Monitor&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Balance (One 6S, one 3S) -&lt;/strong&gt; Search for “balance bms lipo” to find these on Ebay. I got one for $7. The balance doesn’t need discharge or charge connections - just places to connect the balance. To learn more, look up battery management systems.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/balance-bms.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Switch &amp;gt;=10A, &amp;gt;=15V -&lt;/strong&gt; I got a heavy duty switch from Microcenter for about $2.50.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/switch.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;ESC &amp;gt;=100A, &amp;gt;=6S -&lt;/strong&gt; I got the waterproof 8BL150 Hobbywing for about $85. The gold standard for ESCs is the VESC, or Vedder ESC. It was designed to be very flexible, costs around $100 (it can get highr), and is specifically for electric longboards.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/esc.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Outrunner Motor ~5055, ~250-~350 kV -&lt;/strong&gt; I got a 280kV motor from Ebay for about $50. Some motors have higher kV ratings, but are a lot smaller than 5055. A smaller motor won’t have as much torque, and thus won’t actually go as fast as it claims with a person riding. 
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/5055motor.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Arduino Pro Micro 5V -&lt;/strong&gt; The Pro Micro is small, has dedicated serial IO, and can be bounght in packs for $5 a piece or less on Ebay.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/pro-micro.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Relay Board &amp;gt;= 2 Channel-&lt;/strong&gt; Relay boards built for microcontrollers isolate the controller from the switching current, protecting the Arduino. I got a 4 channel board from microcenter for $12, but haven’t ended up using the extra 2 channels.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/relay-board.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;1M Addressable RGB Lights Sealed (2x)-&lt;/strong&gt; Each of these is around $25 on Sparkfun or Ebay. You can find them cheaper, but they may use a different protocol, or lack some of the features that these have (such as waterproofing). 
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/leds.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Bluetooth Mate Gold-&lt;/strong&gt; Sparkfun sells these for $35 if you want 100m of range, but you can get bluetooth modules elsewhere for a lot cheaper. 
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/bluetooth.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Piezo -&lt;/strong&gt; I got this from Microcenter for $5. This buzzes when given a DC voltage - you can get buzzers that need a switching voltage, but then the Arduino will have to do more work.
+&lt;br /&gt;
+&lt;img class=&quot;list&quot; src=&quot;../pics/buzzer.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Parts Total: ~$369&lt;/p&gt;</content><author><name>Antioch Sanders</name></author><summary type="html">This post is a high level description of the electronics I used - it’s not necessary to make the build that I did, but it’s meant to be helpful in understanding why I made certain decisions.</summary></entry><entry><title type="html">It Hurts: Setting Up the Bluetooth Module</title><link href="http://localhost:4000/longboard/it-hurts-setting-up-the-bluetooth-module" rel="alternate" type="text/html" title="It Hurts: Setting Up the Bluetooth Module" /><published>2018-07-17T00:00:00-04:00</published><updated>2018-07-17T00:00:00-04:00</updated><id>http://localhost:4000/longboard/it-hurts-setting-up-the-bluetooth-module</id><content type="html" xml:base="http://localhost:4000/longboard/it-hurts-setting-up-the-bluetooth-module">&lt;p&gt;I control my longboard’s motor and lights with an Arduino, a Bluetooth module, and my Android phone. It was a pain, but I got it working, so I’d like to make life easier for other people interested in doing what I did. This post is about setting up the Bluetooth module - the phone part will come later. An exhaustive parts list is at the end.&lt;/p&gt;
 
 &lt;h2 id=&quot;important-notes&quot;&gt;&lt;strong&gt;Important Notes&lt;/strong&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;RX/TX Issues ●&lt;/strong&gt; The Bluetooth module used here uses two-pin serial-communication, which is also used by USB. In fact, on many Arduino devices, the USB port is linked to the RX/TX pins. This means that if the Arduino serial-monitor and Bluetooth module are used at the same time, data sent to one also gets sent to the other. For those looking to work around this limitation, there are various libraries that enable serial communication on pins other than RX/TX, such as SoftwareSerial, NewSoftSerial, and AltSoftSerial. Each library has its respective drawbacks, and I never got SoftwareSerial to work with the Arduino Uno or Arduino Pro Micro. Fortunately, the &lt;a href=&quot;https://store.arduino.cc/usa/arduino-micro&quot;&gt;Pro Micro’s serial pins are separate from the USB interface (see the first bullet under “Input and Output” under “documentation”&lt;/a&gt;. So I used the Pro Micro. If you choose to use an Arduino that does not have this separation, such as the Uno (and most others), either use one of the libraries I mentioned, or append debug info to a string while the program runs, and print that string once the program is done. That way, the Bluetooth only recieves information that it’s not meant to see once it’s no longer needed for testing. &lt;a href=&quot;https://gist.github.com/J3698/3d1e19666feb7a5fd9ae1324314fc29d&quot;&gt;This is an example&lt;/a&gt;. Keep that in mind if you use the Uno; the rest of this post is based around the Pro Micro.&lt;/p&gt;

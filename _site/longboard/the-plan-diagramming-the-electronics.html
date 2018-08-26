@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<head>
+        <title>Antiprojects</title>
+        <link rel="icon" type="image/png" href="../pics/icon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../styles.css"
+</head>
+<body>
+	<div id="header" class="shadow">
+	<a href="../index.html">AntiProjects</a>
+	<span id="header-desc">
+		Antioch Sanders
+	</span>
+</div>
+
+
+        <div class="column">
+	<script type="text/javascript"
+    		src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+	<p class="column-title">The Plan: Diagramming the Electronics</p>
+	
+		<div class="written start">Written 2018-08-26</div>
+	
+	<p>This post is a high level description of the electronics I used - it’s not necessary to make the build that I did, but it’s meant to be helpful in understanding why I made certain decisions.</p>
+
+<h2 id="the-big-picture"><strong>The Big Picture</strong></h2>
+<div class="center-img">
+	<img src="../pics/elec-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<p>The big picture for the electronics is for a charging system to supply power to two different battery systems. One battery system will power the motor, and the other will be for the lower power electronics, such as the lights, bluetooth reciever, and circuitry used to control the motor. The high power and low power electronics are run off of different batteries mostly because I had three different batteries. You could just use the bigger battery system and run the lower power electronics off of regulators and buck converters, such as in the following diagram:</p>
+<div class="center-img">
+	<img src="../pics/sselec-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<h2 id="battery-and-charging"><strong>Battery and Charging</strong></h2>
+<div class="center-img">
+	<img src="../pics/charging-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<p>Let’s take a deeper look at the charging system. On the low power side of the electronics, we have a buck conveter - this efficiently changes the 24 volts from the power jack to the 11.1 volts the 3S battery expects while charging. The buck converter I got is also CC CV. This means that in addition to having a knob to adjust voltage output (CV - constant voltage), the buck converter has a knob to limit output current (CC - constant current). Lipo batteries are generally charged using a CC CV supply, as an excess of charging voltage or current can harm them.</p>
+
+<p>On the motor side of the electronics, we have a boost converter. This will efficiently change a lower input voltage (24 volts from the laptop charger I have) to the 25.6 volts expected by the bigger 6S battery. The diode following the boost converter will stop current from travelling backwards towards the other side of the electronics. If the diode wasn’t present, the 6S battery would end up charging the 3S battery, damaging itself as its own voltage sank lower and lower.</p>
+
+<p>Each battery also has a voltage monitor and a balance connected. The balances ensure that the cells in a given battery are at the same voltage (this increases the lifepsan of the battery), and the monitors go off if the battery they’re connected to is dangerously low on charge.</p>
+
+<h2 id="low-power-electronics"><strong>Low Power Electronics</strong></h2>
+<div class="center-img">
+	<img src="../pics/lowp-vision.png" alt="diagram" width="" height="" style="max-width:100%" />
+</div>
+
+<p>Zooming in on low power electronics side, after the battery, we have a switch to power the board on and off. Then a buck converter changes the 3S battery’s 11.1 volts to 6 volts, which the lights and Arduino are happy with. It’s important that the buck is after the switch. If the switch was after the buck, then even when the board was off, the buck would consume available power for its indicator light.</p>
+
+<p>The Arduino is the brains of the board - it runs code to control everything else. This is because optimally, all of the electronics on the board would be controllable via Bluetooth. The Arduino takes input from the Bluetooth module, which it also powers. It also has a control wire running to the speed controller for the motor. One drawback to the Arduino’s centrality is that if the Arduino becomes too busy with one particular task, everything stops. For this reason, it might be wise to use two Arduinos in the future.</p>
+
+<p>The lights are controlled by the Arduino, but powered from the buck converter, as they can use up to 7 amps of current. They’re just for show.</p>
+
+<p>The piezo horn is pretty straight forward - it takes a DC voltage in, and makes a loud noise. It might be wise to power it through a relay in the future - it operates with 5 volts to 8 volts, so it doesn’t reach its noise potential using the Arduino’s 5 volts.</p>
+
+<p>The motor relay is actually two relays. The first relay controls the programming button on the speed controller, and the other can be used to switch the speed controller on and off. The relay board is powered using a 5 volt regulator, since the board pulls more current than the Arduino can handle</p>
+
+<h2 id="high-power-electronics"><strong>High Power Electronics</strong></h2>
+<p>The electronics on the high power side are pretty simple - the 6S battery powers the electronic speed controller, which powers and controls the motor. The speed controller is controlled in every way by the Arduino using relays.</p>
+
+<p><strong>Parts</strong></p>
+<ul>
+  <li>
+    <p><strong>Boost Converter -</strong> Ebay lists 150W DC-DC boost converters for $6 that look just like this one.
+<br />
+<img class="list" src="../pics/boost.jpg" alt="Boost Converter" /></p>
+  </li>
+  <li>
+    <p><strong>Buck Converter (2) -</strong> Ebay lists 150W DC-DC CC CV buck converters for $4 that look like this one.
+<br />
+<img class="list" src="../pics/buck.jpeg" alt="Buck Converter" /></p>
+  </li>
+  <li>
+    <p><strong>Diode &gt;=10A, &gt;=30V -</strong> Microcenter has the NTE5812HC for $1.70
+<br />
+<img class="list" src="../pics/diode.jpg" alt="diode" /></p>
+  </li>
+  <li>
+    <p><strong>3S Lipo Battery -</strong> Ebay, Amazon, or HobbyKing will stock 3S batteries. The battery’s C rating multiplied by its capacity should be at least 20, however most will be quite a bit bigger (e.g 20C * 5000mAh = 100A). If the low power electronics suck up around 10A with the lights fully on (low power battery life will go up 10x with the lights off), you will get (60h r/min * Capacity / 10A) minutes of battery life (e.g. 60 min/hr * 5000 mAh / 10 A = 30 min). A 5000mAh 3S will be about $30.
+<br />
+<img class="list" src="../pics/3S.jpg" alt="3S Lipo Battery" /></p>
+  </li>
+  <li>
+    <p><strong>6S Lipo Battery (or two more 3S) -</strong> The battery or batteries for the high power side should have capacity times C rating at at least 100 (e.g. 20C * 5000mAh = 100A). The bigger the better - the 6S battery capacity will determine the longboard’s range. A 5000 mAh 6S will be about $60.
+<br />
+<img class="list" src="../pics/6S.jpg" alt="6S Lipo Battery" /></p>
+  </li>
+  <li>
+    <p><strong>Voltage Monitor (One for each battery) -</strong> These are available at any big online retailer and most RC retailers. I have two from two different companies - both are inaccurate in the mid range by about 0.1 volts. Fortunately the inaccuracy is consistent, and the voltage alarm can be set to different voltages. I purchased 4 for $14. 
+<br />
+<img class="list" src="../pics/lipo-monitor.jpg" alt="Lipo Battery Monitor" /></p>
+  </li>
+  <li>
+    <p><strong>Balance (One 6S, one 3S) -</strong> Search for “balance bms lipo” to find these on Ebay. I got one for $7. The balance doesn’t need discharge or charge connections - just places to connect the balance. To learn more, look up battery management systems.
+<br />
+<img class="list" src="../pics/balance-bms.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Switch &gt;=10A, &gt;=15V -</strong> I got a heavy duty switch from Microcenter for about $2.50.
+<br />
+<img class="list" src="../pics/switch.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>ESC &gt;=100A, &gt;=6S -</strong> I got the waterproof 8BL150 Hobbywing for about $85. The gold standard for ESCs is the VESC, or Vedder ESC. It was designed to be very flexible, costs around $100 (it can get highr), and is specifically for electric longboards.
+<br />
+<img class="list" src="../pics/esc.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Outrunner Motor ~5055, ~250-~350 kV -</strong> I got a 280kV motor from Ebay for about $50. Some motors have higher kV ratings, but are a lot smaller than 5055. A smaller motor won’t have as much torque, and thus won’t actually go as fast as it claims with a person riding. 
+<br />
+<img class="list" src="../pics/5055motor.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Arduino Pro Micro 5V -</strong> The Pro Micro is small, has dedicated serial IO, and can be bounght in packs for $5 a piece or less on Ebay.
+<br />
+<img class="list" src="../pics/pro-micro.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Relay Board &gt;= 2 Channel-</strong> Relay boards built for microcontrollers isolate the controller from the switching current, protecting the Arduino. I got a 4 channel board from microcenter for $12, but haven’t ended up using the extra 2 channels.
+<br />
+<img class="list" src="../pics/relay-board.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>1M Addressable RGB Lights Sealed (2x)-</strong> Each of these is around $25 on Sparkfun or Ebay. You can find them cheaper, but they may use a different protocol, or lack some of the features that these have (such as waterproofing). 
+<br />
+<img class="list" src="../pics/leds.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Bluetooth Mate Gold-</strong> Sparkfun sells these for $35 if you want 100m of range, but you can get bluetooth modules elsewhere for a lot cheaper. 
+<br />
+<img class="list" src="../pics/bluetooth.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Piezo -</strong> I got this from Microcenter for $5. This buzzes when given a DC voltage - you can get buzzers that need a switching voltage, but then the Arduino will have to do more work.
+<br />
+<img class="list" src="../pics/buzzer.jpg" alt="" /></p>
+  </li>
+</ul>
+
+<p>Parts Total: ~$369</p>
+
+</div>
+
+</body>
+
