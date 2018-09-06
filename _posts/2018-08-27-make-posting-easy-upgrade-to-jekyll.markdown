@@ -34,5 +34,5 @@ To get an idea of what using Jekyll is like, here is my directory structure righ
 
 Last but certainly not least, I learned most of the jekyll I know from Mike Dane - he's crystal clear, and you'll find yourself doing things you may have thought weren't possible in Jekyll in no time:
 
-<br/><br/></br>
+<br/><br/>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/T1itpPvFWHI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
