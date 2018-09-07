@@ -12,7 +12,7 @@ The first day I went to test the electric longboard, it rained for a week. My so
 The first enclosure I made was out of acrylic. Whenever I dropped it, it would break, so I switched to using ABS, which has served me much better. I've seen enclosures made out of wood, too - but you want to make sure you're getting the most strength out of the thinnest material, and thin wood is not so strong.
 
 ## Dimensions
-
+The first step is measuring how big the enclosure has to be. Mine needed to be 5 cm. high, so I went with 6 cm. I placed a piece of wood atop the ABS, heated up the part I wanted to fold lengthwise, and bent the ABS up at a 90 degree angle.
 
 
 ## Thermoforming
