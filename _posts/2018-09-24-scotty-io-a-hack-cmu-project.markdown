@@ -12,4 +12,4 @@ This past weekend, I got to work on a game at Hack CMU with my friends Many McCo
 
 I've used AWS Cloud9, Node.js and Socket.io before, so my biggest contribution was setting up the Cloud9 environment and getting everyone acclimated to Node.js and Socket.io. But even as I was setting the environment up, the others were working on other parts of the game; everyone was instrumental to getting the project finished in 24 hours.
 
-Learn more and watch the youtube video at our official project page [here](https://devpost.com/software/cmellon-io).
+To read more, play the game, watch the youtube video or even read our quickly written code, visit our official project page [here](https://devpost.com/software/cmellon-io).
