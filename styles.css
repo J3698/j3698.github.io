@@ -85,6 +85,9 @@ hr {
 	margin-right: 10px;
 }
 
+@media only screen and (max-width: 820px) {
+}
+
 .column-title {
 	font-size: 200%;
 	text-align: center;
