@@ -22,6 +22,46 @@ hr {
 	box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
 }
 
+#news {
+	text-align: center;
+	//background-color: black;
+	//box-sizing: border-box;
+	//padding-top: 3vh;
+	//padding-bottom: 3vh;
+	//-webkit-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	//-moz-box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+	//box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.75);
+}
+
+#email {
+	font-size: 100%;
+	left: 50%;
+	padding: 3px;
+	margin: 0;
+	border: none;
+	width: 15vw;
+	border-color: black;
+	border-width: 1px;
+	border-right-style: none;
+	background-color: rgb(230,230,230);
+}
+
+#submit {
+	font-size: 100%;
+	cursor: pointer;
+	border-style: solid;
+	background-color: black;
+	color: white;
+	padding: 2px;
+	border-width: 1px;
+	border-color: white;
+	padding-left: 4px;
+	padding-right: 4px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+
 .center-img {
 	width: 100%;
 	height: auto;
@@ -113,10 +153,6 @@ hr {
 	//width: fit-content;
 }
 
-.carousel-caption {
-	text-shadow: 0 5px 5px rgb(0, 0, 0)
-}
-
 .code {
 	background-color: rgb(240, 240, 240);
 	padding: 10px;
@@ -139,4 +175,12 @@ hr {
 
 .article:nth-child(2) {
 	margin-top: 12%
+}
+
+#mce-EMAIL {
+	font-size: 150%;
+}
+
+#mc_embed_signup {
+	font-size: 150%;
 }
