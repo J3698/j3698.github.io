@@ -57,11 +57,11 @@ Finally, I took off the longboard trucks, used an X-Acto knife to attach velcro 
 able to safely attach and detach $50 worth of ligts.
 {% include limg.html src="../pics/velcro.jpg" alt="Industr    ial Strength Velcro" %}
 
-LED Strips
+* **LED Strips with Velcro Backing (2x)-** I put these together in my [first fixture post](https://antiprojects.com/longboard/do-it-right-attaching-lights-to-the-longboard). 
 
-Tape
+* **Tape-** I found some masking tape to fix things in place before I did any permanent drilling.
 
-Screws
+* **1” Self-Drilling Wood-Screws (12)-** I had a lot of these left over from creating th first fixture; I'd gotten 100 for $8. 
 
 **Tools**
 * **Band Saw -** A jigsaw will work, but you need to be able to cut 1/2" thick wood.
@@ -76,4 +76,4 @@ Screws
 
 * **X-Acto Knife -** This is for cutting velcro to size for the light fixture. I used one from my school's maker space.
 
-Clamps
+* **Clamps -** These were used to hold the board while I was drilling the fixture on.
