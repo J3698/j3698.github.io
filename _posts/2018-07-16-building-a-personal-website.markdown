@@ -13,3 +13,5 @@ To make sure the website looked professional, I had to have a custom domain. So 
 Because I want my articles to read well, there aren't a lot of extras on the website - no ads or widgets. The bar at the top of the page is only used to get to the home page. Writing doesn't take up the full width of the page, which makes articles easier to read.
 
 As for impressing people? The website is a good start, but the rest of my content is yet to come. My next post is probably going to be about my electric longboard.
+
+{% include news.html %}

@@ -12,3 +12,4 @@ For now, I plan to use a raspberry pi to recieve bluetooth data and perform nece
 
 Once I finish the first prototype, I'll focus on making the reactive lighting more interesting. I'll also focus on streamlining the system - the raspberry I use might be overkill, and powering the lights will definitely be an issue. 
 
+{% include news.html %}

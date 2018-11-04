@@ -36,3 +36,5 @@ Last but certainly not least, I learned most of the jekyll I know from Mike Dane
 
 <br/><br/>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/T1itpPvFWHI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+{% include news.html %}

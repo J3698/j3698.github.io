@@ -43,3 +43,5 @@ Lastly, I screwed L brackets into the other side of the enclosure, and mounted s
 {% include img.html src="../pics/closed-enc.jpg" alt="ABS diagram" %}
 
 The enclosure I made is rough - it doesn't look particularly good, so I'll probably upgrade it in the future. But for now, it protects the electronics from rain and from dropping out.
+
+{% include news.html %}
