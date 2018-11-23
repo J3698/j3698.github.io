@@ -2,6 +2,7 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
+edited: 2018-11-23
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
@@ -51,7 +52,7 @@ This if statement checks if a device is trying to pair or connect. When a device
 
 For reference, here is what <span class="code">$line</span> will look like when the if statement is entered:
 
-<div class="code">^[[0;94m[Galaxy S9]^[[0m# ^M^[[K[^[[0;93mCHG^[[0m] Device D4:E6:B7:88:CB:58 Paired: yes</div>
+<div class="code">^[[0;94m[Galaxy S9]^[[0m# ^M^[[K[^[[0;93mCHG^[[0m] Device AA:AA:AA:AA:AA:AA Paired: yes</div>
 
 Here's the next line in the script:
 
@@ -64,7 +65,12 @@ This line puts the mac address of the device trying to connect or pair into the 
 This line is for debugging - it should output the MAC address of the device trying to pair or connect, in the format "AA:AA:AA:AA:AA:AA".
 
 <div class="code">echo -e "trust $mac" >&${COPROC[1]}</div>
+
+This line trusts the paired device so that it can connect automatically.
+
 <div class="code">echo -e "connect $mac" >&${COPROC[1]}</div>
+
+This line connects to the newly-paired device. 
 
 ## <a name="connect-on-boot"></a>Connect on Boot
 I used cron, a task scheduler for linux, to run a script automatically on startup. First I wrote the startup script cron would run, <span class="code">viz.sh</span> (short for vizualizer), put it in the <span class="code">/home/pi</span> folder, and ran <span class="code">chmod +x /home/pi/viz.sh</span>:
@@ -73,7 +79,9 @@ I used cron, a task scheduler for linux, to run a script automatically on startu
 
 Line 2 starts PulseAudio, which is required for bluetooth audio transfer to the Pi. In desktop mode PulseAudio is started automatically - this isn't so in CLI mode.
 
-Line 3 starts the automatic bluetooth connection program from earlier - the ampersand starts the program in the backgroud, so that any audio processing done later can run even as devices are being connected or disconnected.
+Line 3 directs audio to the Pi's audio jack - I explain this exact line in depth in the [last post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi).
+
+Line 4 starts the automatic bluetooth connection program from earlier - the ampersand starts the program in the backgroud, so that any audio processing done later can run even as devices are being connected and disconnected.
 
 After creating the startup script, I ran <span class="code">sudo crontab -e</span>, and at the end of the file, added the following line: <span class="code">@reboot bash /home/pi/viz.sh</span>. This line tells cron to run the startup script whenever the Pi reboots. Cron has a lot of other functionality too - mostly to run commands at specific times, such as every Tuesday.
 
