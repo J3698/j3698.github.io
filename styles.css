@@ -150,19 +150,19 @@ hr {
 
 .carousel {
 	margin: auto;
-	//width: fit-content;
 }
 
 .code {
+	overflow: auto;
 	background-color: rgb(240, 240, 240);
-	padding: 10px;
+	padding: 3px;
 	margin: 1px;
 	border-style: solid;
 	border-color: rgb(200, 200, 200);
 	white-space: pre;
 	border-radius: 10px;
 	border-width: 2px;
-	font-size: 90%;
+	font-size: 80%;
 }
 
 .article-title {
