@@ -41,30 +41,30 @@ After bluetoothctl is set up, an infinite loop is run to pair and connect to inc
 
 This line reads the next line from the output file descriptor of bluetoothctl (<span class="code">COPROC[0]</span>) into a variable called line. The <span class="code">-r</span> flag tells the <span class="code">read</span> command not to treat special characters like <span class="code">\t</span> or <span class="code">\n</span> differently than other characters - we don't want data changed. The <span class="code">u</span> flag signifies that a file descriptor will be read from. 
 
-<span class="code">echo $line</span>
+<div class="code">echo $line</div>
 
 This line is for debugging - it shows us what bluetoothctl output.
 
-<span class="code">if [[ "$line" == \*"Paired: yes"\* ]]</span>
+<div class="code">if [[ "$line" == \*"Paired: yes"\* ]]</div>
 
 This if statement checks if a device is trying to pair or connect. When a device tried to connect or pair, bluetoothctl outputs a line containing <span class="code">Paired: yes</span>. The line will have other stuff too - the asteriks signify that the other stuff doesn't matter. The if statement uses <span class="code">[[ ]]</span> because they allow the use of these asteriks - if statements in bash can also be surrounded by <span class="code">[ ]</span>, <span class="code">( )</span>, or nothing at all, [according to ocassion](https://unix.stackexchannge.com/a/306115).
 
 For reference, here is what <span class="code">$line</span> will look like when the if statement is entered:
 
-<span class="code">^[[0;94m[Galaxy S9]^[[0m# ^M^[[K[^[[0;93mCHG^[[0m] Device D4:E6:B7:88:CB:58 Paired: yes</span>
+<div class="code">^[[0;94m[Galaxy S9]^[[0m# ^M^[[K[^[[0;93mCHG^[[0m] Device D4:E6:B7:88:CB:58 Paired: yes</div>
 
 Here's the next line in the script:
 
-<span class="code">mac=\`echo $line | awk '{print $(NF-2)}'\`</span>
+<div class="code">mac=\`echo $line | awk '{print $(NF-2)}'\`</div>
 
 This line puts the mac address of the device trying to connect or pair into the variable mac. The first segment <span class="code">echo $line |</span> passes the current line to text processing command <span class="code">awk</span>. Awk is a little complicated to explain here, but at a basic level it parses lines of text. The mac address of a connecting device is the third from last word in the line that contains "Paired: yes". In awk, $NF refers to the last word, so $(NF-2) refers to the MAC address of the connecting address.
 
-<span class="code">echo $mac</span>
+<div class="code">echo $mac</div>
 
 This line is for debugging - it should output the MAC address of the device trying to pair or connect, in the format "AA:AA:AA:AA:AA:AA".
 
-<span class="code">echo -e "trust $mac" >&${COPROC[1]}</span>
-<span class="code">echo -e "connect $mac" >&${COPROC[1]}</span>
+<div class="code">echo -e "trust $mac" >&${COPROC[1]}</div>
+<div class="code">echo -e "connect $mac" >&${COPROC[1]}</div>
 
 ## <a name="connect-on-boot"></a>Connect on Boot
 I used cron, a task scheduler for linux, to run a script automatically on startup. First I wrote the startup script cron would run, <span class="code">viz.sh</span> (short for vizualizer), put it in the <span class="code">/home/pi</span> folder, and ran <span class="code">chmod +x /home/pi/viz.sh</span>:
