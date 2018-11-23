@@ -2,7 +2,7 @@
 layout: post
 title: "Refined: Laser-Cut Light Fixture"
 date: 2018-10-29
-edited: 2018-11-04
+edited: 2018-11-23
 categories: longboard
 thumb: /pics/thumb9.jpeg
 ---
@@ -49,11 +49,11 @@ Finally, I took off the longboard trucks, used an X-Acto knife to attach velcro 
 
 {% include news.html %}
 
-## Parts
-* **Wood (12x24, ~1/2" thick) -** This is for mounting the lights. I got some for $10.
+**Parts**
+* **Wood (12"x24", ~1/2" thick) -** This is for mounting the lights. I got some for $10.
 {% include limg.html src="../pics/wood.jpg" %}
 
-* **4 ft. x 2 in. Industrial Strength Velcro -** This stuff is great, so the $10 is worth being
+* **Industrial Strength Velcro (4'x2")-** This stuff is great, so the $10 is worth being
 able to safely attach and detach $50 worth of ligts.
 {% include limg.html src="../pics/velcro.jpg" alt="Industr    ial Strength Velcro" %}
 
