@@ -7,7 +7,7 @@ categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
 	
-In this post I explain how I made the Pi automatically accept bluetooth connections and play music from devices without a monitor or user input.
+In this post I explain how I made the Pi automatically accept bluetooth connections and play music from devices without a monitor or user input. If you haven't already, I suggest reading the [last post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi) in this project.
 
 ## Running the Pi headless
 The first step is to configure the Pi to boot into a CLI (command line interface) instead of the desktop since the desktop is slow and unnecessary for this application. I clicked the Raspbian menu, "Preferences", then "Raspberry Pi Configuration". Under "System" I changed the "Boot" option to "CLI". I also made sure auto login was enabled. Lastly I restarted the Pi.
