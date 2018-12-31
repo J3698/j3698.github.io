@@ -2,7 +2,7 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
-edited: 2018-11-23
+edited: 2018-12-31
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
