@@ -2,6 +2,7 @@
 layout: wrapper
 ---
 
+<div class="page-title">{{ page.fullTitle }}</div>
 {% for post in site.posts %}
 	{% if post.categories contains page.title %}
 		<div class="article">
