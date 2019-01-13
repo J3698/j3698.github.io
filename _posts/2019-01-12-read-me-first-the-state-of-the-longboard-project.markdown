@@ -2,7 +2,7 @@
 layout: post
 title: "Read Me First: The State of the Longboard Project"
 date: 2019-01-12
-categories: longboard
+categories: longboardd
 thumb: /pics/thumbi8.jpeg
 ---
 
