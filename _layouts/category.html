@@ -3,6 +3,7 @@ layout: wrapper
 ---
 
 <div class="page-title">{{ page.fullTitle }}</div>
+<div class="most-recent" style="margin-bottom: 7px; font-style: italic; position: relative;transform: translateX(-50%); width: 800px; left: 50%;">Most Recent First</div>
 {% for post in site.posts %}
 	{% if post.categories contains page.title %}
 		<div class="article">
