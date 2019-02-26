@@ -177,7 +177,15 @@ hr {
 	color: black;
 	top: 0;
 	margin: 60px;
+	left: 250px;
 	font-size: 200%;
+}
+
+.article-count {
+	position: absolute;
+	font-style: italic;
+	font-size: 70%;
+	margin-top: 50px;
 }
 
 /*
