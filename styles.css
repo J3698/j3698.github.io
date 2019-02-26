@@ -165,6 +165,16 @@ hr {
 	font-size: 95%;
 }
 
+.most-recent {
+	margin-bottom: 7px;
+	font-style: italic;
+	position: relative;
+	transform: translateX(-50%);
+	width: 800px;
+	left: 50%;
+	font-size: 150%;
+}
+
 .page-title {
 	margin-top: 8%;
 	margin-bottom: 2%;
@@ -184,7 +194,7 @@ hr {
 .article-count {
 	position: absolute;
 	font-style: italic;
-	font-size: 70%;
+	font-size: 80%;
 	margin-top: 50px;
 }
 
