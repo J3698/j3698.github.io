@@ -2,12 +2,12 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
-edited: 2018-12-31
+edited: 2019-02-26
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
 	
-In this post I explain how I made the Pi automatically accept bluetooth connections and play music from devices without a monitor or user input. If you haven't already, I suggest reading the [last post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi) in this project.
+In this post I explain how I made the Pi automatically accept bluetooth connections and play music from devices without a monitor or user input. If you haven't already, I suggest reading the [previous post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi) in this project.
 
 ## Running the Pi headless
 The first step is to configure the Pi to boot into a CLI (command line interface) instead of the desktop since the desktop is slow and unnecessary for this application. I clicked the Raspbian menu, "Preferences", then "Raspberry Pi Configuration". Under "System" I changed the "Boot" option to "CLI". I also made sure auto login was enabled. Lastly I restarted the Pi.
@@ -79,7 +79,7 @@ I used cron, a task scheduler for linux, to run a script automatically on startu
 
 <script src="https://gist.github.com/J3698/ea861884280cba98375e49e8a8688a7a.js"></script>
 
-Line 2 directs audio to the Pi's audio jack - I explain this exact line in depth in the [last post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi).
+Line 2 directs audio to the Pi's audio jack - I explain this exact line in depth in the [previous post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi).
 
 Line 3 starts the automatic bluetooth connection program from earlier - the ampersand starts the program in the backgroud, so that any audio processing done later can run even as devices are being connected and disconnected.
 
