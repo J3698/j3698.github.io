@@ -6,7 +6,7 @@ layout: "wrapper"
 	<p class="column-title">{{ page.title }}</p>
 	{% if page.edited %}
 		<div class="written">Written {{ page.date | slice: 0, 10 }}</div>
-		<div class="edited start">Edited {{page.edited slice: 0, 10}}</div>
+		<div class="edited start">Edited {{page.edited | slice: 0, 10}}</div>
 	{% else %}
 		<div class="written start">Written {{ page.date | slice: 0, 10 }}</div>
 	{% endif %}
