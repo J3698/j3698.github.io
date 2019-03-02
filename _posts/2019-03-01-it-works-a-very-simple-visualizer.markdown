@@ -2,12 +2,13 @@
 layout: post
 title: "It Works: A (Very) Simple Visualizer"
 date: 2019-03-01
+edited: 2019-03-02
 categories: reactive
 thumb: /pics/thumb12.jpeg
 ---
 
 
-In this part of the series I’m going to create a basic music visualizer based on beat detection. First I will install and configure an audio API called JACK. Then I'll write a JACK program that continuously outputs whether a beat has been detected in music being played. This will set the stage for more complicated visualizations.
+In this part of the series I’m going to create a basic music visualizer based on beat detection. First I will install an audio API called JACK, then I'll write a JACK program to detect beats in music being played, setting the stage for more complicated visualizations. At the end of this post I've included a video of the results.
 
 ## Installing JACK
 The Raspberry Pi comes with a version of JACK that needs to be uninstalled first. This is because the preinstalled version doesn't work when the Pi isn't running a desktop environment. To uninstall JACK, run the command <span class="code">sudo apt-get purge --auto-remove jack</span> and then <span class="code">sudo apt-get purge --auto-remove jackd</span>. I also had to check for and remove the files <span class="code">/usr/bin/jackd</span> and <span class="code">/usr/local/bin/jackd</span>.
@@ -34,7 +35,7 @@ Here's the breakdown on why this fixes things: PulseAudio works by connecting au
 ## Testing JACK
 To test JACK, I compiled and ran a JACK program to output system ports. In headless mode I first ran the command <span class="code">/usr/bin/jackd -dalsa -r44100 -p1024 -n2</span>.
 
-The command <span class="code">jackd</span> starts JACK in the background. The flag <span class="code">dalsa</span> tells JACK to use ALSA as the audio driver. All of the flags after this are specific to alsa. The flags <span class="code">r44100 p1024</span> sets the sample rate to 44100 with data sent in chunks of 1024. The last flag, <span class="code">n2</span>, sets the latency of alsa to two chunks of data - the minimum. More options for running jackd are available [here](https://github.com/jackaudio/jackaudio.github.com/wiki/jackd(1)).
+The command <span class="code">jackd</span> starts JACK in the background. The flag <span class="code">dalsa</span> tells JACK to use ALSA as the audio driver. All of the flags after this are specific to ALSA. The flags <span class="code">r44100 p1024</span> sets the sample rate to 44100 with data sent in chunks of 1024. The last flag, <span class="code">n2</span>, sets the latency of alsa to two chunks of data - the minimum. More options for running jackd are available [here](https://github.com/jackaudio/jackaudio.github.com/wiki/jackd(1)).
 
 Next, I wrote the program <span class="code">first_test.c</span> [available here](https://gist.github.com/J3698/e9ec85c337ac28846eb657728670865d). I compiled the program with the following command:
 <div class="code">gcc -o test_program first_test.c -I/usr/local/include -L/usr/local/lib -ljack</div>
