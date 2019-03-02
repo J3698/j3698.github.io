@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Letters to the Beat: A (Very) Simple Visualizer"
+title: "It Works: A (Very) Simple Visualizer"
 date: 2019-03-01
 categories: reactive
-thumb: /pics/thumb11.jpeg
+thumb: /pics/thumb12.jpeg
 ---
 
 
