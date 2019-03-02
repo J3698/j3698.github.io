@@ -8,7 +8,7 @@ thumb: /pics/thumb12.jpeg
 ---
 
 
-In this part of the series I’m going to create a basic music visualizer based on beat detection. First I will install an audio API called JACK, then I'll write a JACK program to detect beats in music being played, setting the stage for more complicated visualizations. At the end of this post I've included a video of the results.
+In this post I’m going to create a basic music visualizer based on beat detection. First I will install an audio API called JACK, then I'll write a JACK program to detect beats in music being played, setting the stage for more complicated visualizations. At the end of this post I've included a video of the results.
 
 ## Installing JACK
 The Raspberry Pi comes with a version of JACK that needs to be uninstalled first. This is because the preinstalled version doesn't work when the Pi isn't running a desktop environment. To uninstall JACK, run the command <span class="code">sudo apt-get purge --auto-remove jack</span> and then <span class="code">sudo apt-get purge --auto-remove jackd</span>. I also had to check for and remove the files <span class="code">/usr/bin/jackd</span> and <span class="code">/usr/local/bin/jackd</span>.
