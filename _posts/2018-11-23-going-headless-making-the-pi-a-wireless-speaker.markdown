@@ -2,7 +2,7 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
-edited: 2019-02-26
+edited: 2018-03-13
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
@@ -85,7 +85,7 @@ Line 3 starts the automatic bluetooth connection program from earlier - the ampe
 
 After creating the startup script, I ran <span class="code">sudo crontab -e</span>, and at the end of the file, added the following line: <span class="code">@reboot bash /home/pi/viz.sh</span>. This line tells cron to run the startup script whenever the Pi reboots. Cron has a lot of other functionality too - mostly to run commands at specific times, such as every Tuesday.
 
-On Debian Wheezy Linux, reboot cron jobs don't run. To fix this, I ran <span class="code">/etc/init.d/cron start</span>. Then I added the line <span class="code">/etc/init.d/cron start</span> to the end of file <span class="code">/etc/rc.local</span>, right before <span class="code">exit 0</span>.
+On the version of Raspbian I run, reboot cron jobs don't run. To fix this, I ran <span class="code">/etc/init.d/cron start</span>. Then I added the line <span class="code">/etc/init.d/cron start</span> to the end of file <span class="code">/etc/rc.local</span>, right before <span class="code">exit 0</span>.
 
 After rebooting the Pi, I was able to pair and connect my phone, and music would play from the speaker connected to the Pi. Next time, we'll see a (very) bare-bones visualizer emerge.
 

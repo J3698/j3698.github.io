@@ -2,7 +2,7 @@
 layout: post
 title: "Getting Connected: Setting up the Raspberry Pi"
 date: 2018-11-07
-edited: 2018-11-23
+edited: 2019-03-03
 categories: reactive
 thumb: /pics/thumb8.jpeg
 ---
@@ -15,14 +15,16 @@ The first step to hooking up the Raspberry Pi is to ensure that Raspbian is inst
 The next step is to plug in a mouse, keyboard, display that supports HDMI, some way to connect to the internet, and a bluetooth dongle.
 
 ## Internet Connection
-To connect to the internet, you can use an ethernet cable or purchase a wifi dongle (the dongle is easier). I started off with an ethernet cable because that's what I had on hand. I connected one end of the cable to my network-enabled laptop, and the other to the Pi. Getting this to work depends on what OS you use on the non-Pi computer - for me I had to go to "wired settings", "IPv4 settings", and then to "connection type", which I changed to "share with other computers".
+To connect to the internet, you can use an ethernet cable or purchase a wifi dongle (the dongle is easier). I started off with an ethernet cable because that's what I had on hand. I connected one end of the cable to my network-enabled laptop, and the other to the Pi. Getting this to work depends on what OS you use on the non-Pi computer - for me on linux I had to go to "wired settings", "IPv4 settings", and then to "connection type", which I changed to "share with other computers".
 
-When I did switch to a wifi dongle, I couldn't connect to enterprise networks (such as my college's network). I had to manually connect using the answer given [here](https://raspberryPi.stackexchange.com/a/79238/93650).
+When I did switch to a wifi dongle on the Pi, I couldn't connect to enterprise networks (such as my college's network). I had to manually connect using the answer linked here [here](https://raspberryPi.stackexchange.com/a/79238/93650):
+
+{% include img.html src="../pics/enterprise.png"%}
 
 After I was connected to the internet, I opened up terminal on the Pi, ran <span class="code">sudo apt install</span> and then <span class="code">sudo apt upgrade</span> to ensure the Pi was up to date.
 
 ## Bluetooth Audio
-After the Pi was connected to the internet, I changed the Pi's name so that I would recognize it over bluetootoh. To do so, I followed [this](https://thePihut.com/blogs/raspberry-Pi-tutorials/19668676-renaming-your-raspberry-Pi-the-hostname) guide. In essence, run <span class="code">sudo nano /etc/hostname</span> and change the name in that file (I chose "fancymusic"), and then run <span class="code">sudo nano /etc/hosts</span> and change the name after "127.0.1.1", too.
+After the Pi was connected to the internet, I changed the Pi's name so that I would recognize it over bluetootoh. To do so, I followed [this](https://thePihut.com/blogs/raspberry-Pi-tutorials/19668676-renaming-your-raspberry-Pi-the-hostname) guide. In essence, I ran <span class="code">sudo nano /etc/hostname</span> and changed the name in that file (I chose "fancymusic"), and then ran <span class="code">sudo nano /etc/hosts</span> and changed the name after "127.0.1.1", too.
 
 The next step was to get bluetooth working in order to play audio through the Pi's headphone jack. I ran the command <span class="code">sudo apt install pulseaudio-module-bluetooth</span> and then rebooted the Pi.
 
