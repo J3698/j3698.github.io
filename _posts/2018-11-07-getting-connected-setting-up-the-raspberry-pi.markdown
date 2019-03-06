@@ -2,7 +2,7 @@
 layout: post
 title: "Getting Connected: Setting up the Raspberry Pi"
 date: 2018-11-07
-edited: 2019-03-03
+edited: 2019-03-04
 categories: reactive
 thumb: /pics/thumb8.jpeg
 ---
@@ -26,7 +26,8 @@ After I was connected to the internet, I opened up terminal on the Pi, ran <span
 ## Bluetooth Audio
 After the Pi was connected to the internet, I changed the Pi's name so that I would recognize it over bluetootoh. To do so, I followed [this](https://thePihut.com/blogs/raspberry-Pi-tutorials/19668676-renaming-your-raspberry-Pi-the-hostname) guide. In essence, I ran <span class="code">sudo nano /etc/hostname</span> and changed the name in that file (I chose "fancymusic"), and then ran <span class="code">sudo nano /etc/hosts</span> and changed the name after "127.0.1.1", too.
 
-The next step was to get bluetooth working in order to play audio through the Pi's headphone jack. I ran the command <span class="code">sudo apt install pulseaudio-module-bluetooth</span> and then rebooted the Pi.
+The next step was to get bluetooth working in order to play audio through the Pi's headphone jack. I ran the following command and then rebooted the Pi:
+<div class="code">sudo apt install pulseaudio-module-bluetooth</div>
 
 After the Pi rebooted, I ran <span class="code">hciconfig</span> to determine the MAC address of the Pi's bluetooth. It will be in the format "AA:AA:AA:AA:AA:AA".
 
