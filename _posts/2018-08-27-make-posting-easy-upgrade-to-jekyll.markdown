@@ -2,13 +2,14 @@
 layout: post
 title: "Make Posting Easy: Upgrade to Jekyll"
 date: 2018-08-29
+edited: 2019-03-06
 categories: website
 thumb: /pics/thumb4.jpeg
 ---
 		
 If it takes 10 minutes to just set up a new blog post, something is probably wrong. Especially if much of that time includes copy-pasting formatting from another post. With that in mind, I recently upgraded my website to use Jekyll.
 
-Jekyll is pretty simple - you write posts in plain text or using markdown, and then you use a theme or create layout files in html to surround that text. If you want, you can even include html in your markdown/plain text posts, although that can tend to defeat the purpose.
+Jekyll is pretty simple - you write posts in plain text or using markdown, and then you use a theme or create layout files in html to surround that text. If you want, you can even write pure html in your markdown/plain text posts, although that can tend to defeat the purpose.
 
 To get an idea of what using Jekyll is like, here is my directory structure right now, minus some less relevant files:
 

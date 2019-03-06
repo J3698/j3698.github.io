@@ -2,7 +2,7 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
-edited: 2018-03-13
+edited: 2018-03-6
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
@@ -24,7 +24,7 @@ CLI program <span class="code">bluetoothctl</span> is for interacting with bluet
 When we later run this script without the desktop environment, bluetoothctl will take some time to start bluetooth - so this command waits for 5 seconds. This isn't the most elegant solution, but I use it for the sake of simplicity.
 
 <div class="code">sudo -u pi pulseaudio --start</div>
-This command starts PulsAaudio, which is necessary for bluetooth audio. PulseAudio won't start when run from root, but this script is run as root - so <span class="code">sudo -u pi</span> runs this command as the user pi. If you run this script while using the Pi's desktop environment, this line will output an error as PulseAudio runs automatically, but the script should still work. 
+This command starts PulseAudio, which is necessary for bluetooth audio. PulseAudio won't start when run from root, but this script is run as root - so <span class="code">sudo -u pi</span> runs this command as the user pi. If you run this script while using the Pi's desktop environment, this line will output an error as PulseAudio runs automatically, but the script should still work. 
 
 <div class="code">echo -e "pairable on\n" >& ${COPROC[1]}</div>
 This line allows devices to pair to the Pi. The <span class="code">>&</span> operator routes the output on its left hand side to the input on its right-hand side, in this case bluetoothctl's input. Usually this operator is just <span class="code">></span>, but the <span class="code">&</span> is required since the right hand side is a file descriptor and not a file name.
