@@ -2,7 +2,7 @@
 layout: post
 title: "It Works: A (Very) Simple Visualizer"
 date: 2019-03-01
-edited: 2019-03-03
+edited: 2019-03-11
 categories: reactive
 thumb: /pics/thumb12.jpeg
 ---

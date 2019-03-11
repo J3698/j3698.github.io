@@ -2,7 +2,7 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
-edited: 2018-03-6
+edited: 2019-03-11
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
@@ -14,7 +14,9 @@ The first step is to configure the Pi to boot into a CLI (command line interface
 {% include img.html src="../pics/headless.jpeg" alt="Open Config Program" %}
 {% include img.html src="../pics/headless2.jpeg" alt="Open Config Program" %}
 ## The Auto-Connect Script
-I wrote a script <span class="code">auto-bt.sh</span> that automatically pairs and connects with incoming bluetooth connections, and put it in the <span class="code">/home/pi</span> folder. Then in terminal, I ran <span class="code">chmod +x /home/pi/auto-bt.sh</span> to make the file executable; it's meant to be run with sudo. Here it is; you can [skip the explanation](#connect-on-boot) or follow along as I explain each part in detail:
+I wrote a script <span class="code">auto-bt.sh</span> that automatically pairs and connects with incoming bluetooth connections, and put it in the <span class="code">/home/pi</span> folder. Then in terminal, I ran the following command to make the file executable:
+<div class="code">chmod +x /home/pi/auto-bt.sh</div>
+Here it is; you can [skip the explanation](#connect-on-boot) or follow along as I explain each part in detail:
 <script src="https://gist.github.com/J3698/ff094945fe3a235fc0c46872ad10abe1.js"></script>
 
 <div class="code">coproc stdbuf -oL bluetoothctl</div>
@@ -83,7 +85,9 @@ Line 2 directs audio to the Pi's audio jack - I explain this exact line in depth
 
 Line 3 starts the automatic bluetooth connection program from earlier - the ampersand starts the program in the backgroud, so that any audio processing done later can run even as devices are being connected and disconnected.
 
-After creating the startup script, I ran <span class="code">sudo crontab -e</span>, and at the end of the file, added the following line: <span class="code">@reboot bash /home/pi/viz.sh</span>. This line tells cron to run the startup script whenever the Pi reboots. Cron has a lot of other functionality too - mostly to run commands at specific times, such as every Tuesday.
+After creating the startup script, I ran <span class="code">sudo crontab -e</span>, and at the end of the file, added the following line:
+<div class="code">@reboot bash /home/pi/viz.sh</div>
+This line tells cron to run the startup script whenever the Pi reboots. Cron has a lot of other functionality too - mostly to run commands at specific times, such as every Tuesday.
 
 On the version of Raspbian I run, reboot cron jobs don't run. To fix this, I ran <span class="code">/etc/init.d/cron start</span>. Then I added the line <span class="code">/etc/init.d/cron start</span> to the end of file <span class="code">/etc/rc.local</span>, right before <span class="code">exit 0</span>.
 
