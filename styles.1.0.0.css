@@ -222,13 +222,14 @@ hr {
 		font-size: 125%;	
 	}
 	.article-count {
-	    position: absolute;
-	    font-style: italic;
-	    font-size: 80%;
-	    margin-top: 10px;
+		position: absolute;
+		font-style: italic;
+		font-size: 80%;
+		margin-top: 10px;
 	}
 	.most-recent {
-	    width: 100%;
-	    margin-left: 5%;
+		width: 100%;
+		margin-left: 5%;
+		font-size: 100%;
 	}
 }
