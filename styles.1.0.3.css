@@ -234,6 +234,10 @@ hr {
 		font-size: 100%;
 	}
 	.video {
-		max-width: 100%
+		max-width: 100%;
+	}
+	.column-title {
+		font-size: 150%;
+		margin-top: 18%;
 	}
 }
