@@ -8,7 +8,8 @@ thumb: /pics/thumb12.jpeg
 ---
 
 
-In this post I’m going to create a basic music visualizer based on beat detection. First I will install an audio API called JACK, then I'll write a JACK program to detect beats in music being played, setting the stage for more complicated visualizations. At the end of this post I've included a video of the results.
+In this post I’m going to create a basic music visualizer based on beat detection. First I will install an audio API called JACK, then I'll write a JACK program to detect beats in music being played, setting the stage for more complicated visualizations. Here's a video of the end result that my friend Ryan Po helped me record - you can see that the printing of 1s and 0s is synced somewhat to the beat:
+<iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/6MBNSATvzGU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Installing JACK
 The Raspberry Pi comes with a version of JACK that needs to be uninstalled first. This is because the preinstalled version doesn't work when the Pi isn't running a desktop environment. To uninstall JACK, I ran the following commands:
@@ -64,11 +65,11 @@ Once input data is retrieved and copied over to be played from the speaker, I si
 
 Note that on line 26 of this snippet I've commented out a print statement to print what the total actually is. At first only zeros would get printed - the threshold would never be passed. So I wrote that line to get a ball park estimate of what a good threshold would look like. Most totals were around 0.003, so I settled on that value as a threshold.
 
-## Results
+## Final Steps
 In order to compile the visualizer, I ran the following command:
 <div class="code">gcc -o visualizer simple_visualizer.c -I/usr/local/include -L/usr/local/lib -ljack -lm</div>
-Then I restarted the Pi, waited a bit, connected my phone, and ran the program. My friend Ryan Po helped me record the results:
-<iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/6MBNSATvzGU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+Then I restarted the Pi, waited a bit, connected my phone, turned on the music, and ran the program.
+
 ## What's Next
 I'm pretty happy with how things are turning out - the visualizations aren't perfect, but there also weren't any significant bottlenecks or rough edges. So in the next post, I'll expand the visualizer - I'll move to LED lights rather than printing text on a screen, and consider more complicated beat detection algorithms.
 
