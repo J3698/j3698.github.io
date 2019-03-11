@@ -198,36 +198,6 @@ hr {
 	font-size: 150%;
 }
 
-/*
-.3{
-@media only screen and (max-width: 800px) {
-
-	.article {
-		width: 90%;
-		height: 115px;
-		margin-bottom: 10px;
-	}
-	.article img {
-		width: 115px;
-		height: 115px;
-	}
-	.article-title {
-		top: 0;
-		margin: 10px;
-		left: 115px;
-		font-size: 140%;	
-	}
-	.article-count {
-	    position: absolute;
-	    font-style: italic;
-	    font-size: 80%;
-	    margin-top: 10px;
-	}
-	.most-recent {
-	    width: 100%;
-	    margin-left: 5%;
-	}
-}*/
 @media only screen and (max-width: 800px) {
 	#header {
 		font-size: 200%;
@@ -248,7 +218,7 @@ hr {
 		top: 0;
 		margin: 10px;
 		left: 115px;
-		font-size: 140%;	
+		font-size: 125%;	
 	}
 	.article-count {
 	    position: absolute;
