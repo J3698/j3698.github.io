@@ -63,7 +63,7 @@ Note that on line 26 of this snippet I've commented out a print statement to pri
 In order to compile the visualizer, I ran the following command:
 <div class="code">gcc -o visualizer simple_visualizer.c -I/usr/local/include -L/usr/local/lib -ljack -lm</div>
 Then I restarted the Pi, waited a bit, connected my phone, and ran the program. My friend Ryan Po helped me record the results:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/6MBNSATvzGU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/6MBNSATvzGU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 ## What's Next
 I'm pretty happy with how things are turning out - the visualizations aren't perfect, but there also weren't any significant bottlenecks or rough edges. So in the next post, I'll expand the visualizer - I'll move to LED lights rather than printing text on a screen, and consider more complicated beat detection algorithms.
 
