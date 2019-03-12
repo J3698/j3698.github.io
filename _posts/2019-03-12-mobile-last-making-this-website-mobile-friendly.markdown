@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Mobile Last: Making this Website Mobile Friendly"
+title: "Mobile Last: Making This Website Mobile Friendly"
 date: 2019-03-12
 categories: website
 thumb: /pics/thumb14.jpeg
