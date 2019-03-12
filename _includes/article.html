@@ -1,0 +1,16 @@
+<div class="article">
+        <a href="{{include.href}}"><span class="link-span"></span></a>
+        <span><img src="{{include.pic}}" alt="{{include.alt}}"></span>
+	{% assign articleCount = 0 %}
+	{% for post in site.posts %}
+        	{% if post.categories contains include.category and post.state != "draft" %}
+			{% assign articleCount=articleCount | plus:1 %}
+        	{% endif %}
+	{% endfor %}
+	{% if articleCount == 1 %}
+        	<div class="article-title">{{include.title}}<div class="article-count">1 Post</div></div>
+        {% else %}
+		<div class="article-title">{{include.title}}<div class="article-count">{{articleCount}} Posts</div></div>
+	{% endif %}
+</div>
+
