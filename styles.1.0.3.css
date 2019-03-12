@@ -229,8 +229,8 @@ hr {
 		margin-top: 10px;
 	}
 	.most-recent {
-		width: 100%;
-		margin-left: 5%;
+		width: 95%;
+		padding-left: 5%;
 		font-size: 100%;
 	}
 	.video {
