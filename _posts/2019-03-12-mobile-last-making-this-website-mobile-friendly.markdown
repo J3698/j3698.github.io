@@ -2,6 +2,7 @@
 layout: post
 title: "Mobile Last: Making This Website Mobile Friendly"
 date: 2019-03-12
+edited: 2019-03-14
 categories: website
 thumb: /pics/thumb14.jpeg
 ---
@@ -16,7 +17,7 @@ To being much cleaner:
 ## Mobile First 
 Of the words I bolded, mobile first is one of the most popular. Simply put, it's a design practice where the mobile version of a website is created first. Then, in a process called progressive advancement, the desktop version is built by adding to and modifying the mobile version. Sometimes that progressive advancement won't happen and the desktop version will be made independently from the mobile version - but usually not.
 
-I see two primary reasons to develop mobile first. First, mobile usage on the web is quickly growing compared to desktop usage:
+While reading around, I've seen two good reasons to develop mobile first. First, mobile usage on the web is quickly growing compared to desktop usage:
 {% include img.html src="../pics/usage-graph.png" %}
 This data suggests that in the future or even now, the mobile version of a website is more important than the desktop version.
 
@@ -71,7 +72,7 @@ The previous example website I created is adaptive. In an adaptive website, at c
 ## Summary
 In summary, mobile-first websites tend to neglect neither desktop nor mobile devices, and their desktop versions are created using progressive advancement. On the other hand, Mobile last websites use graceful degradation to create the mobile version from the desktop version. Both mobile-first and mobile-last websites can be created using adaptive techniques where the website changes suddenly, and/or responsive techniques, where content fills up whatever room is available. In either case, media queries are super useful in changing website behavior based on screen size.
 
-Hopefully this article has helped you better understand mobile design. I did a good amount of research for this article, so if you want to learn more, check out any of the sources I used: 
+Hopefully this article has helped you better understand mobile design. I did a good amount of research and borrowed a lot of ideas for this article, so if you want to learn more, check out any of the sources I used: 
 
 [17: How to Make a Website Responsive \| Learn HTML and CSS \| HTML Tutorial \| Basics of CSS](https://youtu.be/ZYV6dYtz4HA) (youtube)
 
