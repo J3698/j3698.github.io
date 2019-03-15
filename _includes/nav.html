@@ -1,4 +1,4 @@
-{% assign singleton = true %}	{% comment %}Check if post has siblings{% endcomment%}
+{% assign singleton = true %}			{% comment %}Check if post has siblings{% endcomment%}
 {% for p in site.posts %}
 	{% if p.categories == page.categories and p.url != page.url %}
 		{% assign singleton = false %}
@@ -7,7 +7,7 @@
 	{% endfor %}
 {% if singleton == false %}
 
-{% assign nextPost = "#" %} 	{% comment %}Get next post{% endcomment %}
+{% assign nextPost = "javascript:void(0);" %} 	{% comment %}Get next post{% endcomment %}
 {% assign foundCurr = false %}
 {% for i in site.posts %}
 	{% if i.url == page.url %}
@@ -17,7 +17,7 @@
 		{% break %}
 		{% endif %}
 	{% endfor %}
-{% assign lastPost = "#" %} 	{% comment %}Get last post{% endcomment %}
+{% assign lastPost = "javascript:void(0);" %} 	{% comment %}Get last post{% endcomment %}
 {% for i in site.posts %}
 	{% if i.url == page.url %}
 		{% break %}
