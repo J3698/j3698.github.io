@@ -1,7 +1,20 @@
 <div id="header" class="shadow">
 	<a href="../index.html">{{ site.title }}</a>
-	<span id="header-desc">
-		{{ site.author }}
-	</span>
+{% if page.layout == "post" %}
+	{% assign singleton = true %}			{% comment %}Check if post has siblings{% endcomment%}
+	{% for p in site.posts %}
+		{% if p.categories == page.categories and p.url != page.url %}
+			{% assign singleton = false %}
+			{% break %}
+		{% endif %}
+		{% endfor %}
+		{% if singleton == false %}
+	<a href="../{{page.categories}}">
+		<span id="header-back">
+			<i class="fa fa-angle-left" aria-hidden="true"></i>  Back to Project
+		</span>
+	</a>
+		{% endif %}
+{% endif %}
 </div>
 
