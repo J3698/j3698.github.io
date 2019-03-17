@@ -1,0 +1,35 @@
+{% assign singleton = true %}			{% comment %}Check if post has siblings{% endcomment%}
+{% for p in site.posts %}
+	{% if p.categories == page.categories and p.url != page.url %}
+		{% assign singleton = false %}
+		{% break %}
+	{% endif %}
+	{% endfor %}
+{% if singleton == false %}
+
+{% assign lastPost = "javascript:void(0);" %} 	{% comment %}Get next post{% endcomment %}
+{% assign foundCurr = false %}
+{% for i in site.posts %}
+	{% if i.url == page.url %}
+		{% assign foundCurr = true %}
+		{% elsif foundCurr == true and i.categories == page.categories%}
+		{% assign lastPost = i.url %}
+		{% break %}
+		{% endif %}
+	{% endfor %}
+{% assign nextPost = "javascript:void(0);" %} 	{% comment %}Get last post{% endcomment %}
+{% for i in site.posts %}
+	{% if i.url == page.url %}
+		{% break %}
+		{% endif %}
+	{% if i.categories == page.categories %}
+		{% assign nextPost = i.url %}
+		{% endif %}
+	{% endfor %}
+		<a href="{{lastPost}}"><span id="d-nav-left" class="nav-button" type="button">
+			<i class="fa fa-angle-left" aria-hidden="true"></i> Previous Post
+		</span></a>
+		<a href="{{nextPost}}"><span id="d-nav-right" class="nav-button" type="button">
+			<i class="fa fa-angle-right" aria-hidden="true"></i> Next Post
+		</span></a> 
+{% endif %}
