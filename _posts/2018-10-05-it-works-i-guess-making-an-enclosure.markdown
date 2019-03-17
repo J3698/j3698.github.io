@@ -45,8 +45,6 @@ Lastly, I screwed L brackets into the other side of the enclosure, and mounted s
 
 The enclosure I made is rough - it doesn't look particularly good, so I'll probably upgrade it in the future. But for now, it protects the electronics from rain and from dropping out.
 
-{% include news.html %}
-
 **Parts**
 * **ABS Plastic Sheet (12"x24", 1/8" thick) -** I got the plastic for the enclosure on Ebay for $14.
 {% include limg.html src="../pics/abs.jpeg" alt="ABS Plastic" %} 

@@ -14,5 +14,3 @@ Because I want my articles to read well, there aren't a lot of extras on the web
 To make sure the website looked professional, I had to have a custom domain. So I bought a domain from Google Domains, and used Github Pages as a host. Curtis Larson has an excellent guide for connecting Github Pages and Google Domains, so I followed  [his advice](http://www.curtismlarson.com/blog/2015/04/12/github-pages-google-domains/). The only issue with his article is that the ip addresses he lists are out of date - I found newer addresses [here](https://help.github.com/articles/setting-up-an-apex-domain/), under "configuring A records with your DNS provider." I also benefited greatly from Github's [Github Pages guide](https://pages.github.com/). The only thing I had to pay for was the domain name (which is pretty much unavoidable), and that was just $12.00 a year.
 
 As for impressing people? The website is a good start, but the rest of my content is yet to come. My next post is probably going to be about my electric longboard.
-
-{% include news.html %}

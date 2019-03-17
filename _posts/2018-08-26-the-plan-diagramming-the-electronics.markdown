@@ -38,8 +38,6 @@ The motor relay is actually two relays. The first relay controls the programming
 ## **High Power Electronics**
 The electronics on the high power side are pretty simple - the 6S battery powers the electronic speed controller, which powers and controls the motor. The speed controller is controlled in every way by the Arduino using relays.
 
-{% include news.html %}
-
 **Parts**
 * **Boost Converter -** Ebay lists 150W DC-DC boost converters for $6 that look just like this one.
 {% include limg.html class="list" src="../pics/boost.jpg" alt="Boost Converter" %}

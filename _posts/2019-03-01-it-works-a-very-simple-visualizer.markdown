@@ -13,8 +13,7 @@ In this post I’m going to create a basic music visualizer based on beat detect
 
 ## Installing JACK
 The Raspberry Pi comes with a version of JACK that needs to be uninstalled first. This is because the preinstalled version doesn't work when the Pi isn't running a desktop environment. To uninstall JACK, I ran the following commands:
-<div class="code">
-sudo apt-get purge --auto-remove jack
+<div class="code">sudo apt-get purge --auto-remove jack
 sudo apt-get purge --auto-remove jackd</div>
 I also had to check for and remove the files <span class="code">/usr/bin/jackd</span> and <span class="code">/usr/local/bin/jackd</span>.
 
@@ -72,5 +71,3 @@ Then I restarted the Pi, waited a bit, connected my phone, turned on the music, 
 
 ## What's Next
 I'm pretty happy with how things are turning out - the visualizations aren't perfect, but there also weren't any significant bottlenecks or rough edges. So in the next post, I'll expand the visualizer - I'll move to LED lights rather than printing text on a screen, and consider more complicated beat detection algorithms.
-
-{% include news.html %}

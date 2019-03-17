@@ -47,8 +47,6 @@ Next I drilled three pilot holes along each of the four enclosure parts, and dri
 Finally, I took off the longboard trucks, used an X-Acto knife to attach velcro to the light fixture, and attached the LED strips to the fixture.
 {% include img.html src="../pics/fixture-done.jpg" alt="Fixture Done" %}
 
-{% include news.html %}
-
 **Parts**
 * **Wood (12"x24", ~1/2" thick) -** This is for mounting the lights. I got some for $10.
 {% include limg.html src="../pics/wood.jpg" %}

@@ -25,5 +25,3 @@ I think the android app and arduino code are mostly done - they support control 
 
 ## The Order of Things
 My first order of action is to fix the buck converter issue. I will tape everything down under the board to test that new converter works. Next, I'll get new lights, and then document the code that I've written so far. I need the board working to refactor code - otherwise I won't know if changes break things. The next step will be to create a new enclosure. After all of these steps, I should be in great shape to consider further upgrades to the board.
-
-{% include news.html %}

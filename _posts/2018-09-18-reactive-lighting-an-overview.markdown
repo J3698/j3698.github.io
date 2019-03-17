@@ -12,5 +12,3 @@ I'll admit it - I've fallen in love with LED strips. The goal of this project is
 For now, I plan to use a Raspberry Pi to recieve bluetooth data and perform necessary processing. The Raspberry Pi will control APA102 LED strips, and will output sound to an OontZ Angle 3.
 
 Once I finish the first prototype, I'll focus on making the reactive lighting more interesting. I'll also focus on streamlining the system - the Raspberry I use might be overkill, and powering the lights might be an issue. 
-
-{% include news.html %}

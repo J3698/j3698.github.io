@@ -30,8 +30,6 @@ Now that the light is blinking faster, the bluetooth is in command mode. In comm
 
 You're done! For some reason, this part of my longboard project took me forever. From here you can continue to explore the Bluetooth module, which has further documentation [here](https://cdn.sparkfun.com/assets/1/e/e/5/d/5217b297757b7fd3748b4567.pdf).
 
-{% include news.html %}
-
 **Parts**
 * **Arduino Pro Micro -** The Arduino controls pretty much everything under the longboard.
 I chose the pro micro because it's small and cheap ($6 on amazon/ebay). It also happens

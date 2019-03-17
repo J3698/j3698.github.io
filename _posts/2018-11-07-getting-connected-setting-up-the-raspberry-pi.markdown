@@ -42,8 +42,6 @@ Note that on my laptop id 1 corresponds to some volume with value "20,20", id 2 
 
 That's it for now - everything seems to be up and running. In the next post, I'll explain how to make this setup headless - without a monitor, anyone will be ale to automatically pair and play music to the Pi once it turns on.
 
-{% include news.html %}
-
 **Parts**
 * **Mouse -** If you want to be able to use the Raspberry Pi, you'll probably want one of these. AmazonBasics keyboards are $14.
 {% include limg.html src="../pics/mouse.jpeg" alt="A Mouse" %}

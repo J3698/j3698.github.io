@@ -32,7 +32,6 @@ After that, I was done! Next it was time to perfect the programming for the ligh
 {% include img.html src="../pics/attached2.jpeg" alt="Top Lights View" width="400px" height="533px" %}
 {% include img.html src="../pics/attached3.jpeg" alt="Side Lights View" width="533px" height="400px" %}
 
-{% include news.html %}
 ---
 
 **Parts**
