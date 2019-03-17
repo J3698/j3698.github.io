@@ -7,33 +7,33 @@
 	{% endfor %}
 {% if singleton == false %}
 
-{% assign nextPost = "javascript:void(0);" %} 	{% comment %}Get next post{% endcomment %}
+{% assign lastPost = "javascript:void(0);" %} 	{% comment %}Get next post{% endcomment %}
 {% assign foundCurr = false %}
 {% for i in site.posts %}
 	{% if i.url == page.url %}
 		{% assign foundCurr = true %}
 		{% elsif foundCurr == true and i.categories == page.categories%}
-		{% assign nextPost = i.url %}
+		{% assign lastPost = i.url %}
 		{% break %}
 		{% endif %}
 	{% endfor %}
-{% assign lastPost = "javascript:void(0);" %} 	{% comment %}Get last post{% endcomment %}
+{% assign nextPost = "javascript:void(0);" %} 	{% comment %}Get last post{% endcomment %}
 {% for i in site.posts %}
 	{% if i.url == page.url %}
 		{% break %}
 		{% endif %}
 	{% if i.categories == page.categories %}
-		{% assign lastPost = i.url %}
+		{% assign nextPost = i.url %}
 		{% endif %}
 	{% endfor %}
 <table id="nav">
 	<tr>
 		<td id="nav-left" class="nav-arrow">
-			<a href="{{nextPost}}"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+			<a href="{{lastPost}}"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
 		</td>
 		<td id="nav-back"><a href="../{{page.categories}}">Back to<br />Project</a></td>
 		<td id="nav-right" class="nav-arrow">
-			<a href="{{lastPost}}"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+			<a href="{{nextPost}}"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
 		</td>
 	</tr>
 </table>
