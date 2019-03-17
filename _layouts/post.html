@@ -11,5 +11,6 @@ layout: "wrapper"
 		<div class="written start">Written {{ page.date | slice: 0, 10 }}</div>
 	{% endif %}
 	{{ content }}
+	{% include desktop-nav.html %}
 </div>
-{% include nav.html%}
+{% include mobile-nav.html %}
