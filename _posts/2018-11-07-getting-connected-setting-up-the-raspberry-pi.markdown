@@ -2,7 +2,7 @@
 layout: post
 title: "Getting Connected: Setting up the Raspberry Pi"
 date: 2018-11-07
-edited: 2019-03-04
+edited: 2019-04-14
 categories: reactive
 thumb: /pics/thumb8.jpeg
 ---
@@ -17,7 +17,7 @@ The next step is to plug in a mouse, keyboard, display that supports HDMI, some 
 ## Internet Connection
 To connect to the internet, you can use an ethernet cable or purchase a wifi dongle (the dongle is easier). I started off with an ethernet cable because that's what I had on hand. I connected one end of the cable to my network-enabled laptop, and the other to the Pi. Getting this to work depends on what OS you use on the non-Pi computer - for me on linux I had to go to "wired settings", "IPv4 settings", and then to "connection type", which I changed to "share with other computers".
 
-When I did switch to a wifi dongle on the Pi, I couldn't connect to enterprise networks (such as my college's network). I had to manually connect using the answer linked here [here](https://raspberryPi.stackexchange.com/a/79238/93650):
+When I did switch to a wifi dongle on the Pi, I couldn't connect to enterprise networks (such as my college's network) and had to manually connect. Below I've copied a picture of intructions to do so from [this](https://raspberryPi.stackexchange.com/a/79238/93650) answer - note that the existing contents of <span class="code">wpa_supplicant</span> should be left alone, all changes should be made at the bottom of the file.
 
 {% include img.html src="../pics/enterprise.png"%}
 
