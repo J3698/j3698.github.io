@@ -2,7 +2,7 @@
 layout: post
 title: "Going Headless: Making the Pi a Wireless Speaker"
 date: 2018-11-23
-edited: 2019-03-11
+edited: 2019-04-14
 categories: reactive
 thumb: /pics/thumb10.jpeg
 ---
@@ -14,19 +14,21 @@ The first step is to configure the Pi to boot into a CLI (command line interface
 {% include img.html src="../pics/headless.jpeg" alt="Open Config Program" %}
 {% include img.html src="../pics/headless2.jpeg" alt="Open Config Program" %}
 ## The Auto-Connect Script
-I wrote a script <span class="code">auto-bt.sh</span> that automatically pairs and connects with incoming bluetooth connections, and put it in the <span class="code">/home/pi</span> folder. Then in terminal, I ran the following command to make the file executable:
-<div class="code">chmod +x /home/pi/auto-bt.sh</div>
+I wrote a script <span class="code">auto-bt.sh</span> that automatically pairs and connects with incoming bluetooth connections, and put it in a new folder <span class="code">/home/pi/visualizer</span>. Then in terminal, I ran the following command to make the file executable:
+<div class="code">chmod +x ~/visualizer/auto-bt.sh</div>
 Here it is; you can [skip the explanation](#connect-on-boot) or follow along as I explain each part in detail:
 <script src="https://gist.github.com/J3698/ff094945fe3a235fc0c46872ad10abe1.js"></script>
+
+Line 3 directs audio to the Pi's audio jack - I explain this exact line in depth in the [previous post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi).
 
 <div class="code">coproc stdbuf -oL bluetoothctl</div>
 CLI program <span class="code">bluetoothctl</span> is for interacting with bluetooth devices - pairing, connecting, disconnecting, and more. The command <span class="code">stdbuf</span> runs bluetoothctl while buffering its output differently. The <span class="code">-oL</span> flag tells <span class="code">stdbuf</span> to buffer the **o**utput of <span class="code">bluetoothctl</span> by **L**ine - it's easier to work with bluetoothctl's data line by line. The command <span class="code">coproc</span> runs this whole command as our code does other things. It also points the output of bluetoothctl to <span class="code">COPROC[0]</span>, and the input to <span class="code">COPROC[1]</span>. These two variables contain what are called file descriptors.
 
-<div class="code">sleep 5</div>
-When we later run this script without the desktop environment, bluetoothctl will take some time to start bluetooth - so this command waits for 5 seconds. This isn't the most elegant solution, but I use it for the sake of simplicity.
+<div class="code">sleep 7</div>
+When we later run this script without the desktop environment, bluetoothctl will take some time to start bluetooth - so this command waits for 7 seconds. This isn't the most elegant solution, but I use it for the sake of simplicity.
 
 <div class="code">sudo -u pi pulseaudio --start</div>
-This command starts PulseAudio, which is necessary for bluetooth audio. PulseAudio won't start when run from root, but this script is run as root - so <span class="code">sudo -u pi</span> runs this command as the user pi. If you run this script while using the Pi's desktop environment, this line will output an error as PulseAudio runs automatically, but the script should still work. 
+This command starts PulseAudio, which is necessary for bluetooth audio. PulseAudio won't start when run from root, but this script is run as root, so <span class="code">sudo -u pi</span> is necessary to run the command as the user pi. If you run this script while using the Pi's desktop environment, this line will output an error as PulseAudio runs automatically, but the script should still work. 
 
 <div class="code">echo -e "pairable on\n" >& ${COPROC[1]}</div>
 This line allows devices to pair to the Pi. The <span class="code">>&</span> operator routes the output on its left hand side to the input on its right-hand side, in this case bluetoothctl's input. Usually this operator is just <span class="code">></span>, but the <span class="code">&</span> is required since the right hand side is a file descriptor and not a file name.
@@ -77,17 +79,9 @@ This line connects to the newly-paired device.
 This if statement checks if the bluetooth controller has stopped waiting for connections, if so the next line tells the controller to continue to wait for connections.
 
 ## <a name="connect-on-boot"></a>Connect on Boot
-I used cron, a task scheduler for linux, to run a script automatically on startup. First I wrote the startup script cron would run, <span class="code">viz.sh</span> (short for vizualizer), put it in the <span class="code">/home/pi</span> folder, and ran <span class="code">chmod +x /home/pi/viz.sh</span>:
-
-<script src="https://gist.github.com/J3698/ea861884280cba98375e49e8a8688a7a.js"></script>
-
-Line 2 directs audio to the Pi's audio jack - I explain this exact line in depth in the [previous post](https://antiprojects.com/reactive/getting-connected-setting-up-the-raspberry-pi).
-
-Line 3 starts the automatic bluetooth connection program from earlier - the ampersand starts the program in the backgroud, so that any audio processing done later can run even as devices are being connected and disconnected.
-
-After creating the startup script, I ran <span class="code">sudo crontab -e</span>, and at the end of the file, added the following line:
-<div class="code">@reboot bash /home/pi/viz.sh</div>
-This line tells cron to run the startup script whenever the Pi reboots. Cron has a lot of other functionality too - mostly to run commands at specific times, such as every Tuesday.
+I used cron, a task scheduler for linux, to run the script automatically on startup. I ran <span class="code">sudo crontab -e</span>, and at the end of the file, added the following line:
+<div class="code">@reboot bash /home/pi/visualizer/auto-bt.sh > home/pi/log.txt</div>
+This line tells cron to run the startup script whenever the Pi reboots, redirecting the output to log.txt for debugging purposes. Other than running scripts at reboot, cron can run scripts at specific times such as every Tuesday.
 
 On the version of Raspbian I run, reboot cron jobs don't run. To fix this, I ran <span class="code">/etc/init.d/cron start</span>. Then I added the line <span class="code">/etc/init.d/cron start</span> to the end of file <span class="code">/etc/rc.local</span>, right before <span class="code">exit 0</span>.
 

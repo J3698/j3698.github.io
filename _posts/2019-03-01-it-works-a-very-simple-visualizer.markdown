@@ -2,7 +2,7 @@
 layout: post
 title: "It Works: A (Very) Simple Visualizer"
 date: 2019-03-01
-edited: 2019-03-11
+edited: 2019-04-14
 categories: reactive
 thumb: /pics/thumb12.jpeg
 ---
@@ -20,7 +20,7 @@ I also had to check for and remove the files <span class="code">/usr/bin/jackd</
 The next step was to reinstall JACK. First I ran the following command to install necessary dependencies:
 <div class="code">sudo apt install libasound2-dev jack-tools ant fftw3 qjackctl pulseaudio-module-jack</div>
 
-Next I cloned, built and installed JACK2 by running the following commands:
+Next I cloned, built and installed JACK2 by running the following commands from <span class="code">/home/pi</span>:
 <div class="code">git clone https://github.com/jackaudio/jack2.git
 cd jack2
 ./waf configure 
