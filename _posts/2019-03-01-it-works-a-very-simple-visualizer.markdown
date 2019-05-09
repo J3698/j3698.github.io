@@ -2,7 +2,7 @@
 layout: post
 title: "It Works: A (Very) Simple Visualizer"
 date: 2019-03-01
-edited: 2019-04-14
+edited: 2019-04-28
 categories: reactive
 thumb: /pics/thumb12.jpeg
 ---
@@ -15,7 +15,7 @@ In this post I’m going to create a basic music visualizer based on beat detect
 The Raspberry Pi comes with a version of JACK that needs to be uninstalled first. This is because the preinstalled version doesn't work when the Pi isn't running a desktop environment. To uninstall JACK, I ran the following commands:
 <div class="code">sudo apt-get purge --auto-remove jack
 sudo apt-get purge --auto-remove jackd</div>
-I also had to check for and remove the files <span class="code">/usr/bin/jackd</span> and <span class="code">/usr/local/bin/jackd</span>.
+I also had to check for and remove the files <span class="code">/usr/local/bin/jackd</span> and <span class="code">/usr/local/bin/jackd</span>.
 
 The next step was to reinstall JACK. First I ran the following command to install necessary dependencies:
 <div class="code">sudo apt install libasound2-dev jack-tools ant fftw3 qjackctl pulseaudio-module-jack</div>
@@ -60,7 +60,7 @@ The only difference is that now before PulseAudio starts, JACK is given some tim
 The visualizer I wrote simply checks if the volume of a chunk of data is above a certain threshold, and if it is, prints out a line of ones, instead of a line of zeros. The file is rather long, so I've linked to the full file [here](https://gist.github.com/J3698/ecbdcda0531d0186a044b9c147a9e6e4), and I'll just go over the most important bit of code, the process method - every time new audio data comes in, this is the method that gets called:
 <script src="https://gist.github.com/J3698/bd0be71270ed41e57b805f29b05637af.js"></script>
 
-Once input data is retrieved and copied over to be played from the speaker, I simply sum the squares of the audio data points, and test if that total has gone over 0.003. I squared these values because originally, I wasn't sure if negative values were possible, and large negative values should also be counted as loud.
+Once input data is retrieved and copied over to be played from the speaker, I simply sum the squares of the audio data points, and test if that total has gone over 0.3. I squared these values because originally, I wasn't sure if negative values were possible, and large negative values should also be counted as loud.
 
 Note that on line 26 of this snippet I've commented out a print statement to print what the total actually is. At first only zeros would get printed - the threshold would never be passed. So I wrote that line to get a ball park estimate of what a good threshold would look like. Most totals were around 0.003, so I settled on that value as a threshold.
 
