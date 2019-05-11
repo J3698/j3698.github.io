@@ -70,7 +70,7 @@ If library <span class="code">libapa102.a</span> doesn't exist, the <span class=
 
 After running <span class="code">make</span> in the folder <span class="code">~/visaulizer</span>, I ran it with <span class="code">./visualizer</span>. Then I connected my phone and tried it out. Here are the results:
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/0izzz1nONxY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe class="video" width="560" height="315" src="https://www.youtube-nocookie.com/embed/0izzz1nONxY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 The moving average is sometimes slow to react to volume changes in the song, but usually catches up pretty well, making for some pretty good visualization. In the next post, I'll work on making this setup more mobile, with batteries and perhaps even charging.
 
