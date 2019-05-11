@@ -9,12 +9,12 @@ thumb: /pics/thumb3.jpeg
 This post is a high level description of the electronics I used - it's not necessary to make the build that I did, but it's meant to be helpful in understanding why I made certain decisions.
 
 
-## **The Big Picture**
+## The Big Picture
 {% include img.html src="../pics/elec-vision.png" alt="diagram" %}
 The big picture for the electronics is for a charging system to supply power to two different battery systems. One battery system will power the motor, and the other will be for the lower power electronics, such as the lights, bluetooth reciever, and circuitry used to control the motor. The high power and low power electronics are run off of different batteries mostly because I had three different batteries. You could just use the bigger battery system and run the lower power electronics off of regulators and buck converters, such as in the following diagram:
 {% include img.html src="../pics/sselec-vision.png" alt="diagram" %}
 
-## **Battery and Charging**
+## Battery and Charging
 {% include img.html src="../pics/charging-vision.png" alt="diagram" %}
 Let's take a deeper look at the charging system. On the low power side of the electronics, we have a buck conveter - this efficiently changes the 24 volts from the power jack to the 11.1 volts the 3S battery expects while charging. The buck converter I got is also CC CV. This means that in addition to having a knob to adjust voltage output (CV - constant voltage), the buck converter has a knob to limit output current (CC - constant current). Lipo batteries are generally charged using a CC CV supply, as an excess of charging voltage or current can harm them.
 
@@ -23,7 +23,7 @@ On the motor side of the electronics, we have a boost converter. This will effic
 Each battery also has a voltage monitor and a balance connected. The balances ensure that the cells in a given battery are at the same voltage (this increases the lifepsan of the battery), and the monitors go off if the battery they're connected to is dangerously low on charge.
 
 
-## **Low Power Electronics**
+## Low Power Electronics
 {% include img.html src="../pics/lowp-vision.png" alt="diagram" %}
 Zooming in on low power electronics side, after the battery, we have a switch to power the board on and off. Then a buck converter changes the 3S battery's 11.1 volts to 6 volts, which the lights and Arduino are happy with. It's important that the buck is after the switch. If the switch was after the buck, then even when the board was off, the buck would consume available power for its indicator light.
 
@@ -35,7 +35,7 @@ The piezo horn is pretty straight forward - it takes a DC voltage in, and makes 
 
 The motor relay is actually two relays. The first relay controls the programming button on the speed controller, and the other can be used to switch the speed controller on and off. The relay board is powered using a 5 volt regulator, since the board pulls more current than the Arduino can handle
 
-## **High Power Electronics**
+## High Power Electronics
 The electronics on the high power side are pretty simple - the 6S battery powers the electronic speed controller, which powers and controls the motor. The speed controller is controlled in every way by the Arduino using relays.
 
 **Parts**

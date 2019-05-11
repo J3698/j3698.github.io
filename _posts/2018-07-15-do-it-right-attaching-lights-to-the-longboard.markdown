@@ -9,10 +9,12 @@ thumb: /pics/thumb1.png
 
 Out of all of the bits and pieces of this electric longboard project, working with lights has been one of the most difficult and exciting parts.  Disclaimer, yes my friend [Shihao](http://shihaocao.com) did the mechanical assembly for the motor, but still - a lot of longboards have nice motors, not a lot of longboard have wicked lights. So let's dive in.  I've included a list of parts at the end.
 
-**Light Fixture #0** For my first attempt at attaching lights to the longboard, I cut out small squares of wood using my highschool's bandsaw. Then I hot glued the squares onto the longboard, and the lights onto the squares. At first it worked out... but the hot glue connections would suddenly come loose. 
+## Light Fixture #0
+For my first attempt at attaching lights to the longboard, I cut out small squares of wood using my highschool's bandsaw. Then I hot glued the squares onto the longboard, and the lights onto the squares. At first it worked out... but the hot glue connections would suddenly come loose. 
 {% include img.html src="../pics/fixture0.jpeg" width="300px" height="400px" alt="Longboard with weak light fixtures" %}
 
-**Light Fixture #1** Hot glue wasn't working, so I turned to using wood screws. I also replaced some of the wooden squares with longer wooden strips, so there was more surface area to attach the lights. To connect the wooden pieces to the board, I would drill a pilot hole all the way through the wood and then longboard, and then I would drive the wood screws in after.
+## Light Fixture #1
+Hot glue wasn't working, so I turned to using wood screws. I also replaced some of the wooden squares with longer wooden strips, so there was more surface area to attach the lights. To connect the wooden pieces to the board, I would drill a pilot hole all the way through the wood and then longboard, and then I would drive the wood screws in after.
 {% include img.html src="../pics/fixture1.png" width="500px" height="350px" alt="Longboard with better light fixtures" %}
 
 Longer pieces of wood I could clamp down before drilling, but the smaller pieces would spin when I drilled them down, so I used a clamp to twist them to their correct orientation after they were drilled down.
@@ -21,7 +23,8 @@ Longer pieces of wood I could clamp down before drilling, but the smaller pieces
 Sometimes a wood screw would go all the way through the longboard, making for a dangerous point that came up through the grip tape, so I ground the points down with a dremel.
 {% include img.html src="../pics/grinding0.gif" width="300px" height="400px" alt="Grinding a dangerous screw point down" %}
 
-**Applying Velcro** Cutting Velcro was the messiest part of attaching the lights. After just one cut, Velcro's industrial strength adhesive catches in scissors. I used a pair of Cutco Super Shears to start each cut of the Velcro, but did the rest of the cut with an X-Acto knife. Before putting velcro on the wooden blocks, I cleaned the blocks with rubbing alcohol and let them dry.<br><br>There are two parts to velcro.  The fuzzy part is called the "loop" side - it resembles a carpet, which is made up of loops. The stiffer side is called the "hook" side. Generally the loops pick up trash more easily, and need to be replaced more often - so they are put on the side where the Velcro is easier to replace. I thought it would be easier to replace the Velcro on the lights, so I put the loops on the lights, and the hooks on the board.
+## Applying Velcro
+Cutting Velcro was the messiest part of attaching the lights. After just one cut, Velcro's industrial strength adhesive catches in scissors. I used a pair of Cutco Super Shears to start each cut of the Velcro, but did the rest of the cut with an X-Acto knife. Before putting velcro on the wooden blocks, I cleaned the blocks with rubbing alcohol and let them dry.<br><br>There are two parts to velcro.  The fuzzy part is called the "loop" side - it resembles a carpet, which is made up of loops. The stiffer side is called the "hook" side. Generally the loops pick up trash more easily, and need to be replaced more often - so they are put on the side where the Velcro is easier to replace. I thought it would be easier to replace the Velcro on the lights, so I put the loops on the lights, and the hooks on the board.
 {% include img.html src="../pics/loops.jpeg" width="500px" height="350px" %}
 {% include img.html src="../pics/hooks.jpeg" width="300px" height="400px" %}
 
