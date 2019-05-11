@@ -2,7 +2,22 @@
 layout: "wrapper"
 ---
 
-<div class="column">
+
+<div id="table-of-contents">
+	<b>Contents</b>
+</div>
+<script src="../../table-of-contents.js"></script>
+
+<style type = "text/css">
+@media only screen and (max-width: 800px) {
+	#mail-button {
+		position: fixed;
+		bottom: 85px;`
+	}
+}
+</style>
+
+<div id="column">
 	<p class="column-title">{{ page.title }}</p>
 	{% if page.edited %}
 		<div class="written">Written {{ page.date | slice: 0, 10 }}</div>

@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 
 <head>
-        <title>Antiprojects</title>
+        <title>AntiProjects</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"</meta>
         <link rel="icon" type="image/png" href="../pics/icon.png">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://use.fontawesome.com/5f4bca6e58.js"></script>
 	<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 	<style type="text/css">
 		#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
 	</style>
-	<link rel="stylesheet" type="text/css" href="../styles.1.3.1.css">
-	<script src="../script.js"></script>
+	<link rel="stylesheet" type="text/css" href="../styles.2.3.1.css">
 </head>
 <body>
 	<div id="wrapper">
 		{% include header.html %}
 		{{ content }}
 		{% include footer.html %}
+		{% include subscribe-prompt.html %}
+		<i id="mail-button" class="fa fa-envelope" onclick="$('#sub-backdrop').show()"></i>
 	</div>
 </body>
 
