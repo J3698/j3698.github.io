@@ -26,13 +26,13 @@ function updateTocOnScroll(childs) {
 }
 
 function getActiveSection(childs) {
-		var scroll = $(document).scrollTop();
-		for (var i = childs.length - 1; i >= 0; i--) {
-			if (childs[i].offsetTop < scroll) {
-				return i;
-			}
+	var scroll = $(document).scrollTop();
+	for (var i = childs.length - 1; i >= 0; i--) {
+		if (childs[i].offsetTop < scroll) {
+			return i;
 		}
-		return -1
+	}
+	return -1
 }
 
 function setActiveSection(childs, active) {
@@ -41,7 +41,6 @@ function setActiveSection(childs, active) {
 	childs = $("#table-of-contents").children();
 	childs.toggleClass("active-section", false);
 	$(".content-section:eq(" + active + ")").addClass("active-section");
-	console.log($(".content-section:eq(" + active + ")"));
 }
 
 function addContentsSection(section, childs) {
