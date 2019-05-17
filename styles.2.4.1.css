@@ -44,6 +44,10 @@ hr {
 	box-sizing: border-box;
 }
 
+#contents-button {
+	display: none;
+}
+
 #table-of-contents {
 	position: fixed;
 	margin-top: 15%;
@@ -452,12 +456,55 @@ nav-button a, td a:visited, td a:hover {
 }
 
 @media only screen and (max-width: 1400px) {
+	#column {
+		font-size: 120%;
+		line-height: 140%;
+	}
 	#table-of-contents {
 		display: none;
 	}
+	#mobile-contents {
+		position: fixed;
+		right: -100vw;
+		width: 80vw;
+		top: 0;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, .85);
+		z-index: 2;
+		transition: transform .2s;
+	}
+	.appear {
+		transform: translateX(-100vw);
+	}
+	.mobile-contents-bd {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		display: none;
+		transition: background-color .2s;
+	}
+
+	.mobile-contents-bd-appear {
+		display: block;
+		background-color: rgba(130, 130, 130, .5);
+
+	}
 }
 
+
+
 @media only screen and (max-width: 800px) {
+	#contents-button {
+		display: inline;
+		position: fixed;
+		right: 20px;
+		border-radius: 5px;
+		font-size: 130%;
+		cursor: pointer;
+	}
+
 	#mail-button {
 	    position: fixed;
 	    bottom: 25px;
