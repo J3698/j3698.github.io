@@ -3,7 +3,7 @@ layout: "wrapper"
 ---
 
 
-<div id="table-of-contents">
+<div id="table-of-contents" style="display: none">
 	<b>Contents</b>
 </div>
 <script src="../../table-of-contents.js"></script>
@@ -30,4 +30,6 @@ layout: "wrapper"
 	
 </div>
 {% include mobile-nav.html %}
+<div class="mobile-contents-bd" onclick="$('#mobile-contents').removeClass('appear'); $('.mobile-contents-bd').removeClass('mobile-contents-bd-appear');"></div>
+<div id="mobile-contents">HELLO</div>
 {% include subscribe-prompt.html %}

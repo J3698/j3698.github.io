@@ -55,6 +55,10 @@ hr {
 	font-size: 170%;
 }
 
+#mobile-contents {
+	display: none;
+}
+
 .content-section {
 	font-size: 60%;
 	padding-top: 10px;

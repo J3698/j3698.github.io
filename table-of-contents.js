@@ -1,68 +1,82 @@
+var minContentSections = 2
+var scrollDuration_ms = 400;
+var scrollAnimType = "swing";
+
 $(document).ready(function() {
-	var childs = $("#column").find("H2");
-	createContents(childs);
-	hideContentsIfEmpty(childs);
-	$(document).on("scroll", updateTocOnScroll(childs));
+	var headers = getHeaders();
+	createContents(headers);
+	showContentsIfPresent(headers);
+	$(document).on("scroll", updateTocOnScroll(headers));
 });
 
-function createContents(childs) {
-	for (var i = 0; i < childs.length; i++) {
-		addContentsSection(childs[i], childs);
+function getHeaders() {
+	var headers = $("#column").find("H2").toArray();
+	headers.unshift($(".column-title")[0]);
+	return headers;
+}
+
+function createContents(headers) {
+	addContentsSection("Introduction", headers[0], headers)
+	for (var i = 1; i < headers.length; i++) {
+		addContentsSection(headers[i].innerHTML, headers[i], headers);
 	}
 }
 
-function hideContentsIfEmpty(childs) {
-	if (childs.length < 2) {
-		$("#table-of-contents").hide();
-		console.log("hiding");
+function showContentsIfPresent(headers) {
+	if (!window.matchMedia("(max-width: 1400px)").matches &&
+	    headers.length > minContentSections) {
+		$("#table-of-contents").show();
 	}
 }
 
-function updateTocOnScroll(childs) {
+function updateTocOnScroll(headers) {
 	return () => {
-		var active = getActiveSection(childs);
-		setActiveSection(childs, active);
+		var active = getActiveSection(headers);
+		setActiveSection(active);
 	}
 }
 
-function getActiveSection(childs) {
+function getActiveSection(headers) {
 	var scroll = $(document).scrollTop();
-	for (var i = childs.length - 1; i >= 0; i--) {
-		if (childs[i].offsetTop < scroll) {
+	for (var i = headers.length - 1; i >= 0; i--) {
+		if (headers[i].offsetTop < scroll) {
 			return i;
 		}
 	}
 	return -1
 }
 
-function setActiveSection(childs, active) {
+function setActiveSection(active) {
 	if (active == -1) { return } 
 
-	childs = $("#table-of-contents").children();
-	childs.toggleClass("active-section", false);
+	headers = $("#table-of-contents").children();
+	headers.toggleClass("active-section", false);
 	$(".content-section:eq(" + active + ")").addClass("active-section");
 }
 
-function addContentsSection(section, childs) {
+function addContentsSection(sectionTitle, section, headers) {
 	var newSection = $('<div/>',{
-		text: section.innerHTML,
+		text: sectionTitle,
 		class: 'content-section'
 	});
 	newSection.appendTo('#table-of-contents');
-	newSection.click(scrollToSection(section, childs));
+	newSection.click(scrollToSection(section, headers));
 }
 
-function scrollToSection(section, childs) {
+function scrollToSection(section, headers) {
 	return () => {
 		$(document).off("scroll");
-
-		var scrollTo = $(section).offset().top - $(section).height() 
-						       - $("#header").height();
 		var animEnd = () => {
-			$(document).on("scroll", updateTocOnScroll(childs));
-			updateTocOnScroll(childs)();
+			$(document).on("scroll", updateTocOnScroll(headers));
+			updateTocOnScroll(headers)();
 		};
-		$('html,body').animate({scrollTop: scrollTo}, 400,
-						 "swing", animEnd);
+		$('html,body').animate({scrollTop: getSectionY(section)},
+					scrollDuration_ms, scrollAnimType,
+								  animEnd);
 	}
+}
+
+function getSectionY(section) {
+	return scrollTo = $(section).offset().top
+			   - $(section).height() - $("#header").height();
 }
