@@ -1,3 +1,9 @@
 <div class="center-img">
-	<img src="{{include.src}}" alt="{{include.alt}}" width="{{include.width}}" height="{{include.height}}" style="max-width:100%">
+	{% if include.href %}
+		<a href="{{include.href}}">
+			<img src="{{include.src}}" alt="{{include.alt}}" width="{{include.width}}" height="{{include.height}}" style="max-width:100%">
+		</a>
+	{% else %}
+		<img src="{{include.src}}" alt="{{include.alt}}" width="{{include.width}}" height="{{include.height}}" style="max-width:100%">
+	{% endif %}
 </div>
