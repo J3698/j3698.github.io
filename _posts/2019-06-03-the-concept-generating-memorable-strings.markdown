@@ -4,6 +4,8 @@ title: "The Concept: Generating Memorable Strings"
 date: 2019-06-03
 categories: urlmem
 thumb: /pics/thumb18.jpeg
+description: "In this post I explain how to generate memorable strings, and then
+create and publish an NPM package for doing so."
 ---
 Need to make an Amazon URL smaller to send to someone? Bitly is perfect for
 that.
