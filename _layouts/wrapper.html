@@ -2,8 +2,29 @@
 
 <head>
         <title>AntiProjects</title>
+	
+	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"</meta>
+	<meta name="author" content="Antioch Sanders">
+	{% if page.description %}
+		<meta name="description" content="{{page.description}}">
+	{% else %}
+		<meta name="description" content="Where I document my personal projects">
+	{% endif %}
+
         <link rel="icon" type="image/png" href="../pics/icon.png">
+
+	{% if page.thumb %}
+		<meta property="og:image" content="{{page.thumb}}" />
+	{% endif %}
+
+	{% if page.title %}
+		<meta property="og:title" content="{{page.title}}">
+	{% else %}
+		<meta property="og:title" content="AntiProjects">
+	{% endif %}
+	
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://use.fontawesome.com/5f4bca6e58.js"></script>
 	<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
