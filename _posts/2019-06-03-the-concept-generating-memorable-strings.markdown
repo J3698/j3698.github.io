@@ -15,7 +15,7 @@ a nice link to share.
 
 {% include img.html src="../pics/lichess-short.png" %}
 
-These links are good in that they are short - but if you want to share links in
+These links are good in that they are short — but if you want to share links in
 person or otherwise have to type one out, they could be more convenient.
 
 Imagine how easy it would be to deal with this shortened URL:
@@ -35,7 +35,7 @@ To understand random word generation, we first have to understand Markov chains.
 A Markov chain is a set of states, where from each state there is some
 probability of transitioning into another state.
 
-Here's an example of a Markov chain - it shows how I spend my time.
+Here's an example of a Markov chain — it shows how I spend my time.
 
 {% include img.html src="../pics/time-dfa.png" %}
 
@@ -43,7 +43,7 @@ Note that if I start by binging a show, there's a 95% chance I'll keep watching,
 so I might spend the whole day watching.
 
 On the other hand, It's not likely that if I start by studying, I'll binge a
-show, and later go back to studying - those transitions happen with 5% and 1%
+show, and later go back to studying — those transitions happen with 5% and 1%
 chance respectively.
 
 These same kinds of transitions happen within words in the English dictionary.
@@ -63,7 +63,7 @@ with 0.65% chance.
 
 Next we can choose one of the letters that occur after "th" in English words.
 Some letters are more likely, so we'll weight the random choice based on the
-frequency of the letters - we don't want "thg" to have a high chance of being
+frequency of the letters — we don't want "thg" to have a high chance of being
 picked.
 
 The letter "e" follows "th" 34% of the time, so with 34% chance say we pick "e",
@@ -72,7 +72,7 @@ randomization scheme to pick a letter that follows "he". Let's say we pick "a".
 Our word is now "thea", and the current two letters are "ea".
 
 If we continue this process until we have eight characters, our random word
-might be something like "theablar". This looks like a word but isn't - perfect
+might be something like "theablar". This looks like a word but isn't — perfect
 for a shortened URL.
 
 ## Writing the Code
@@ -95,7 +95,7 @@ associated chain:
 <script src="https://gist.github.com/J3698/7831de8b5a9d034e40b86ceb0f86a7a8.js"></script>
 
 To create a random word, we randomly pick two letters to start, and then
-iteratively use the last two letters of the current random word to to randomly
+iteratively use the last two letters of the current random word to randomly
 pick the next letter.
 
 Here's <span class="code">randomWord(chain, length)</span>, which takes a chain
@@ -117,7 +117,7 @@ empty folder and change the program's filename to
 <span class="code">index.js</span>.
 
 Next, run <span class="code">npm init</span>, and fill in the information given.
-Many fields can ignored - just press enter without typing them in.
+Many fields can ignored — just press enter without typing them in.
 
 After filling in the information for npm init, create functions you want exposed
 inside of exports. Here's the top of my <span class="code">index.js</span>:
@@ -135,6 +135,6 @@ different from when I wrote this post.
 
 ## What's Next
 
-Next up, I plan to write the front end for urlmem. It will be a react app - I
+Next up, I plan to write the front end for urlmem. It will be a react app — I
 could probably use normal HTML/CSS/JS, but I feel react is an important
 framework to know.
