@@ -120,7 +120,7 @@ hr {
     font-size: 1rem;
     cursor: pointer;
     text-align: center;
-    transition: background 250ms ease-in-out, 
+    transition: background 250ms ease-in-out,
                 transform 150ms ease;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -363,7 +363,7 @@ nav-button a, td a:visited, td a:hover {
 	position: absolute;
 	font-style: italic;
 	font-size: 80%;
-	margin-top: 50px;
+	margin-top: 20px;
 }
 
 #mce-EMAIL {
@@ -376,7 +376,7 @@ nav-button a, td a:visited, td a:hover {
 }
 
 #mc_embed_signup {
-/*	
+/*
 	position: absolute;
 	right: 3%;
 	font-size: 60%;
@@ -546,7 +546,7 @@ nav-button a, td a:visited, td a:hover {
 		top: 0;
 		margin: 10px;
 		left: 115px;
-		font-size: 125%;	
+		font-size: 125%;
 	}
 	.article-count {
 		position: absolute;
