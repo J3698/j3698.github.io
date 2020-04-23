@@ -11,7 +11,7 @@ time, only to be greeted by this:
 
 {% include img.html src="../pics/annoying.png" %}
 
-I painstaking find the small "yes," with my pointer and click yes.
+I painstaking find the small "yes," with my pointer.
 
 This would be fine, except that thrice more that day, after SIO
 slowly loads, I find myself finding that small "yes" button. _Yes, I spoke to
