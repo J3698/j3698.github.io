@@ -2,7 +2,7 @@
 layout: post
 title: "Coming Together: Writing the Backend and Deploying"
 date: 2020-04-21
-categories: urlmemdraft
+categories: urlmem
 thumb: /pics/thumb22.png
 ---
 
