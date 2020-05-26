@@ -6,9 +6,6 @@ categories: urlmem
 thumb: /pics/thumb22.png
 ---
 
-TODO:
--Talk about adding SSL for copy-pasta
-
 <a href="https://UrlMem.com">UrlMem.com</a> is live! But note that future
 changes might erase your shortened URLs...
 
