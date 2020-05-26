@@ -6,6 +6,9 @@ categories: urlmem
 thumb: /pics/thumb22.png
 ---
 
+TODO:
+-Talk about adding SSL for copy-pasta
+
 <a href="https://UrlMem.com">UrlMem.com</a> is live! But note that future
 changes might erase your shortened URLs...
 
@@ -60,7 +63,7 @@ website. Otherwise, the user is redirected to the homepage.
 
 Now I'll go through some especially relevant parts of UrlMem's backend code -
 the complete code (as of this post) is available
-[here](https://github.com/J3698/urlmem/blob/master/urlmem-app/index.js).
+[here](https://github.com/J3698/urlmem/tree/no-db-deploy) as index.js.
 
 Here follows the route for custom shortenings:
 
@@ -112,6 +115,12 @@ The postinstall script tells Heroku how build the frontend, while the start
 script tells Heroku how to run the server. The additional dependencies are
 required so that Heroku can build the React frontend.
 
+An issue I encountered in the next step was conflicting library versions - so
+at this point I also deleted <span class="code">node_modules</span> and
+<span class="code">package-lock.json</span> from both the
+<span class="code">urlmem-app</span> and <span class="code">client</span>
+directory.
+
 Next, I [installed heroku](https://devcenter.heroku.com/articles/heroku-cli),
 and from terminal ran the following commands:
 
@@ -152,6 +161,14 @@ disabled SSL, as that would cost money.
 I also enabled path forwarding, as I want UrlMem.com/stuff to forward to
 www.UrlMem.com/stuff, rather than www.Urlmem.com.
 
+## Quck Note aboute SSL
+
+At this point copy paste didn't work when deployed - this is because I was
+using http, instead of https. Using https isn't free on Heroku - but for
+anyone interested in getting it to work with Google Domains,
+[this tutorial](https://nikodunk.com/heroku-ssl-google-domains-2019/) is
+excellent (and short).
+
 ## What's Next
 
 Right now all of the URLs are saved in memory. So if I restart the server, or if
@@ -162,10 +179,13 @@ Additionally, one time I got back "bullsex." While the option for custom URLs is
 a great fix for this, it would be cool to avoid returning bullsex in the first
 place. One fix would be to reject words that contain "sex" and other interesting
 subwords. A more interesting approach would be to implement pronounciation
-prediction - thus the server would also pass over "bulsecs."
+prediction - thus the server could also pass over "bulsecs."
 
 Stay tuned!
 
-## Source<s>s</s>
+## Sources
 
 [Tutorial: how to deploy a production React app to Heroku](https://medium.com/jeremy-gottfrieds-tech-blog/tutorial-how-to-deploy-a-production-react-app-to-heroku-c4831dfcfa08)
+
+[How to set up Heroku SSL (HTTPS) with Google Domains in 2019
+](https://nikodunk.com/heroku-ssl-google-domains-2019/)
