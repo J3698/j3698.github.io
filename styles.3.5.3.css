@@ -1,6 +1,7 @@
 body {
 	overflow-x: hidden;
 	background-color: rgb(245, 245, 245);
+    font-family: 'Roboto', sans-serif;
 }
 
 hr {
@@ -324,13 +325,14 @@ nav-button a, td a:visited, td a:hover {
 	overflow: auto;
 	background-color: rgb(240, 240, 240);
 	border-style: solid;
-	border-color: rgb(200, 200, 200);
+	border-color: rgb(210, 210, 210);
 	white-space: pre;
 	border-radius: 5px;
 	border-width: 1px;
-	font-size: 95%;
+	font-size: 80%;
 	padding-right: 3px;
 	padding-left: 3px;
+    font-family: 'Roboto Mono', monospace;
 }
 
 .most-recent {

@@ -37,17 +37,17 @@ show the available databses:
 {% include img.html src="../pics/list_dbs.png" %}
 
 The <span class="code">postgres</span> database is a default database that can
-be used or deleted. The <span class="code">template1</span> is the database that
+be used or deleted. The database <span class="code">template1</span> is what
 gets copied when we create a new database, and can be customized. The
-<span class="code">template0</span> can also be used for new databases, but
-isn't meant to be customized.
+<span class="code">template0</span> database can also be used for new databases,
+but isn't meant to be customized.
 
 And then there's <span class="code">urlmem</span>, the recently created
 database.
 
 ## Creating the Table
 
-Note that when I ran <span class="code">psql</span> I didn't specify a database,
+When I ran <span class="code">psql</span> I didn't specify a database,
 so by default I was connected to the <span class="code">postgres</span>
 database.
 
@@ -69,7 +69,7 @@ The shorturl and longurl fields are self explanatory - the israndom field tells
 us whether the shorturl was generated randomly or not.
 
 The <span class="code">PRIMARY KEY</span> bit enforces that the shorturl field
-should be non null and unique to each row. The longurl and israndom field
+should be non null and unique to each row. The longurl and israndom fields
 are also made to be non null.
 
 Next I added a partial index on the table:
@@ -79,8 +79,8 @@ Next I added a partial index on the table:
         WHERE israndom;</div>
 
 This forces the combination of longurl and israndom to be unique, but only where
-israndom is true. In other words, we don't want to generate different random
-URLs for the same long URL.
+israndom is true. In other words, we want to set a limit of one randomly
+generated short URL for each long URL.
 
 To speed things up, I also created an index on the longurl:
 
@@ -89,25 +89,23 @@ To speed things up, I also created an index on the longurl:
 Indexing allows items to be retrieved quickly - this might involve using a tree
 structure. Since the shorturl is the primary key, it's automatically indexed.
 
-
-There's a lot more nuance to maintaining indices and improving database
-performance, but I don't expect performance to be an issue, so I left that
-alone.
+There's more nuance to improving database performance, but I don't expect
+performance to be an issue, so I left that alone.
 
 To verify the table properties, I ran <span class="code">\d shortenings</span>:
 {% include img.html src="../pics/display_shortenings.png" %}
 
 ## Creating a New User
 
-The next step was to add a new user, as the default user I'd been using,
-"postgres", is the superuser.
+The next step was to add a new user, as the default database user I'd been
+using, "postgres", is the superuser/administrator.
 
 While still in psql, I ran the following commands to create the user "me" with
 password "password":
 
 <div class="code">CREATE ROLE me WITH ROLE LOGIN PASSWORD 'password';</div>
 
-Note the single quotes - sql uses these for strings.
+Note that SQL uses single quotes for strings.
 
 Next I gave the user search and insert permissions:
 <div class="code">GRANT SELECT, INSERT ON TABLE shortenings TO me;</div>
@@ -134,17 +132,17 @@ values into the table, and then displaying the table:
 
 ## Setting up PostgreSQL for Node
 
-To setup Postgre for node, I ran
+To setup PostgreSQL for node, I ran
 <span class="code">npm install \-\-save pg</span> from the project directory.
-For the then I created a new file <span class="code">queries.js</span>.
+Then I created a new file <span class="code">queries.js</span>.
 
 Here is what the setup in <span class="code">queries.js</span> looks like:
 <script src="https://gist.github.com/J3698/b932f455d5086a575d238e00f7c2faf5.js">
 </script>
 
-Another way to set things up is to use Client instead of Pool. Pool sets up a
-group of clients. That way, multiple queries to the database can execute in
-parallel using different client instances.
+Another way to set things up is to use Client instead of Pool. Pool is more
+efficient though - it sets up a group of clients. That way, multiple queries to
+the database can execute in parallel using different client instances.
 
 ## Sending Queries in Node
 
@@ -158,15 +156,15 @@ In <span class="code">queries.js</span> I have four functions -
 
 This function tries to add a shortening, but returns null if there is a
 uniqueness constraint error. The first constraint, 'shortenings_pkey', is for
-trying to use a shorturl twice, and the second is for adding two random
-shortenings for one long URL.
+trying to use a shorturl twice, and the second constraint is for adding two
+random shortenings for one long URL.
 
 The other interesting code in this function is the use of
 <span class="code">async</span> and <span class="code">await</span>.
 
 In javascript often we have functions that return immediately, but dont complete
 their tasks immediately - such as setting a timer:
-<div class="code">setTimeout(sayHi, 100);
+<div class="code">setTimeout(sayHi, 100); // wait 100ms before saying hi
 console.log("Hello"); // this will run before sayHi
 </div>
 
@@ -174,7 +172,7 @@ These functions are considered asynchronous. Database queries are also
 considered asynchronous. If we want to do something after a database query
 completes, we have to use the <span class="code">.then(function)</span> syntax:
 
-<div class="code">// this will work
+<div class="code">// this works as expected
 pool.query(query).then(sayCompleted);
 
 // dis is not da wae
@@ -212,10 +210,11 @@ But aside from that, things worked as well as they had locally.
 
 ## What's Next
 
-Last post, I talked about potentially filtering for bad words. Recently, I've
-also had the idea of making a UrlMem extension, so that people can right click
-a link, and get a shortened version from there. Another idea is to let people
-create user accounts, so that people can create shortenings without conflict.
+Last post, I talked about potentially filtering for bad words that get randomly
+generated. Recently, I've also had the idea of making a UrlMem extension, so
+that people can right click a link, and get a shortened version from there.
+Another idea is to let allow user accounts, so that people can create
+shortenings without conflict.
 
 Out of these ideas, I think I'll probably make an extension - but after that, I
 might be done - I'm pretty happy with UrlMem as it stands.
