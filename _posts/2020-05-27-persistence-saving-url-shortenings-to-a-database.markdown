@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Persistence: Saving Shortenings to a Database"
-date: 2020-05-25
+title: "Persistence: Saving URL Shortenings to a Database"
+date: 2020-05-27
 categories: urlmem
 thumb: /pics/thumb24.png
 ---
