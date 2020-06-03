@@ -121,7 +121,7 @@ Since this component is written as a function rather than as a class, it's calle
 a functional component. As with all components, when I want to use it somewhere, I
 just use the associated <span class="code">&lt;UrlOutput /&gt;</span> tag.
 
-In a previous project where I had a component this size, I had to copy past it 19
+In a previous project where I had a component this size, I had to copy paste it 19
 times - being able to use a custom tag is a vast improvement.
 
 I can also pass properties to the component. That's what the props argument is
