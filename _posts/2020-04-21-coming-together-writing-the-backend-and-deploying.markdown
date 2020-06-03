@@ -141,7 +141,7 @@ At this point, UrlMem was available at urlmem.herokuapp.com. The next step was
 adding UrlMem.com. So I bought the domain name from Google Domains, and then ran
 the following:
 
-<div class="code">heroku domains:add www.example.com</div>
+<div class="code">heroku domains:add www.urlmem.com</div>
 
 Next, from the DNS section for the domain at Google Domains, I added an
 appropriate resource record:
