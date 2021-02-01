@@ -19,9 +19,15 @@ There's not much to say... here it is:
 It cost about $99, and features 4K video and an onboard neural network chip.
 
 
+## Convolutional Neural Network (CNN) Basics
+
+If you're already familiar with convolutional neural networks (CNNs), you can probably skip this section; instead I recommend you read [the AdaIN paper](https://arxiv.org/pdf/1703.06868.pdf). Otherwise, I'll go over just enough of the basics for the rest of this post to make sense.
+
+Recall that most images are made up of 3 channels, red, green and blue.
+
 ## More on AdaIN
 
-I recommend reading [the AdaIN paper](https://arxiv.org/pdf/1703.06868.pdf); either way, I'll recap their methodology before I get started. Note that this isn't meant to be a complete primer on convolutional neural networks (CNNs) etc.
+I recommend reading ; either way, I'll recap their methodology before I get started. Note that this isn't meant to be a complete primer on convolutional neural networks (CNNs) etc.
 
 Before putting an image through a CNN, it'll have 3 channels; RGB. Each of these channels will have some lower order statistics; i.e. mean and variance.
 
