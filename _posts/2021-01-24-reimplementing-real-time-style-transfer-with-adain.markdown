@@ -6,7 +6,7 @@ categories: adain
 thumb: /pics/thumb26.png
 ---
 
-Recently I got an [OAK-1](https://opencv.org/introducing-oak-spatial-ai-powered-by-opencv/), a camera with an AI chip on board, and had no idea what to do with it. I also recently read [the 2017 paper introducing adaptive instance normalization (AdaIN)](https://arxiv.org/pdf/1703.06868.pdf), and really enjoyed it.
+Recently I got an [OAK-1](https://opencv.org/introducing-oak-spatial-ai-powered-by-opencv/) (a camera with an AI chip on board), and had no idea what to do with it. I also recently read [the 2017 paper introducing adaptive instance normalization (AdaIN)](https://arxiv.org/pdf/1703.06868.pdf), and really enjoyed it.
 
 That's where this post comes in. Given an input image (say a painting), I want to convert the video feed from the OAK to be in the style of that image. I'm not doing anything new per-se, but I think this will be fun either way.
 
@@ -19,35 +19,54 @@ There's not much to say... here it is:
 It cost about $99, and features 4K video and an onboard neural network chip.
 
 
-## Convolutional Neural Network (CNN) Basics
+## CNN Basics
 
 If you're already familiar with convolutional neural networks (CNNs), you can probably skip this section; instead I recommend you read [the AdaIN paper](https://arxiv.org/pdf/1703.06868.pdf). Otherwise, I'll go over just enough of the basics for the rest of this post to make sense.
 
-Recall that most images are made up of 3 channels, red, green and blue.
+Most images are made up of 3 channels; red, green and blue.
 
-## More on AdaIN
+{% include img.html src="../pics/ergboak.png" %}
 
-I recommend reading ; either way, I'll recap their methodology before I get started. Note that this isn't meant to be a complete primer on convolutional neural networks (CNNs) etc.
+A convolutional layer is a function that takes in a stack of 2D arrays (for example, an RGB image), and transforms it into another stack of 2D arrays. So a layer might take in a 64x64 RGB image (64x64x3), and spit out four 32x32 outputs (32x32x4). Each of the four outputs is called a feature map.
 
-Before putting an image through a CNN, it'll have 3 channels; RGB. Each of these channels will have some lower order statistics; i.e. mean and variance.
+{% include img.html src="../pics/convlayer.png" %}
 
-{% include img.html height="300px" src="../pics/rgb.png" %}
+If we stack a bunch of convolutional layers together, we get a convolutional neural network (CNN). The first layers do simple things like detect lines, while later layers detect more complex patterns, like different kinds of blobs.
 
-Most layers in a CNN will either decrease the size of the input, increase the number of channels, or do both.
+{% include img.html src="../pics/convnet.png" %}
 
-{% include img.html height="300px" src="../pics/cnn.png" %}
+The cool thing about CNNs is that if we have enough feature maps per layer, enough layers, and lots of data, we can model pretty much any function we want. For example, whether a photo is of a dog or of a cat.
 
-It just so happens that if we don't include a technique called normalization, the mean and variance of channels at later layers tell us important information about the style of an image. This is a simplified example, but perhaps in layer 5, channels 1, 2 and 3 tell us about the graininess, stroke width, and roundness of things in our image.
+## Encoders and Decoders
 
-{% include img.html height="300px" src="../pics/features.png" %}
+Most CNNs add more and more feature maps, until they output some answer to a question we have. Here's an example:
 
-Thus if we put both an input image and a style image through a CNN, and then shift the mean and standard deviation of the input iamage to match those of the style image, we can then invert the features back into an image, and then we will get the original image, but in the style of the target style image (example stylization from the paper):
+{% include img.html src="../pics/catordog.png" %}
 
-{% include img.html height="300px" src="../pics/style_eg.png" %}
+It just so happens that if we cut off the last few layers of a CNN, often the resulting feature maps still tell us lots of information.
 
-For more context, here is a diagram of the whole process, from the AdaIN paper:
+{% include img.html src="../pics/encoder.png" %}
 
-{% include img.html height="300px" src="../pics/adainstructure.png" %}
+They tell us so much information that if we design a CNN that takes in these feature maps, we can train it to output the original image. We then call the first CNN an _encoder_, and the second CNN a _decoder_.
+
+{% include img.html src="../pics/encoderdecoder.png" %}
+
+## Feature Map Statistics
+
+We're almost there...
+
+Each feature map after a convolutional layer will have an average and variance. The powerful insight made by the authors of the AdaIn paper is that these statistics tell us tons about the _style_ of an image. The statistics of one feature map might tell us about the smoothness of part of an image, while another might tell us about the width of blue lines (this is just an example).
+
+{% include img.html src="../pics/feature_stats.png" %}
+
+
+Now let's say we have a photograph, and after encoding it, we calculate the average and variance of each feature map. Now say we do the same with a painting.
+
+{% include img.html src="../pics/decoding_both.png" %}
+
+Now we can normalize each feature map of the photograph by subtracting the feature map mean from each feature map, and then dividing by the square root of the variance.Next we can multiply by the standard deviation of the corresponding feature map in the painting's encoding, and add the respective mean as well.
+
+Now the photo and painting will have the same feature statistics, and when we decode the photograph's modified encoding, the result will be in the style of the photograph.
 
 ## Loading the Datasets
 
@@ -142,4 +161,4 @@ for each epoch:
 </div>
 
 
-
+https://www.amazon.com/iCoostor-Numbers-Acrylic-Painting-Beginner/dp/B07N2V38XZ
