@@ -21,7 +21,7 @@ It cost about $99, and features 4K video and an onboard neural network chip.
 
 ## CNN Basics
 
-If you're already familiar with convolutional neural networks (CNNs), you can probably skip this section; instead I recommend you read [the AdaIN paper](https://arxiv.org/pdf/1703.06868.pdf). Otherwise, I'll go over just enough of the basics for the rest of this post to make sense.
+If you're already familiar with convolutional neural networks (CNNs), I recommend you read [the AdaIN paper](https://arxiv.org/pdf/1703.06868.pdf), and skip to the [implementation section](#loading-the-datasets). Otherwise, I'll go over just enough of the basics for the rest of this post to make sense.
 
 Most images are made up of 3 channels; red, green and blue.
 
@@ -55,18 +55,41 @@ They tell us so much information that if we design a CNN that takes in these fea
 
 We're almost there...
 
-Each feature map after a convolutional layer will have an average and variance. The powerful insight made by the authors of the AdaIn paper is that these statistics tell us tons about the _style_ of an image. The statistics of one feature map might tell us about the smoothness of part of an image, while another might tell us about the width of blue lines (this is just an example).
+Each feature map after a convolutional layer will have an average and variance. The powerful insight made by the authors of the AdaIn paper is that these statistics tell us tons about the _style_ of an image.
+
+The statistics of one feature map might tell us about the smoothness of an image, while the statistics of a another might tell us about the width of blue lines (this is just an example).
 
 {% include img.html src="../pics/feature_stats.png" %}
 
 
-Now let's say we have a photograph, and after encoding it, we calculate the average and variance of each feature map. Now say we do the same with a painting.
+Let's say we have a photograph, and after encoding it, we calculate the average and variance of each feature map. Now say we do the same with a painting.
 
 {% include img.html src="../pics/decoding_both.png" %}
 
-Now we can normalize each feature map of the photograph by subtracting the feature map mean from each feature map, and then dividing by the square root of the variance.Next we can multiply by the standard deviation of the corresponding feature map in the painting's encoding, and add the respective mean as well.
+Note that the statistics of the photograph's feature maps don't match the statistics of the painting's feature maps, which tells us that the images have different styles.
 
-Now the photo and painting will have the same feature statistics, and when we decode the photograph's modified encoding, the result will be in the style of the photograph.
+Now we can normalize each feature map of the photograph's encoding, so that each feature map has mean 0 and variance 1.
+
+{% include img.html src="../pics/normalized.png" %}
+
+Now we can multiply by the standard deviation of the correponding feature map in the photograph's encoding, and add mean of the corresponding feature map in the photograph's encoding.
+
+{% include img.html src="../pics/scalenormalized.png" %}
+
+
+In essence, we've modified the photograph's encoding so that each feature map has the same statistics as the corresponding feature map in the painting's encoding. This step is called adaptive instance normaliziation, or AdaIn.
+
+
+{% include img.html src="../pics/adain.png" %}
+
+
+Because feature map statistics dictate the style of the image, once we decode the photograph's modified encoding, we will get the photograph, but in the style of the painting.
+
+{% include img.html src="../pics/fullinference.png" %}
+[style, but transferred]
+
+
+
 
 ## Loading the Datasets
 
