@@ -9,7 +9,7 @@ thumb: /pics/thumb26.png
 
 Recently I got an [OAK-1](https://opencv.org/introducing-oak-spatial-ai-powered-by-opencv/) (a camera with an AI chip on board), and had no idea what to do with it. I also recently read [the 2017 paper introducing adaptive instance normalization (AdaIN)](https://arxiv.org/pdf/1703.06868.pdf), and really enjoyed it.
 
-That's where this project comes in. Given an input image (say a painting), I want to convert the video feed from the OAK to be in the style of that image. I'm not doing anything new per-se, but I think this will be fun either way.
+That's where this project comes in. Given an input image (say a painting), I want to convert the video feed from the OAK to the style of that image. I'm not doing anything new per-se, but I think it will be fun either way.
 
 This first post will cover some basics along with the technique I'll be using; if you're already a deep-learning practitioner, I'd just [read the original paper](https://arxiv.org/pdf/1703.06868.pdf). In the second post I'll discuss re-implementing the model and training, and for the last post I'll move things to the OAK-1.
 
@@ -81,7 +81,7 @@ Now we can multiply by the standard deviation of the correponding feature map in
 {% include img.html src="../pics/scalenormalized.png" %}
 
 
-In essence, we've modified the photograph's encoding so that each feature map has the same statistics as the corresponding feature map in the painting's encoding. This step is called adaptive instance normaliziation, or AdaIn. It's adaptive because we can do it for any painting, and it's instance normalization because we don't need a bunch of different input images to do it.
+In essence, we've modified the photograph's encoding so that each feature map has the same statistics as the corresponding feature map in the painting's encoding. This step is called adaptive instance normaliziation, or AdaIn. It's adaptive because we can do it for any painting, and it's instance normalization because we we can do it with just one input image and style image.
 
 
 {% include img.html src="../pics/adain.png" %}
@@ -103,7 +103,7 @@ We can measure how badly the decoder is doing this numerically with the followin
 
 $$L_{style}(Style, Out)=||stats(encoder(Style))- stats(encoder(Out))||_2^2$$
 
-Out is the output image, Style is the style image, and stats computes $$\mu$$ and $$\sigma$$ for each feature map. Intuitively, this calculates how far away the output style is from the style image style; if the target style is very smooth, the output image should be too.
+Out is the output image, Style is the style image, and computes the mean and variance for each feature map. Intuitively, this calculates how far away the output style is from the style image style; if the target style is very smooth, the output image should be too.
 
 Second, the decoder should output an image that matches the content of the input feature maps it was given. For this we compare the feature map values (_not the statistics_):
 
