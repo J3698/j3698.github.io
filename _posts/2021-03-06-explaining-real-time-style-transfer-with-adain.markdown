@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Explaining Real-time Style Transfer with AdaIN"
-date: 2021-01-24
+date: 2021-03-05
 categories: adain
 thumb: /pics/thumb27.png
 ---
@@ -79,13 +79,13 @@ Now we can multiply by the standard deviation of the corresponding feature map i
 {% include img.html src="../pics/scalenormalized.png" %}
 
 
-In essence, we've modified the photograph's encoding so that each feature map has the same statistics as the corresponding feature map in the painting's encoding. This step is called adaptive instance normalization, or AdaIn. The "adaptive" part comes from the fact that we can do it for any painting, and the "instance normalization" part comes from the fac that we can do it with just one input image and style image.
+In essence, we've modified the photograph's encoding so that each feature map has the same statistics as the corresponding feature map in the painting's encoding. This step is called adaptive instance normalization, or AdaIn. The "adaptive" part comes from the fact that we can do it for any painting, and the "instance normalization" part comes from the fact that we can do it with just one input image and style image.
 
 
 {% include img.html src="../pics/adain.png" %}
 
 
-Because feature map statistics dictate the style of the image, we will get the photograph in the style of the painting after we decode the photograph's neormalized and scaled encoding.
+Because feature map statistics dictate the style of the image, we will get the photograph in the style of the painting after we decode the photograph's normalized and scaled encoding.
 
 {% include img.html src="../pics/fullinference.png" %}
 
@@ -109,7 +109,7 @@ $$L_{style}(Style, Out)=||stats(encoder(Style))- stats(encoder(Out))||_2^2$$
 
 Intuitively, this calculates how far away the output style is from the style image's style; if the target style is very smooth, the output image should be too.
 
-Second, the decoder should output an image that matches the content of the input feature maps it was given. For this we compare the feature map values (_not the statistics_):
+Second, the decoder should output an image that matches the content of the input feature maps it was given. For this we compare the feature map values (_not_ the statistics):
 
 {% include img.html src="../pics/contentloss.png" %}
 
