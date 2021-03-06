@@ -6,6 +6,8 @@ categories: adain
 thumb: /pics/thumb26.png
 ---
 
+[you are not supposed to see this post :) turn back]
+
 Recently I got an [OAK-1](https://opencv.org/introducing-oak-spatial-ai-powered-by-opencv/) (a camera with an AI chip on board), and had no idea what to do with it. I also recently read [the 2017 paper introducing adaptive instance normalization (AdaIN)](https://arxiv.org/pdf/1703.06868.pdf), and really enjoyed it.
 
 That's where this post comes in. Given an input image (say a painting), I want to convert the video feed from the OAK to be in the style of that image. I'm not doing anything new per-se, but I think this will be fun either way.
@@ -183,5 +185,28 @@ for each epoch:
         optimize_loss(loss)
 </div>
 
+## Training and Results
+
+I trained the model on a g4dn.xlarge AWS instance; though you could also use Google Collab. I won't get into the weeds here, instead I'll point you to a few valuable resources:
+
+[CMU's Introduction to Deep Learning (S21)](http://deeplearning.cs.cmu.edu/S21/index.html#recitations) - Recitation 0C and 0D are about deep learning with AWS and Collab.
+
+[CMU's Introduction to Deep Learning (F20)](http://deeplearning.cs.cmu.edu/F20/index.html#recitations) - Recitation 0D and 0E; different versions of the above.
+
+I personally use AWS, but Collab is cheaper (free for small projects). After training the models, I ran export.py, and copied the files back to my own computer:
+
+[scp]
+## Converting for the OAK
+
+Next, I wrote the following code to convert the models to ONNX. I recommend this tutorial for converting models to ONNX:
+
+The next step is to run things through Intel's model optimizer, and then their model compiler. To do so, I first installed their distribution of [OpenVINO](). There's a couple of pitfalls for installation:
+
+- The web installer included the optimizer but not the compiler
+- The APT installer included the compiler but not the optimizer
+
+_(Yes, I got mad for a moment)_
+
+I'm not sure what was up with the web installer, but it turns out I'd skipped over some reading for the APT installer; after the "Get the list of available packages" step [here](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_apt.html), you'll see the model optimizer is a separate install.
 
 https://www.amazon.com/iCoostor-Numbers-Acrylic-Painting-Beginner/dp/B07N2V38XZ
