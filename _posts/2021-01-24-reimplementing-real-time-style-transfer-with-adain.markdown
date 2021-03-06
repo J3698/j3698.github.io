@@ -2,7 +2,7 @@
 layout: post
 title: "Reimplementing Real-time Style Transfer with AdaIN"
 date: 2021-01-24
-categories: adain
+categories: adaindraft
 thumb: /pics/thumb26.png
 ---
 

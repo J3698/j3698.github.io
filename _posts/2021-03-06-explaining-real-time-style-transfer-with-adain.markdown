@@ -3,7 +3,7 @@ layout: post
 title: "Explaining Real-time Style Transfer with AdaIN"
 date: 2021-03-05
 categories: adain
-thumb: /pics/thumb27.png
+thumb: /pics/thumb28.png
 ---
 
 
