@@ -2,6 +2,7 @@
 layout: post
 title: "Real-time Style Transfer with AdaIN, Explained"
 date: 2021-03-06
+edited: 2021-03-09
 categories: adain
 thumb: /pics/thumb28.png
 ---
@@ -101,7 +102,7 @@ We can measure how badly the decoder is doing this numerically with the followin
 
 <figure>
 <div style="overflow-x:auto">
-$$L_{style}(Style, Out)=||stats(encoder(Style))- stats(encoder(Out))||_2^2$$
+$$L_{style}(Style, Out)=\sum_i ||stats(encoder_i(Style))- stats(encoder_i(Out))||_2^2 $$
 </div>
 <figcaption style="text-align: center; font-size: 90%">Out is the output image, Style is the style image, and stats computes the mean and variance for each feature map.</figcaption>
 </figure>
@@ -117,7 +118,7 @@ Numerically, this is:
 
 <figure>
 <div style="overflow-x: auto">
-$$L_{content}(Input, Out)=||encoder(Input)- encoder(Out)||_2^2$$
+$$L_{content}(Input, Out)=||AdaIn(encoder(Input))- encoder(Out)||_2^2$$
 </div>
 <figcaption style="text-align: center; font-size: 90%">Input is the image we are trying to stylize</figcaption>
 </figure>
@@ -125,12 +126,12 @@ $$L_{content}(Input, Out)=||encoder(Input)- encoder(Out)||_2^2$$
 
 Intuitively, this calculates how far away the output feature maps are from the feature maps of the input. In other words, a car should still look like a car.
 
-In practice, we don't just compute these loss functions with the output of the encoder; we use intermediate layers of the encoder too. Also, to balance the content loss, style loss, and which layers are more important, we introduce some scaling factors $$\lambda$$.
+In practice, we don't just compute these loss functions with the output of the encoder; we use intermediate layers of the encoder too. Also, to balance the content loss and style loss, we introduce a scaling factor $$\lambda$$.
 
 This leads us to the following loss function:
 
 <div style="overflow-x:auto">
-$$\begin{aligned} L_{content}(Input, Out)=&\sum_i \lambda_{style, i} ||encoder_i(Input)- encoder_i(Out)||_2^2 + \\  &  \sum_i \lambda_{content,i} ||stats(encoder_i(Style))- stats(encoder_i(Out))||_2^2\end{aligned}$$
+$$\begin{aligned} L_{content}(Input, Out)=& \lambda ||AdaIn(encoder(Input))- encoder(Out)||_2^2 + \\  &  \sum_i ||stats(encoder_i(Style))- stats(encoder_i(Out))||_2^2\end{aligned}$$
 </div>
 
 We can minimize this loss function with gradient descent. That is out of the scope of this post, but I hope the idea behind what we're trying to do makes sense.
@@ -147,3 +148,5 @@ And that's it for now! I've already made quite a bit of headway on writing the m
 
 
 _Example style image stolen from [here](https://www.amazon.com/iCoostor-Numbers-Acrylic-Painting-Beginner/dp/B07N2V38XZ)._
+
+_Edited March 9th to correct loss function, which I over-generalized._
