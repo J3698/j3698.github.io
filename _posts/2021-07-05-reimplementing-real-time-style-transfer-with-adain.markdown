@@ -2,13 +2,14 @@
 layout: post
 title: "Reimplementing Real-time Style Transfer with AdaIN"
 date: 2021-07-05
+edited: 2021-07-10
 categories: adain
 thumb: /pics/thumb26.png
 ---
 
 A few decades ago (at least that's what it seems like) I explained AdaIn, a neural style-transfer method that I'm reimplementing for the OAK-1. In this post I'll actual reimplement AdaIn. After a quick recap I'll discuss loading the dataset. Then I'll go into writing the models and some intermediate tests. By the end, I'll show some stylized images.
 
-Note that this post is a bit more technical than the last; feel free to skip towards the end if you'd like.
+Note that this post is a bit more technical than the last; feel free to skip towards the end if you'd like. Also, note that my goal is to go over what parts of the code are relevant to AdaIn, not to teach PyTorch from scratch.
 
 
 ## Recap
@@ -16,9 +17,9 @@ Note that this post is a bit more technical than the last; feel free to skip tow
 As a quick recap, here's how AdaIn works:
 
 1. Encode the style and content images
-2. Adjust the content-encoding feature-map statistics to match those in the style encoding
-3. Decode the adjusted content-encoding into a stylized image
-4. Compute a style loss and content loss for the stylied image (during training)
+2. Adjust the feature-map statistics of the content encoding to match those of the style encoding
+3. Decode the adjusted content encoding into a stylized image
+4. Compute a style loss and content loss for the stylied image (only during training)
 
 Here's what this looks like if you're a pictures person:
 
@@ -26,11 +27,11 @@ Here's what this looks like if you're a pictures person:
 
 ## Loading the Datasets
 
-First up is to download the datasets. As in the AdaIn paper, the images we're going to stylize will be from the Microsoft Common Objects in Context (MS COCO) dataset, and the style images will be from WikiArt. Both of these datasets have around 100,000 images.
+First up is to download the datasets. As in the AdaIn paper, the images we'll stylize are from the Microsoft Common Objects in Context (MS COCO) dataset, and the style images are from WikiArt. Both datasets have around 100,000 images.
 
-MS COCO requires [this API](https://github.com/cocodataset/cocoapi). You should be able to install it as pycocotools from pip, but in case that doesn't work, you can install it from source. I ended up installing from source. I ran into a few issues while doing so; for example, I had to reference [this issue](https://github.com/cocodataset/cocoapi/issues/172). When building from source, I also had to run <span class="code">make install</span> instead of <span class="code">make</span>.
+MS COCO requires [this API](https://github.com/cocodataset/cocoapi). You should be able to install it as pycocotools from pip, but if that fails, you can install it from source. I ended up installing from source. While doing so, I had to reference [this issue](https://github.com/cocodataset/cocoapi/issues/172). Additionally, I had to run <span class="code">make install</span>, which I didn't see in the instructions.
 
-After installing the API, the COCO website has recommendations for downloading the dataset with gsync, but that method is widely reported to be broken. Luckily, I found both wikiart and MSCOCO available at these links:
+After installing the API, the COCO website recommends downloading the dataset with gsync, but that method is widely reported to be broken. Luckily, I found the datasets at these links:
 
 <div class="code">http://images.cocodataset.org/zips/train2017.zip
 http://images.cocodataset.org/zips/val2017.zip
@@ -45,18 +46,18 @@ Here's the script I used:
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdownload_data.sh&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 
-Pretty simple; the script just downlaods the files and moves them to a datasets directory. One thing to note is that the datasets do take up a lot of memory. Also, I got a few errors while unzipping the files... which I ignored...
+The script downloads the files and moves them to a datasets directory. One thing to note is that the datasets do take up a lot of memory. Also, I got a few errors while unzipping the files... which I ignored...
 
 
-Next up was writing the dataset class. PyTorch already includes dataset classes for MS COCO, and a generic dataset class that works for WikiArt, so I wanted to leverage those. However, technically one datapoint is one image from both datasets, and thus a style transfer dataset would have size length(wikiart) * length(mscoco), or around 10 billion, which is not reasonable.
+Next up was writing the dataset class. PyTorch already includes dataset classes for MS COCO, and a generic dataset class that works for WikiArt, so I leveraged those.However, technically one datapoint is one image from both datasets, and thus a style transfer dataset would have size length(wikiart) * length(mscoco), or around 10 billion, which is not reasonable.
 
-One way around this would be to have an IterableDataset; these doesn't decide ahead of time which datapoint comes next. One one hand this would allow the model to always see new examples. However it wouldn't allow me to train the model on the same examples each epoch of training (which is useful for debugging, we'll see this soon). Another way is to pick a random set of datapoints ahead of time; in this case the model wouldn't be seeing new data, but would be able to fully train on just a few examples. I ended up implementing both methods; the former for large-scale training, and the latter for debugging.
+The IterableDataset class solves the big dataset problem; it doesn't decide ahead of time which datapoints will appear. On one hand this allows the model to always see new examples. However it wouldn't allow me to train the model on just a few examples, as new examples would always be chosen. Another fix is to pick a random fixed set of datapoints ahead of time; in this case the model wouldn't be seeing new data, but debugging on the same few examples would be easy. I ended up implementing both methods; the former for large-scale training, and the latter for debugging.
 
 Now lets dive into the dataset code. I'll only explain the IterableDataset version, as I think there's more to learn there. The whole thing is [here](https://github.com/J3698/AdaIN-reimplementation/blob/main/data.py).
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdata.py%23L18-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-This function just returns the transforms we want to apply to each item in the dataset. One reason we resize is for memory efficiency. Additionally, throughout the model the dimension of the images get halfed a bunch and then doubled a bunch; if the dimension is ever odd before halving then the input and output image sizes will be different, and we won't be able to compare the input and output images. The crop forces the model to be able to adapt more during training, but probably isn't necessary.
+This function returns the transforms we want to apply to each item in the dataset. One reason we resize is for memory efficiency. Additionally, throughout the model the dimension of the images get halfed repeatedly and then doubled repeatedly; if the dimension is ever odd before halving, then the input and output image sizes will be different, and we won't be able to compute a loss between them. The crop forces the model to be able to adapt more during training, but probably isn't necessary.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdata.py%23L24-L35&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -78,7 +79,7 @@ That's pretty much it for the IterableDataset class; in <a href="https://github.
 
 For the models, I first wrote the encoder. This is a pretrained [VGG19 model](https://arxiv.org/pdf/1409.1556.pdf), with everything after the first ReLU of dimension 512 deleted.
 
-I actually spent weeks trying and failing to get the whole system working because I figured I could use a VGG19 encoder that does not have batch-normalization layers. This ended up being the one thing I had to check the original AdaIn repo for. I think unnormalized VGG19 fails because without the normalization, it's too hard for the decoder to match feature statistics.
+I actually spent weeks trying and failing to get the whole system working because I figured I could use a VGG19 encoder that does not have batch-normalization layers. This was the one thing I had to check the original AdaIn repo for. I think unnormalized VGG19 fails because without the normalization, it's too hard for the decoder to match feature statistics.
 
 Below I've included a diagram of the architecture. The first gray block represents the 256x256 RGB input image, the last gray block represents the final encoding, and each blue-red arrow represents a convolutional layer. I've omitted activation, batchnorm, and pooling layers in the diagram.
 
@@ -97,7 +98,7 @@ Now let's go through the code.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L6-L12&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-The constructor tells us how the encoder is made on a high level. We load the pretrained model, switch to using reflection padding, and also freeze the weights. The code for those functions is below:
+Ona high level, in the constructor we load the pretrained model, switch to using reflection padding, and also freeze the weights. The code for those functions is below:
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L14-L33&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -118,11 +119,11 @@ The decoder was a little bit more complicated. It's essentially the encoder but 
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L6-L13&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-Again the constructor is a high-level overview. Method <span class="code">load_base_architecture</span> is a bit of a misnomer; this function loads the VGG19, but also reverses it and only takes out the layers we need. The other functions do what they say. We want to progressively grow the image size so we swap out the maxpools. Then we need to swap the direction of the now-reversed convolutional layers, and initialize them. Lastly, there's a fix we need to apply to the ReLU layers.
+Again the constructor is a high-level overview. Method <span class="code">load_base_architecture</span> is a bit of a misnomer; this function loads the VGG19, but also reverses it and only takes out the layers we need. The other functions do what they say. We want to progressively grow the image size so we swap out the maxpools. Then we need to swap the direction of the now-reversed convolutional layers, and initialize them. Lastly, there's a fix we need to apply to the ReLU layers (more on this later).
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L15-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-The first function just loads, reverses, and truncates the VGG19 so we that we have the parts we want. The next function is doing what it says.
+The first function loads, reverses, and truncates the VGG19 so we that we have the parts we want. The next function is doing what it says.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L23-L32&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -148,7 +149,7 @@ We simply encode and decode an image. The loss is the sum of the squared differe
 
 If you would like to see the code for reconstruction, it is [here](https://github.com/J3698/AdaIN-reimplementation/tree/77f9c1f3a65bc0dcf9e93f9a94a2df6cf71deaed). However, it uses older versions of the encoder / decoder, and the code is a lot less clean (I wrote the unclean parts).
 
-At first I just trained on one image, on my CPU. This was the image I aimed to recosntruct:
+At first I trained on one image, on my CPU. This was the image I aimed to recosntruct:
 
 {% include img.html src="../pics/0recon.png" %}
 
@@ -179,7 +180,7 @@ With the encoder and decoder working, next was the AdaIn layer. This was more of
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fadain.py%23L1-L29&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
- I use PyTorch's built in <span class="code">instance_norm</span> to normalize the content encoding to zero mean and variance of one, and then shift the normalized encoding to match the means and variances of the target style.
+ I use PyTorch's built in <span class="code">instance_norm</span> to normalize the content encoding to zero mean and variance of one, and then shift the normalized encoding to match the means and variances of the target style encoding.
 
 One thing to note is that in this code I have some dimension checks to make sure I didn't make any mistakes; these broke in early experiments with exporting the model for the OAK-1, so they will disappear later 😞.
 
@@ -191,17 +192,17 @@ With all of the necessary components, I packaged everything up in a class <span 
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fadain_model.py%23L15-L26&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-We encode the style and content images, and then use AdaIn on encodings, and decode the stylized content encoding. Below I've labeled which line of code does what on part of the training diagram.
+We encode the style and content images, and then use AdaIn on encodings, and decode the stylized content encoding. Below I've labeled which lines of code do what on part of the training diagram.
 
 {% include img.html src="../pics/stylecontentmodellabeled.png" %}
 
 ## The Training Pipeline
 
-Now for the training pipeline. I'm going to completely skip over explaining <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/main.py"><span class="code">main.py</span></a>, <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/validate.py"><span class="code">validate.py</span></a>, and swathes of <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/train.py"><span class="code">train.py</span></a> as well. Most of main is dealing with argument parsing, and much of validate is already covered in what I'll cover in train. Also, a bunch of train is non-essential. My goal here is to explain the parts that were relevant to AdaIn; not how to build a deep-learning pipeline from start to finish.
+Now for the training pipeline. I'm going to completely skip over explaining <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/main.py"><span class="code">main.py</span></a>, <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/validate.py"><span class="code">validate.py</span></a>, and swathes of <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/train.py"><span class="code">train.py</span></a> as well. Most of main is dealing with argument parsing, and much of validate is already covered in what I'll cover in train. Also, a bunch of train is not specific to style transfer.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftrain.py%23L43-L70&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-First I'll start with the main training loop. On lines 43-53 I'm just looping through the images and putting them on the GPU. On lines 63-70, I'm just logging things so I can track training; <span class="code">write_to_tensorboard</span> does everything like validation etc., and I won't go over it here.
+First I'll start with the main training loop. On lines 43-53 I'm looping through the images and putting them on the GPU. On lines 63-70, I'm logging things so I can track training; <span class="code">write_to_tensorboard</span> does everything like validation etc., and I won't go over it here.
 
 Lines 55-61 are where things are more interesting. I clear the gradients (56), calculate the loss (57-59), calculate the new gradients (60), and then update the model weights (61). Next we can look at the function used on line 57 in depth.
 
@@ -226,17 +227,17 @@ First of all, I tried many many many experiments on just a few images. What I fo
 
 {% include img.html src="../pics/stranging.png" width="750px" %}
 
-Bottom right is the original image. From left to right, top to bottom, the style loss weight is increasing. You can see that without enough style weight, the image ends up looking quite dark; content loss alone is not good enough to bring out the original image, at least not early on in training..
+Bottom right is the original image. From left to right, top to bottom, the style loss weight is increasing. You can see that without enough style weight, the image ends up looking quite dark; content loss alone is not good enough to bring out the original image, at least not early on in training.
 
 I also tried training with and without random cropping. Even for a few examples, that made quite a difference; convergence would be much slower, and images would take longer to look like they had any style.
 
-After getting some to converge with small examples, I tried using a larger training dataset. What quickly happened is that the styles all converged to a muddy brown, with painting-like strokes. Basically, the styles were all the same. In fact, the color of the final layer's biases was very close to the average color of the WikiArt dataset. Here's what things looked like:
+After getting some to converge with small examples, I tried using a larger training dataset. What quickly happened is that the styles all converged to a muddy brown, with painting-like strokes. Basically, the styles were all the same. I also noticed the color of the final layer's biases was very close to the average color of the WikiArt dataset. Here's what things looked like:
 
 {% include img.html src="../pics/bads.png" width="500px" %}
 
 No amount of hyperparameter tuning, lowering of regularization, etc. would fix this problem at first. I burned a lot of AWS money. I also tried removing the bias in the last layer. This didn't really help.
 
-Along the way I figured that weighing the style loss layers differently (maybe further enweight earlier layers) might help the color come out, as earlier layers are closer to the raw RGB data. This didn't really help. So I also tried another experiment; I played around with the loss function. Other style transfer papers don't take euclidean distance between style vectors, instead they calculate L2 loss. I tried both, and had the feeling that euclidean distance converged faster; I think it might be because the square root dampens the difference in effect of the various style losses, but I can't be sure.
+Along the way I figured that weighing the style loss layers differently (maybe further enweight earlier layers) might help the color come out, as earlier layers are closer to the raw RGB data. This didn't really help. So I also tried another experiment; I played around with the loss function. At least one other style transfer paper doesn't take euclidean distance between style vectors, instead they calculate L2 loss. I tried both, and had the feeling that euclidean distance converged faster; I think it might be because the square root dampens the difference in effect of the various style losses, but I can't be sure.
 
 This also lead me to discover that by default, the layer losses of the deeper layers are greater in magnitude.
 
@@ -261,4 +262,4 @@ Furthermore, here are some stylizations throughout training; each triplet is sho
 
 And that's it! I'm very happy to have this figured out; I definitely expected this whole project to done by now. But then again, that's how most of these go XD.
 
-Anyhow, the next post should take a lot less time (fingers crossed), in part because I've already done some tinkering with getting models on the oak. See you then!
+Anyhow, the next post should take a lot less time (fingers crossed), in part because I've already done some tinkering with getting models on the OAK-1. See you then!
