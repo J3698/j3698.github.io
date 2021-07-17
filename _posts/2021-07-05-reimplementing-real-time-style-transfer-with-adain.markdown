@@ -2,7 +2,7 @@
 layout: post
 title: "Reimplementing Real-time Style Transfer with AdaIN"
 date: 2021-07-05
-edited: 2021-07-10
+edited: 2021-07-17
 categories: adain
 thumb: /pics/thumb26.png
 ---
@@ -49,7 +49,7 @@ Here's the script I used:
 The script downloads the files and moves them to a datasets directory. One thing to note is that the datasets do take up a lot of memory. Also, I got a few errors while unzipping the files... which I ignored...
 
 
-Next up was writing the dataset class. PyTorch already includes dataset classes for MS COCO, and a generic dataset class that works for WikiArt, so I leveraged those.However, technically one datapoint is one image from both datasets, and thus a style transfer dataset would have size length(wikiart) * length(mscoco), or around 10 billion, which is not reasonable.
+Next up was writing the dataset class. PyTorch already includes dataset classes for MS COCO, and a generic dataset class that works for WikiArt, so I leveraged those. However, technically one datapoint is a photo grom MS COCO, and a painting from WikiArt. This means that a style transfer dataset's length would be length(wikiart) * length(mscoco), or ~10 billion, which is not reasonable.
 
 The IterableDataset class solves the big dataset problem; it doesn't decide ahead of time which datapoints will appear. On one hand this allows the model to always see new examples. However it wouldn't allow me to train the model on just a few examples, as new examples would always be chosen. Another fix is to pick a random fixed set of datapoints ahead of time; in this case the model wouldn't be seeing new data, but debugging on the same few examples would be easy. I ended up implementing both methods; the former for large-scale training, and the latter for debugging.
 
@@ -98,7 +98,7 @@ Now let's go through the code.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L6-L12&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-Ona high level, in the constructor we load the pretrained model, switch to using reflection padding, and also freeze the weights. The code for those functions is below:
+On a high level, in the constructor we load the pretrained model, switch to using reflection padding, and also freeze the weights. The code for those functions is below:
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L14-L33&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -123,7 +123,7 @@ Again the constructor is a high-level overview. Method <span class="code">load_b
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L15-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-The first function loads, reverses, and truncates the VGG19 so we that we have the parts we want. The next function is doing what it says.
+The first function loads, reverses, and truncates the VGG19 so we that we have the parts we want. The second function swaps max pooling for upsampling.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L23-L32&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -149,7 +149,7 @@ We simply encode and decode an image. The loss is the sum of the squared differe
 
 If you would like to see the code for reconstruction, it is [here](https://github.com/J3698/AdaIN-reimplementation/tree/77f9c1f3a65bc0dcf9e93f9a94a2df6cf71deaed). However, it uses older versions of the encoder / decoder, and the code is a lot less clean (I wrote the unclean parts).
 
-At first I trained on one image, on my CPU. This was the image I aimed to recosntruct:
+At first I trained on one image, on my CPU. This was the image I aimed to reconstruct:
 
 {% include img.html src="../pics/0recon.png" %}
 
@@ -176,7 +176,7 @@ Another interesting thing I tried with reconstruction was using batch normalizat
 
 ## The AdaIn Layer
 
-With the encoder and decoder working, next was the AdaIn layer. This was more of a function than a layer; it doesn't need to keep track of any anything, and it's not a class.
+With the encoder and decoder working, next was the AdaIn function.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fadain.py%23L1-L29&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
