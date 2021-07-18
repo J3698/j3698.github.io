@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "The Infrastructure: Loading Data and Writing Models"
-date: 2021-07-05
-edited: 2021-07-17
+date: 2021-07-18
+edited: 2021-07-18
 categories: adain
 thumb: /pics/thumb26.png
 ---
