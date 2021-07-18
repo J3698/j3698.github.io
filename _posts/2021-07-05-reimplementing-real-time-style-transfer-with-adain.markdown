@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Reimplementing Real-time Style Transfer with AdaIN"
-date: 2021-07-28
-edited: 2021-07-17
-categories: adain
+title: "Results! Training Real-time Style Transfer"
+date: 2021-07-26
+edited: 2021-07-26
+categories: adaindraft
 thumb: /pics/thumb26.png
 ---
 
