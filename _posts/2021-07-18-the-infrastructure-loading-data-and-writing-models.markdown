@@ -42,7 +42,7 @@ Instead of using wget I used aria2 to download them, which can [significantly in
 
 Here's the script I used:
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdownload_data.sh&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdownload_data.sh&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 
 The script downloads the files and moves them to a datasets directory. One thing to note is that the datasets do take up a lot of memory. Also, I got a few errors while unzipping the files... which I ignored...
@@ -54,21 +54,21 @@ The IterableDataset class solves the big dataset problem; it doesn't decide ahea
 
 Now lets dive into the dataset code. I'll only explain the IterableDataset version, as I think there's more to learn there. The whole thing is [here](https://github.com/J3698/AdaIN-reimplementation/blob/main/data.py).
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdata.py%23L18-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L18-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 This function returns the transforms we want to apply to each item in the dataset. One reason we resize is for memory efficiency. Additionally, throughout the model the dimension of the images get halfed repeatedly and then doubled repeatedly; if the dimension is ever odd before halving, then the input and output image sizes will be different, and we won't be able to compare them. The crop forces the model to be able to adapt more during training, but probably isn't necessary.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdata.py%23L24-L35&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L24-L35&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 In the dataset constructor I create the MS COCO and WikiArt datasets and set the random seed used to pick new datapoints. Note that labels for coco ("coco_annotations") aren't necessary for style transfer, as I just need the images. However, the PyTorch CocoCaptions dataset requires them as an argument, and I wanted to re-use that class. I also have an "exclude_style" flag; this is because when I first tested the models, I didn't use the style images.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdata.py%23L41-L54&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L41-L54&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 The next interesting function was \_\_iter\_\_. This gets called right before we start looping through the dataset. It also gets called for each "worker" that is preparing data in parallel. When multiple workers are used in PyTorch, the IterableDataset gets copied for each worker. So if we have four workers, four IterableDatasets will be used to prepare data in parallel.
 
 When I check whether worker info is not None, I'm essentially checking if there are multiple workers. If there are, each IterableDataset needs to set its random state so that it doesn't return the same datapoints as the other workers. Each IterableDataset also has to change its length; if we want a dataset of length 32 and we have four workers, each worker should return 8 items, not 32.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdata.py%23L59-L78&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L59-L78&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 Next, I wrote the \_\_next\_\_ function, which returns the next datapoint. It checks whether the end of the dataset has been reached, and if not, returns a random image pair (or just one image, if exclude_style is True). I also have a function <span class="code">_check_data_to_return</span>, to ensure that I'm returning PyTorch tensors, not PIL images or something else by accident.
 
@@ -96,15 +96,15 @@ The output of the second ReLU layer feeds into the next red block, and is also u
 
 Now let's go through the code.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L6-L12&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fencoder.py%23L6-L12&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 On a high level, in the constructor we load the pretrained model, switch to using reflection padding, and also freeze the weights. The code for those functions is below:
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L14-L33&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fencoder.py%23L14-L33&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 I think most of this code speaks for itself. One thing to note is the weight freezing. The encoder represents what we know about natural images, so we don't want to train this; we keep it static. We can do this by preventing the weights from calculating their gradients. We also set the model to eval() mode, so that the batch normalization settings do not get updated during training.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fencoder.py%23L45-L48&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fencoder.py%23L45-L48&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 On the same note, the train() method by default tells the model whether it should act as if it is training mode (and thus update things like batch normalization settings), or evaluation mode. So I overrode this method, preventing myself or others from accidently using the encoder in train mode.
 
@@ -117,19 +117,19 @@ I also wrote a test function for the encoder in <a href="https://github.com/J369
 
 The decoder was a little bit more complicated. It's essentially the encoder but reversed.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L6-L13&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdecoder.py%23L6-L13&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 Again the constructor is a high-level overview. Method <span class="code">load_base_architecture</span> is a bit of a misnomer; this function loads the VGG19, but also reverses it and only takes out the layers we need. The other functions do what they say. We want to progressively grow the image size so we swap out the maxpools. Then we need to swap the direction of the now-reversed convolutional layers, and initialize their weights. Lastly, there's a fix we need to apply to the ReLU layers (more on this later).
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L15-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdecoder.py%23L15-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 Method <span class="code">load_base_architecture</span> loads, reverses, and truncates the VGG19 so we that we have the parts we want. Method <span class="code">swap_maxpools_for_upsamples</span> swaps max pooling for upsampling.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L23-L32&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdecoder.py%23L23-L32&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 The next method, <span class="code">initialize_and_swap_direction_of_conv_layers</span>, reverses all of the convolutional layers. In the original VGG19 architecture a layer might take in 256 feature maps, and output 512. Since we reversed the model, we now need that layer to take in 512 feature maps, and output 256. We also need to initialize the weights so that the model will train well; I use [Kaiming Initialization](https://arxiv.org/abs/1502.01852), which is designed for use with  ReLUs.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fdecoder.py%23L34-L37&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdecoder.py%23L34-L37&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 Lastly, <span class="code">make_relus_trainable</span> sets <span class="code">inplace</span> to <span class="code">False</span> for the ReLU layers. When set to <span class="code">True</span>, a ReLU will overwrite its input, and then return the input. The problem is, to calculate gradients, a ReLU needs to know its original inputs. In other words, we need the ReLUs not to overwrite their inputs if we want to train the decoder.
 
@@ -142,7 +142,7 @@ As usual, I also wrote a test function for the decoder in <a href="https://githu
 
 After writing the encoder and decoder, I tested them together for a reconstruction task. However I will save that for next post. Next is the AdaIn function.
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Fadain.py%23L1-L29&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
+<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fadain.py%23L1-L29&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
  I use PyTorch's built in <span class="code">instance_norm</span> to normalize the content encoding to zero mean and variance of one, and then shift the normalized encoding to match the means and variances of the target style-encoding.
 
