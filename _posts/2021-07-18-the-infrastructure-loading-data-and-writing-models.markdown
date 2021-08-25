@@ -2,14 +2,14 @@
 layout: post
 title: "The Infrastructure: Loading Data and Writing Models"
 date: 2021-07-18
-edited: 2021-07-18
+edited: 2021-08-24
 categories: adain
 thumb: /pics/thumb26.png
 ---
 
 A few decades ago (at least that's what it seems like) I explained AdaIn, a neural style-transfer method that I'm reimplementing for the OAK-1. I've finally got a model up and running, but there's quite a lot to write about. So in this post, after a quick recap I'll focus on loading the dataset and writing some models. The post after this one should be live in about a week or so.
 
-Note that this post is a bit more technical than the last; you should be able to roughly follow the next post even without reading this one. Also, note that my goal is to go over what parts of the code are relevant to AdaIn, not to teach PyTorch from scratch.
+Note that this post is a bit more technical than the last; you should be able to follow the rest of the project even if you skip it. Additionally, note that my goal is to go over what parts of the code are relevant to AdaIn, not to teach PyTorch from scratch.
 
 ## Recap
 
@@ -45,34 +45,34 @@ Here's the script I used:
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdownload_data.sh&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
 
-The script downloads the files and moves them to a datasets directory. One thing to note is that the datasets do take up a lot of memory. Also, I got a few errors while unzipping the files... which I ignored...
+The script downloads the files and moves them to a datasets directory. One thing to note is that the datasets do take up a lot of memory. Another thing to note is that I got a few errors while unzipping the files... which I ignored...
 
 
-Next up was writing the dataset class. PyTorch already includes dataset classes for MS COCO, and a generic dataset class that works for WikiArt, so I leveraged those. However, technically one datapoint is a photo from MS COCO, and a painting from WikiArt. This means that a style transfer dataset's length would be length(wikiart) * length(mscoco), or ~10 billion, which is not reasonable.
+Next up was writing the dataset class. PyTorch already includes dataset classes for MS COCO, and a generic dataset class that works for WikiArt, so I leveraged those. However, technically one datapoint is a photo from MS COCO, and a painting from WikiArt. This means that a style transfer dataset's length would be length(wikiart) * length(mscoco), or ~10 billion, which is unreasonable.
 
-The IterableDataset class solves the big dataset problem; it doesn't decide ahead of time which datapoints will appear. On one hand this allows the model to always see new examples. However it wouldn't allow me to train the model on just a few examples, as new examples would always be chosen. Another fix is to pick a random fixed set of datapoints ahead of time; in this case the model wouldn't be seeing new data, but debugging on the same few examples would be easy. I ended up implementing both methods; the former for large-scale training, and the latter for debugging.
+The IterableDataset doesn't decide ahead of time which datapoints will appear, solving the issue of a dataset with 10 billion items. The IterableDataset also allows the model to always see new examples. However, it makes debugging on just a few fixed examples difficult. Another method is to pick a random fixed set of datapoints ahead of time; in this case the model wouldn't be seeing new data, but debugging on the same few examples would be easy. I ended up implementing both methods; the former for large-scale training, and the latter for debugging.
 
 Now lets dive into the dataset code. I'll only explain the IterableDataset version, as I think there's more to learn there. The whole thing is [here](https://github.com/J3698/AdaIN-reimplementation/blob/main/data.py).
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L18-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-This function returns the transforms we want to apply to each item in the dataset. One reason we resize is for memory efficiency. Additionally, throughout the model the dimension of the images get halfed repeatedly and then doubled repeatedly; if the dimension is ever odd before halving, then the input and output image sizes will be different, and we won't be able to compare them. The crop forces the model to be able to adapt more during training, but probably isn't necessary.
+This function returns the transforms we want to apply to each item in the dataset. One reason we resize is for memory efficiency. Additionally, throughout the model the dimension of the images get halfed repeatedly and then doubled repeatedly; if the dimension is ever odd before halving, then the input and output image sizes will be different, and we won't be able to compare them. While likely unnecessary, the crop forces the model to be able to adapt more during training.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L24-L35&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-In the dataset constructor I create the MS COCO and WikiArt datasets and set the random seed used to pick new datapoints. Note that labels for coco ("coco_annotations") aren't necessary for style transfer, as I just need the images. However, the PyTorch CocoCaptions dataset requires them as an argument, and I wanted to re-use that class. I also have an "exclude_style" flag; this is because when I first tested the models, I didn't use the style images.
+In the dataset constructor I create the MS COCO and WikiArt datasets and set the random seed used to pick new datapoints. Note that labels for coco ("coco_annotations") aren't necessary for style transfer, as I just need the images. However they are required as an argument to the ready-made PyTorch CocoCaptions dataset, which I wanted to reuse. The "exclude_style" flag was used when I first tested the models, as I didn't use the style images.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L41-L54&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-The next interesting function was \_\_iter\_\_. This gets called right before we start looping through the dataset. It also gets called for each "worker" that is preparing data in parallel. When multiple workers are used in PyTorch, the IterableDataset gets copied for each worker. So if we have four workers, four IterableDatasets will be used to prepare data in parallel.
+The next interesting function was \_\_iter\_\_. This gets called before we start looping through the dataset, and for each "worker" that is preparing data in parallel. When multiple workers are used in PyTorch, the IterableDataset gets copied for each worker. So if we have four workers, four IterableDatasets will be used to prepare data in parallel.
 
 When I check whether worker info is not None, I'm essentially checking if there are multiple workers. If there are, each IterableDataset needs to set its random state so that it doesn't return the same datapoints as the other workers. Each IterableDataset also has to change its length; if we want a dataset of length 32 and we have four workers, each worker should return 8 items, not 32.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdata.py%23L59-L78&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-Next, I wrote the \_\_next\_\_ function, which returns the next datapoint. It checks whether the end of the dataset has been reached, and if not, returns a random image pair (or just one image, if exclude_style is True). I also have a function <span class="code">_check_data_to_return</span>, to ensure that I'm returning PyTorch tensors, not PIL images or something else by accident.
+Next, I wrote the \_\_next\_\_ function, which returns the next datapoint. It checks whether the end of the dataset has been reached, and if not, returns a random image pair (or just one image, if exclude_style is True). Additionally, I have a function <span class="code">_check_data_to_return</span>, to ensure that I'm returning PyTorch tensors, not PIL images or something else by accident.
 
-That's pretty much it for the IterableDataset class; in <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/tests.py"><span class="code">tests.py</span></a> I also wrote a <span class="code">test_data</span> function to make sure everything was working.
+That's pretty much it for the IterableDataset class; in <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/tests.py"><span class="code">tests.py</span></a> I wrote a <span class="code">test_data</span> function to make sure everything was working.
 
 
 ## The Encoder
@@ -86,7 +86,7 @@ Below I've included a diagram of the architecture. The first gray block represen
 {% include img.html src="../pics/encoderArch.png" %}
 <sup style="font-size:80%">[Diagram made here](http://alexlenail.me/NN-SVG/LeNet.html)</sup>
 
-When we compute the style loss, we do so at various intermediate outputs of the encoder. So below I'm grouped the different layers into red blocks; the output of each block is used to compute part of the style loss. For example, the first red block looks like so:
+When we compute the style loss, we do so at various intermediate outputs of the encoder. In the diagram below I've grouped the layers into red blocks. The output at the right end of each block is used to compute part of the style loss. For example, the first red block looks like so:
 
 convolution -> batch norm -> relu -> convolution -> batch norm -> relu
 
@@ -98,7 +98,7 @@ Now let's go through the code.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fencoder.py%23L6-L12&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-On a high level, in the constructor we load the pretrained model, switch to using reflection padding, and also freeze the weights. The code for those functions is below:
+On a high level, in the constructor we load the pretrained model, switch to using reflection padding, and freeze the weights. The code for those functions is below:
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fencoder.py%23L14-L33&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -123,7 +123,7 @@ Again the constructor is a high-level overview. Method <span class="code">load_b
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdecoder.py%23L15-L21&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
-Method <span class="code">load_base_architecture</span> loads, reverses, and truncates the VGG19 so we that we have the parts we want. Method <span class="code">swap_maxpools_for_upsamples</span> swaps max pooling for upsampling.
+The method <span class="code">load_base_architecture</span> loads, reverses, and truncates the VGG19 model. Method <span class="code">swap_maxpools_for_upsamples</span> swaps max pooling for upsampling.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Fdecoder.py%23L23-L32&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -135,7 +135,7 @@ Lastly, <span class="code">make_relus_trainable</span> sets <span class="code">i
 
 Note that we aren't training the encoder, so we don't have the same problem in that case.
 
-As usual, I also wrote a test function for the decoder in <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/tests.py"><span class="code">tests.py</span></a>.
+As usual, I wrote a test function for the decoder in <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/tests.py"><span class="code">tests.py</span></a>.
 
 
 ## The AdaIn Layer
