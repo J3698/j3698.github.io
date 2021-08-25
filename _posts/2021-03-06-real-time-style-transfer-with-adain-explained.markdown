@@ -2,11 +2,13 @@
 layout: post
 title: "Real-time Style Transfer with AdaIN, Explained"
 date: 2021-03-06
-edited: 2021-03-09
+edited: 2021-08-24
 categories: adain
 thumb: /pics/thumb28.png
 ---
 
+_Edited March 9th to correct loss function, which I over-generalized._
+_Edited Aug. 24th to correct loss typo._
 
 Recently I got an [OAK-1](https://opencv.org/introducing-oak-spatial-ai-powered-by-opencv/) (a camera with an AI chip on board) and had no idea what to do with it. I also recently read [the 2017 paper introducing adaptive instance normalization (AdaIN)](https://arxiv.org/pdf/1703.06868.pdf) and enjoyed it.
 
@@ -131,7 +133,7 @@ In practice, we don't just compute these loss functions with the output of the e
 This leads us to the following loss function:
 
 <div style="overflow-x:auto">
-$$\begin{aligned} L_{content}(Input, Out)=& \lambda ||AdaIn(encoder(Input))- encoder(Out)||_2^2 + \\  &  \sum_i ||stats(encoder_i(Style))- stats(encoder_i(Out))||_2^2\end{aligned}$$
+$$\begin{aligned} L_{total}(Input, Out)=& \lambda ||AdaIn(encoder(Input))- encoder(Out)||_2^2 + \\  &  \sum_i ||stats(encoder_i(Style))- stats(encoder_i(Out))||_2^2\end{aligned}$$
 </div>
 
 We can minimize this loss function with gradient descent. That is out of the scope of this post, but I hope the idea behind what we're trying to do makes sense.
@@ -149,4 +151,3 @@ And that's it for now! I've already made quite a bit of headway on writing the m
 
 _Example style image stolen from [here](https://www.amazon.com/iCoostor-Numbers-Acrylic-Painting-Beginner/dp/B07N2V38XZ)._
 
-_Edited March 9th to correct loss function, which I over-generalized._
