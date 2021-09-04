@@ -6,7 +6,7 @@ categories: adain
 thumb: /pics/thumb29.png
 ---
 
-About a week ago, I wrote the models and datasets for real-time style transfer with AdaIn. In this post, I'll get to training. By the end, I'll show some stylized images. If you're just here for the stylized images, feel free to skip to the end :).
+About a week ago (plus or minus a month), I wrote the models and datasets for real-time style transfer with AdaIn. In this post, I'll get to training. By the end, I'll show some stylized images. If you're just here for the stylized images, feel free to skip to the end :).
 
 ## Recap
 
