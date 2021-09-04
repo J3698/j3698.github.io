@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "Results! Training Real-time Style Transfer"
-date: 2021-08-31
+date: 2021-09-04
 categories: adain
 thumb: /pics/thumb29.png
 ---
 
-About a week ago, I wrote the models and datasets for real-time style transfer with AdaIn. In this post, I'll get to training. By the end, I'll show some stylized images. If you're just here for the stylized images, feel free to skip towards the end :).
+About a week ago, I wrote the models and datasets for real-time style transfer with AdaIn. In this post, I'll get to training. By the end, I'll show some stylized images. If you're just here for the stylized images, feel free to skip to the end :).
 
 ## Recap
 
@@ -71,7 +71,7 @@ We encode the style and content images, and then use AdaIn on the encodings, and
 
 ## The Training Pipeline
 
-Now for the training pipeline. I'm going to completely skip over explaining <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/main.py"><span class="code">main.py</span></a>, <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/validate.py"><span class="code">validate.py</span></a>, and swathes of <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/train.py"><span class="code">train.py</span></a> as well. Most of main is dealing with argument parsing, and much of validate is already covered in what I'll cover in train. Also, a bunch of train is not specific to style transfer.
+Now for the training pipeline. I'm going to completely skip over explaining <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/main.py"><span class="code">main.py</span></a>, <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/validate.py"><span class="code">validate.py</span></a>, and swaths of <a href="https://github.com/J3698/AdaIN-reimplementation/blob/post-two/train.py"><span class="code">train.py</span></a> as well. Most of main is dealing with argument parsing, and much of validate is already covered in what I'll cover in train. Also, a bunch of train is not specific to style transfer.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Ftrain.py%23L43-L70&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -87,7 +87,7 @@ Line 74 does much of the heavy lifting; after that we calculate the loss from ou
 
 The last two functions are responsible for actually calculating the style and content losses. They are below for completeness, but I will not talk too much about them, as I talked about the math behind them in the [first post](./real-time-style-transfer-with-adain-explained).
 
-There is one big deviation I had here between the original paper. For many of the loss terms, I allow the default behavior of torch to take over, which is to average the loss over certain dimensions, rather than sum over them. This means my model does not weight deeper features as much, and that my loss values are a lot lower.
+There is one big deviation I had here between the original paper. For some of the loss terms, I average the style loss between feature maps, rather than sum over them. Because deeper layers have more feature maps, this means that the loss from deep features will not be as dominant over the loss from more shallow features.
 
 <script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2FJ3698%2FAdaIN-reimplementation%2Fblob%2Fpost-two%2Ftraining%2Ftrain.py%23L82-L98&style=github&showBorder=on&showLineNumbers=on&showFileMeta=on&showCopy=on"></script>
 
@@ -102,7 +102,7 @@ First of all, I tried many many many experiments on just a few images. What I fo
 
 Bottom right is the original image. From left to right, top to bottom, the style loss weight is increasing. You can see that without enough style weight, the image ends up looking quite dark; content loss alone is not good enough to bring out the original image, at least not early on in training.
 
-I also tried training with and without random cropping. Even for a few examples, that made quite a difference; convergence would be much slower, and images would take longer to look like they had any style.
+I also tried training with and without random cropping. Initially the cropping made convergence a lot slower, but this was solved once I fixed the rest of the issues that I will talk about below.
 
 After getting some models to converge with small examples, I tried using a larger training dataset. What quickly happened is that the styles all converged to a muddy brown, with painting-like strokes. Basically, the styles were all the same. I also noticed the color of the final layer's biases was very close to the average color of the WikiArt dataset. Here's what things looked like:
 
@@ -110,11 +110,11 @@ After getting some models to converge with small examples, I tried using a large
 
 No amount of hyperparameter tuning, lowering of regularization, etc. would fix this problem at first. I burned a lot of AWS money. I also tried removing the bias in the last layer. This didn't really help.
 
-Along the way I figured that weighing the style loss layers differently (maybe further enweight earlier layers) might help the color come out, as earlier layers are closer to the raw RGB data. This didn't really help. So I also tried another experiment; I played around with the loss function. Some style transfer papers don't take euclidean distance between style vectors, instead they calculate L2 loss. I tried both, and had the feeling that euclidean distance converged faster; I think it might be because the square root dampens the difference in effect of the various style losses, but I can't be sure.
+Along the way I hypothesized that weighing the style loss layers differently (maybe further enweight earlier layers) might help the color come out, as earlier layers are closer to the raw RGB data. This didn't really help. So I also tried another experiment; I played around with the loss function. Some style transfer papers don't take a square root after calculating the L2 difference between between style vectors. I tried both, and had the feeling that the square root converged faster; I think this might be because the square root dampens the difference in effect of the various style losses, but I would have to do more pointed experimentation to find out.
 
 This also lead me to discover that by default, the layer losses of the deeper layers are greater in magnitude.
 
-All of the above problems were mostly fixed by adding batch normalization to the encoder. The time wasted sucked, but did get me to think deeper about the problem in a deeper manner. Would taking a larger root (rather than L2 norm) further improve the balance of the style losses? Would it matter? Does the bias in the last layer hurt the model? If the encoder was trained as a normalization-free network, would the model work without the batch normalization? What if we enabled AdaIn at multiple points in the decoder?
+All of the above problems were mostly fixed by adding batch normalization to the encoder. The time wasted sucked, but did get me to think about the problem in a deeper manner. Would taking a larger root (rather than L2 norm) further improve the balance of the style losses? Would it matter? Does the bias in the last layer hurt the model? If the encoder was trained as a normalization-free network, would the model work without the batch normalization? What if we enabled AdaIn at multiple points in the decoder?
 
 While interesting, I probably won't pursue these questions, as there are other parts of the project I want to get to.
 
