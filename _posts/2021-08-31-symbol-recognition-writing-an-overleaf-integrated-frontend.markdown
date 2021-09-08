@@ -38,7 +38,7 @@ At this point we have a basic extension! We can also create a <span class="code"
 
 In order to load the extension in Firefox we can navigate to <span class="code">about:debugging#/runtime/this-firefox</span> and then click <span class="code">Load Temporary Add-on</span>. In Chrome, we can click <span class="code">Load unpacked</span> at <span class="code">chrome://extensions/</span>. After loading our directory, we can then navigate to a new overleaf project, right click anywhere, click inspect element, and then navigate to the console to see "Hello!"
 
-## The Frontend Overview
+## The Frontend Plan
 
 Most of the front end is written in <span class="code">content.js</span>. Here's the top of that file, which serves as a good overview of this file:
 
@@ -48,7 +48,7 @@ The first two lines add the UI: a button to toggle showing the user interface (<
 
 The next line adds functionality to the button so that it will hide and show the main UI (<span class="code">addToggleExtexifyCallbacks()</span>). Next we hide the UI to start with (<span class="code">hideExtexify()</span>).
 
-The next two lines setup the drawing canvas.
+The next two lines clear the drawing canvas and make the canvas react to mouse movements, respectively.
 
 For the remaining of this post, I'll explain the rest of this file. I will skip over most of the styling code.
 
@@ -64,15 +64,15 @@ In order to get this look, I first had to find the location in the website code 
 
 {% include img.html src="../pics/find_button_space.png" %}
 
-You can see that the class name for this space is "formatting-buttons-wrapper". Additionally, there's no other parts of the webpage with this name, so I can access this element directly, and add the button:
+If you squint, you can see that the class name for this space is "formatting-buttons-wrapper". Additionally, there's no other parts of the webpage with this name, so I can access this element directly, and add the button. The below code shows me doing this, by setting the inner code (html) of that space:
 
 <script src="https://gist.github.com/J3698/56db90bd0907c7c731c7cc9ce06d3138.js"></script>
 
-You'll also notice that I add "toggle-switch" as one of the classes for the button, so that it looks similar to the rest of the UI.
+You'll also notice that I add "toggle-switch" as one of the classes for the button. The neighboring buttons have this class, I added this so that the button would blend in.
 
 ## Injecting the Extexify Main User Interface
 
-I performed a similar process as for the button to create the extexify UI. First, I had to find the text editor in the web page (line 2). Then lines 4-10 add new elements to the page. The rest of the method adds the custom code for the UI. After adding  Below, lines 2-10 serve to add new elements to the webpage. The rest of the function defines the custom user interface I am after.
+I performed a similar process as for the button to create the extexify user interface (UI). Below, lines 2-10 serve to add new elements to the webpage. The rest of the function defines the custom user interface I am after.
 
 <script src="https://gist.github.com/J3698/e9b8a6e6c8ceaf4bce5d2b5cd7672245.js"></script>
 
@@ -82,9 +82,9 @@ Here is the result of that code:
 
 The top box is for drawing, and the bottom five boxes will hold predictions.
 
-One thing I want to talk about in terms of styling is how many boxes get shown. Imagine my screen is very squished; I don't want to show all of the prediction boxes. I got this behavior by making the container for the prediction boxes display in "flex" mode, with it's "flex-flow" attribute set to "row wrap", and "overflow" set to "hidden". This means that the boxes will be in a row, and wrap around if there is not space. The hidden overflow will ensure that the boxes that wrap around are not shown.
+One thing I want to talk about in terms of styling is how many boxes get shown. Imagine my screen is very squished; I don't want to show all of the prediction boxes. I got this behavior by making the container for the prediction boxes display in "flex" mode, with it's "flex-flow" attribute set to "row wrap", and "overflow" set to "hidden". This means that the boxes will be in a row, and wrap around to the next row if there is not space. However, the the hidden overflow setting will ensure that the boxes that wrap around are not actually shown.
 
-In general, I think I should probably use flex display more often, as it seems useful for dynamic grid-like content. However, I have not yet taken the time to learn the ins and outs of flex.
+In general, I think I should probably use flex display more often, as it seems useful for this kind of thing. However, I have not yet taken the time to learn the ins and outs of flex.
 
 ## Interactivity
 
@@ -92,7 +92,7 @@ So far we have the user interface up, but it doesn't do anything. The function <
 
 <script src="https://gist.github.com/J3698/d3f1f015e3369954ef12990b11c56857.js"></script>
 
-Here we just toggle the fade-out class which hides the main UI, reset the canvas width if necessary, and reset our list of drawn points.
+Here we just toggle the "fade-out" class which hides the main UI, reset the canvas width if necessary, and reset our list of drawn points.
 
 The next step of interactivity is drawing on the canvas. For this, I simply copy pasted from this [stack overflow answer](https://stackoverflow.com/a/30684711/4142985).
 
@@ -102,4 +102,4 @@ There was a bit more styling behind the seens, but after that, I had the entire 
 
 {% include img.html src="../pics/frontend_demo.gif" %}
 
-I suspect there are a few more things I'll need for the frontend, but for now, I have a super solid start. I've already gotten a lot of progress on the backend / machine learning side of things, so look out for that soon! Until next time.
+I suspect there are a few more things I'll need for the frontend, but for now, I have a super solid start. I've already gotten a lot of progress on the backend / machine learning side of things, so look out for that soon post in the next few weeks! Until next time.
