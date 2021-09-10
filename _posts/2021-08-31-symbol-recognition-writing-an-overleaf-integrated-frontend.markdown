@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Symbol Recognition: Writing an Overleaf Integrated Frontend"
+title: "Symbol Recognition in Overleaf: The Frontend and a Simple Backend"
 date: 2021-08-31
 categories: extexify
 thumb: /pics/thumb31.png
@@ -8,7 +8,7 @@ thumb: /pics/thumb31.png
 
 Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks. This was especially an issue very close to deadlines. While there are solutions to convert from mouse drawings or handwriting to LaTeX equations (such as detexify), none of them integrate seemlesly with Overleaf, the dominant LaTeX editor.
 
-Enter extexify, a symbol recognition extension that I will build specifically to work in Overleaf. In this first post I'll be building out much of the front end.
+Enter extexify, a symbol recognition extension that I will build specifically to work in Overleaf. In this first post I'll be building out much of the front end, and a backend that does absolutely nothing.
 
 Before we jump in: the code shown below may not represent the work I've done a few weeks from now; I wil likely open source everything at a later date. Additionally, I'm testing all of this in Firefox; some parts may have to be modified to work elsewhere.
 
@@ -32,7 +32,7 @@ Please note that if you're planning to make a new extension, you should probably
 
 <script src="https://gist.github.com/J3698/40e0669f0444e9a66107fb984e8a5981.js"></script>
 
-This simple manifest file enables the extension on Overleaf, and ensures that <span class="code">content.js</span> (main code) and <span class="code">style.css</span> (styling code) will get loaded on top of overleaf.
+This simple manifest file enables the extension on Overleaf, and ensures that <span class="code">content.js</span> (main code) and <span class="code">style.css</span> (styling code) will get loaded on top of Overleaf.
 
 At this point we have a basic extension! We can also create a <span class="code">content.js</span>, and add a simple <span class="code">console.log("Hello!")</span> to it.
 
@@ -49,8 +49,6 @@ The first two lines add the UI: a button to toggle showing the user interface (<
 The next line adds functionality to the button so that it will hide and show the main UI (<span class="code">addToggleExtexifyCallbacks()</span>). Next we hide the UI to start with (<span class="code">hideExtexify()</span>).
 
 The next two lines clear the drawing canvas and make the canvas react to mouse movements, respectively.
-
-For the remaining of this post, I'll explain the rest of this file. I will skip over most of the styling code.
 
 ## Injecting the Extexify Button
 
@@ -96,10 +94,52 @@ Here we just toggle the "fade-out" class which hides the main UI, reset the canv
 
 The next step of interactivity is drawing on the canvas. For this, I simply copy pasted from this [stack overflow answer](https://stackoverflow.com/a/30684711/4142985).
 
-## Final Result
-
 There was a bit more styling behind the seens, but after that, I had the entire user interface up and running. Here is the whole thing:
 
 {% include img.html src="../pics/frontend_demo.gif" %}
 
-I suspect there are a few more things I'll need for the frontend, but for now, I have a super solid start. I've already gotten a lot of progress on the backend / machine learning side of things, so look out for that soon post in the next few weeks! Until next time.
+It's ready to connect to a backend!
+
+## A simple backend
+
+I will try to have the backend be as simple as possible to start. For example, since I will create my models in Python, I will write the backend in Python, too, with Flask. Initially, the server will have one endpoint, "classify", and will always return the same predictions. Here it is:
+
+<script src="https://gist.github.com/J3698/191d7d62c9241663ef280411ba93ac2d.js"></script>
+
+This is pretty much copy pasted from the Flask documentation. I've decided that I want the server to send back the top 5 symbol predictions; for now they're just A B C D E F.
+
+After naming this file <span class="code">app.py</span>, I could run it with the following:
+
+<div class="code">sudo flask run -p 80</div>
+
+This runs things on port 80, which for whatever reason, is the only way to set up a server locally and have it communicate with an extension. Going to <span class="code">http://localhost/classify</span>, I could see the basic predictions.
+
+
+## Bridging the Frontend and Backend
+
+Now it was time to have the extension ping the web server. For this to work, I had to broaden the permissions in the extension's manifest file:
+
+<div class="code">"permissions": [
+    "*://localhost/*",
+    "webRequest"
+]</div>
+
+Then, in <span class="code">content.js</span>, I added a function that pings the server every 150 milliseconds if there's an update to the canvas. Here it is:
+
+<script src="https://gist.github.com/J3698/f1c79874dbcd01a0048b2312d1623005.js"></script>
+
+First up, the canvas drawing code updates a variable <span class="code">shouldUpdate</span>, so if no canvas changes have happened, nothing gets requested. Otherwise, I request a classification from the server, and I call <span class="code">updatePredictionsHTML</span> to update the visible predictions.
+
+This motivates the next two functions, <span class="code">updatePredictionsHTML</span> and <span class="code">addReTypesetHandler</span>. The former simply updates the html for for the predictions, and I won't cover it.
+
+The latter however was more interesting. Basically, I want the predictions to be nicely typeset. This is easy enough using a library called MathJax, which Overleaf already has loaded. However, the extension can't directly access this javascript object. So instead, on the extension side I toggle an invisible element in the page when I want to typeset predictions. Then I inject a script into the page that can access MathJax, which constantly checks if that invisible element has been toggled. This is definitely not the way to do things, but in the spirit of cutting corners, it's what I have right now. The following code is what checks whether the invisible element has changed:
+
+<script src="https://gist.github.com/J3698/445ecaedd0535ef25b47f6e8f503e40c.js"></script>
+
+## Final Result
+
+With that, I had a backend and a frontend that could talk to each other. You can see this below; after I finish drawing, the predictions below blink as they get refresh.
+
+{% include img.html src="../pics/rerender.gif" %}
+
+At this point, all I need to do is change the backend so that it actually returns predictions. I've already gotten a lot of progress on this end, so until next time!
