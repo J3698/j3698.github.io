@@ -6,11 +6,11 @@ categories: extexify
 thumb: /pics/thumb31.png
 ---
 
-Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks. This was especially an issue very close to deadlines. While there are solutions to convert from mouse drawings or handwriting to LaTeX equations (such as detexify), none of them integrate seemlesly with Overleaf, the dominant LaTeX editor.
+Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks, especially an hour before a deadline. There are solutions to convert from mouse drawings or handwriting to LaTeX (like detexify), but none integrate seemlesly with Overleaf, the dominant LaTeX editor.
 
-Enter extexify, a symbol recognition extension that I will build specifically to work in Overleaf. In this first post I'll be building out much of the front end, and a backend that does absolutely nothing.
+Enter extexify, a symbol recognition extension that I will build specifically to work in Overleaf. In this first post I'll build out much of the front end and a simple backend.
 
-Before we jump in: the code shown below may not represent the work I've done a few weeks from now; I wil likely open source everything at a later date. Additionally, I'm testing all of this in Firefox; some parts may have to be modified to work elsewhere.
+Before we jump in, note that as I update the extension, I won't update the code shown below. Additionally, I'm testing in Firefox, so some parts won't work on other browsers for now.
 
 ## The Whole Plan
 
@@ -18,25 +18,29 @@ For the uninitiated, Overleaf lets us type out papers in LaTeX, a language commo
 
 {% include img.html src="../pics/vanilla_overleaf.png" %}
 
-I plan to have a button next to the top buttons that say "Source / Rich Text", which will say "extexify". Upon clicking this, a pane should pop up over the editor where users can draw a symbol. After the user stops drawing, the points in the drawing will be sent to a server.
+I plan to have an "extexify" button next to the top buttons that say "Source / Rich Text". It will open a pane over the editor where users can draw a symbol. After a symbol is drawn, the strokes will be sent to a server.
 
-On the server side, I will convert the points from the drawing into an image, and use a convolutional neural network to classify the image (more on this decision later). I hope to eventually be able to classify any symbol, even if they don't exist in the dataset I am using.
+The server will convert the strokes into an image, and use a convolutional neural network (CNN) to classify the symbol. I hope to eventually be able to classify any symbol, even if it doesn't exist in the dataset I am using.
 
-The server will eventually send the classification back to the user, who will be able to copy any of the top results to clipboard.
+The server will eventually send the classification back to the user, who will be able to copy any of the top results to their clipboard.
 
 After I have something that mostly of works, I plan to post this on a few subreddits, and perhaps elsewhere, too. I want feedback!
 
 ## Creating a Basic Extension
 
-Please note that if you're planning to make a new extension, you should probably look up the latest documentation from Firefox or Chrome! In general, the first step to creating an extension to create a new directory for the extension, and a manifest file in it:
+Please note that if you're planning to make a new extension, you should probably look up the latest documentation from Firefox or Chrome! Step one to a new extension is to create a new directory for the extension, and a manifest file in the directory:
 
 <script src="https://gist.github.com/J3698/40e0669f0444e9a66107fb984e8a5981.js"></script>
 
-This simple manifest file enables the extension on Overleaf, and ensures that <span class="code">content.js</span> (main code) and <span class="code">style.css</span> (styling code) will get loaded on top of Overleaf.
+This simple manifest file enables the extension on Overleaf, and ensures that <span class="code">content.js</span> (the main code) and <span class="code">style.css</span> (the styling code) will get loaded on top of Overleaf.
 
 At this point we have a basic extension! We can also create a <span class="code">content.js</span>, and add a simple <span class="code">console.log("Hello!")</span> to it.
 
-In order to load the extension in Firefox we can navigate to <span class="code">about:debugging#/runtime/this-firefox</span> and then click <span class="code">Load Temporary Add-on</span>. In Chrome, we can click <span class="code">Load unpacked</span> at <span class="code">chrome://extensions/</span>. After loading our directory, we can then navigate to a new overleaf project, right click anywhere, click inspect element, and then navigate to the console to see "Hello!"
+In order to load the extension in Firefox we can navigate to <span class="code">about:debugging#/runtime/this-firefox</span> and then click <span class="code">Load Temporary Add-on</span>.
+
+In Chrome, we can click <span class="code">Load unpacked</span> at <span class="code">chrome://extensions/</span>.
+
+After loading our directory, we can then navigate to a new overleaf project, right click anywhere, click inspect element, and then navigate to the console to see "Hello!"
 
 ## The Frontend Plan
 
@@ -80,17 +84,31 @@ Here is the result of that code:
 
 The top box is for drawing, and the bottom five boxes will hold predictions.
 
-One thing I want to talk about in terms of styling is how many boxes get shown. Imagine my screen is very squished; I don't want to show all of the prediction boxes. I got this behavior by making the container for the prediction boxes display in "flex" mode, with it's "flex-flow" attribute set to "row wrap", and "overflow" set to "hidden". This means that the boxes will be in a row, and wrap around to the next row if there is not space. However, the the hidden overflow setting will ensure that the boxes that wrap around are not actually shown.
+One thing I want to talk about in terms of styling is how many boxes get shown. Imagine my screen is very squished; I don't want to show all of the prediction boxes, as in the image below:
 
-In general, I think I should probably use flex display more often, as it seems useful for this kind of thing. However, I have not yet taken the time to learn the ins and outs of flex.
+{% include img.html width="300px" src="../pics/overflow_bad.png" %}
+
+The first step to avoiding this behavior was to make the container for the prediction boxes display in "flex" mode, with its "flex-flow" attribute set to "row wrap".
+
+What this does is mandate that the boxes will be in a row, and wrap around to the next row if there is not enough space. Like so:
+
+{% include img.html width="300px" src="../pics/overflow_row.png" %}
+
+
+Lastly, setting the "overflow" attriute to "hidden" removed the extra rows:
+
+{% include img.html width="300px" src="../pics/overflow_fixed.png" %}
+
+In general, I think I should probably use "flex" display more often, as it seems useful for grid-like layouts, which I use often. But I haven't yet taken the time to learn the ins and outs of flex.
+
 
 ## Interactivity
 
-So far we have the user interface up, but it doesn't do anything. The function <span class="code">addToggleExtexifyCallbacks()</span> add life to the extexify button, and <span class="code">hideExtexify()</span> initially hides the drawing user interface. Under the hood, they both rely on code from <span class="code">toggleExtexify()</span>:
+So far we have the user interface up, but it doesn't do anything. The function <span class="code">addToggleExtexifyCallbacks()</span> adds life to the extexify button, and <span class="code">hideExtexify()</span> initially hides the drawing user interface. Under the hood, they both rely on code from <span class="code">toggleExtexify()</span>:
 
 <script src="https://gist.github.com/J3698/d3f1f015e3369954ef12990b11c56857.js"></script>
 
-Here we just toggle the "fade-out" class which hides the main UI, reset the canvas width if necessary, and reset our list of drawn points.
+Here we just toggle the "fade-out" class which hides the main user interface, reset the canvas width if necessary, and reset our list of drawn points.
 
 The next step of interactivity is drawing on the canvas. For this, I simply copy pasted from this [stack overflow answer](https://stackoverflow.com/a/30684711/4142985).
 
@@ -102,7 +120,7 @@ It's ready to connect to a backend!
 
 ## A simple backend
 
-I will try to have the backend be as simple as possible to start. For example, since I will create my models in Python, I will write the backend in Python, too, with Flask. Initially, the server will have one endpoint, "classify", and will always return the same predictions. Here it is:
+I will try to have the backend be as simple as possible to start. For example, since I will create my models in Python, I will write the backend in Python, with Flask. Initially, the server will have one endpoint, "classify", and will always return the same predictions. Here it is:
 
 <script src="https://gist.github.com/J3698/191d7d62c9241663ef280411ba93ac2d.js"></script>
 
@@ -112,7 +130,7 @@ After naming this file <span class="code">app.py</span>, I could run it with the
 
 <div class="code">sudo flask run -p 80</div>
 
-This runs things on port 80, which for whatever reason, is the only way to set up a server locally and have it communicate with an extension. Going to <span class="code">http://localhost/classify</span>, I could see the basic predictions.
+This runs things on port 80, which for whatever reason, is the only port that a local server can use to communicate with an extension. Navigating to <span class="code">http://localhost/classify</span> in a browser, I could see the basic predictions of A, B, C, D E F.
 
 
 ## Bridging the Frontend and Backend
@@ -130,15 +148,17 @@ Then, in <span class="code">content.js</span>, I added a function that pings the
 
 First up, the canvas drawing code updates a variable <span class="code">shouldUpdate</span>, so if no canvas changes have happened, nothing gets requested. Otherwise, I request a classification from the server, and I call <span class="code">updatePredictionsHTML</span> to update the visible predictions.
 
-This motivates the next two functions, <span class="code">updatePredictionsHTML</span> and <span class="code">addReTypesetHandler</span>. The former simply updates the html for for the predictions, and I won't cover it.
+This motivates the next two functions, <span class="code">updatePredictionsHTML</span> and <span class="code">addReTypesetHandler</span>. The first function updates the text for the predictions. It's not very interesting, so I won't explain it.
 
-The latter however was more interesting. Basically, I want the predictions to be nicely typeset. This is easy enough using a library called MathJax, which Overleaf already has loaded. However, the extension can't directly access this javascript object. So instead, on the extension side I toggle an invisible element in the page when I want to typeset predictions. Then I inject a script into the page that can access MathJax, which constantly checks if that invisible element has been toggled. This is definitely not the way to do things, but in the spirit of cutting corners, it's what I have right now. The following code is what checks whether the invisible element has changed:
+The latter however was more interesting. Basically, I want the predictions to be nicely typeset. This is easy enough using a library called MathJax, which Overleaf already has loaded.
+
+However, the extension can't directly access MathJax. So on the extension side I toggle an invisible element in the page when I want to typeset predictions. Then a script injected inthe page checks this invisible element to see if it should typeset things. There is probably a better way of doing this, but I haven't found it yet. The following code is what checks whether the invisible element has changed:
 
 <script src="https://gist.github.com/J3698/445ecaedd0535ef25b47f6e8f503e40c.js"></script>
 
 ## Final Result
 
-With that, I had a backend and a frontend that could talk to each other. You can see this below; after I finish drawing, the predictions below blink as they get refresh.
+With that, I had a backend and a frontend that could talk to each other. You can see this below; after I finish drawing, the predictions below blink as they get refreshed.
 
 {% include img.html src="../pics/rerender.gif" %}
 
