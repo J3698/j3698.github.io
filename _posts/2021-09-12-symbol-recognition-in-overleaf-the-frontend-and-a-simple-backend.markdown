@@ -6,7 +6,7 @@ categories: extexify
 thumb: /pics/thumb31.png
 ---
 
-Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks, especially an hour before a deadline. There are solutions to convert from mouse drawings or handwriting to LaTeX (like detexify), but none integrate seemlesly with Overleaf, the dominant LaTeX editor.
+Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks, especially an hour before a deadline. There are solutions to convert from mouse drawings or handwriting to LaTeX (like detexify), but none integrate seamlesly with Overleaf, the dominant LaTeX editor.
 
 Enter extexify, a symbol recognition extension that I will build specifically to work in Overleaf. In this first post I'll build out much of the front end and a simple backend.
 
