@@ -7,8 +7,7 @@ thumb: /pics/thumb31.png
 ---
 
 
-We're getting closer! So far we have a working style transfer model. However, we haven't even started talking about moving it to the OpenCV AI Kit, and it's likely too big to do so. In this post, we'll handle that first problem; I'll walk through the process of getting a (super) simple model on the OpenCV AI Kit.
-
+We're getting closer! So far we have a working style transfer model. However, we haven’t even started talking about moving models to the OpenCV AI Kit, and our current model is likely too big to do so. In this post, we'll handle that first problem; I'll walk through the process of getting a (super) simple model on the OpenCV AI Kit.
 
 ## Prerequisites
 
