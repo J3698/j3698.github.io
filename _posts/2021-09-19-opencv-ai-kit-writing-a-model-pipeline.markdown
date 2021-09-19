@@ -32,7 +32,7 @@ This was pretty much it in terms of dependencies.
 
 ## The Big Picture
 
-Now that we have things installed, let's step back and look at how everything will fit together here. First, we train a model in PyTorch. Then, we can also use PyTorch to export that model to ONNX. Next, we use OpenVINO to optimize and convert the ONNX model into the a different format. Afterwards, we use a web API to convert from that format into a blob that the OAK-1 can use. Lastly, we put the blob onto the model and run it. Here is what that looks like in diagram form:
+Now that we have things installed, let's step back and look at how everything will fit together here. First, we train a model in PyTorch. Then, we can also use PyTorch to export that model to ONNX. Next, we use OpenVINO to optimize and convert the ONNX model into a different format. Afterwards, we use a web API to convert from that format into a blob that the OAK-1 can use. Lastly, we put the blob onto the model and run it. Here is what that looks like in diagram form:
 
 {% include img.html src="../pics/pipeline.png" %}
 
@@ -65,7 +65,7 @@ The next step is to optimize the model, which also moves from the ONNX format to
 <div class="code"> python3 /opt/intel/openvino_2020.1.023/deployment_tools/model_optimizer/mo.py --input_model ./exports/test.onnx --data_type FP16
 </div>
 
-In  using this command, I'm using the model optimizer tool on the ONNX file, and also converting to 16-bit numbers. This will be faster and take up less memory then the original 32 or 64-bit numbers. The output of this command is a <span class="code">.bin</span>, <span class="code">.xml</span>, and <span class="code">.mapping</span> file.
+In  using this command, I'm using the model optimizer tool on the ONNX file, and also converting to 16-bit numbers. This will be faster and take up less memory then the original 32 or 64-bit numbers the model uses. The output of this command is a <span class="code">.bin</span>, <span class="code">.xml</span>, and <span class="code">.mapping</span> file.
 
 Running this in Python looks a bit different; I have to call it using the subprocess library. I also move the outputs to the exports folder:
 
@@ -79,9 +79,8 @@ Next is blob conversion. DepthAI have a nice API for this, so it's short and swe
 
 <script src="https://gist.github.com/J3698/3cda3da3187dc1717dd2e37cdaaf8b12.js"></script>
 
-Supposedly you can also do the blob conversion with <span class="code">deployment_tools/tools/compile_tool/compile_tool</span> under the OpenVINO installation. However, I found the outputs produced using that tool did not work on the OAK-1.
+Supposedly you can also do the blob conversion with <span class="code">deployment_tools/tools/compile_tool/compile_tool</span> under the OpenVINO installation. However, I found the outputs produced using that tool did not work on the OAK-1. This is probably a versioning problem.
 
-Right now we have everything working, but there are a lot of moving parts. So the next step will be creating a script to take care of the whole model export process for us.
 
 ## Creating the Pipeline
 
@@ -99,11 +98,11 @@ The next step is to run this pipeline. I will include the code here, but it's no
 
 ## Results
 
-I have all of the above in what cumulates in <span class="code">example.py</span>, [here](). As a reminder, this is what the main method looks like:
+As a reminder, this is what the main method looks like:
 
 <script src="https://gist.github.com/J3698/33b9c00de822d8b5d5585cbe2a1867e8.js"></script>
 
-After running things, I get what I had earlier, but more dim (as everything is divided by two), and without the predictions (since my model has none of that):
+After running things, I get what I had earlier, but more dim (as everything is divided by two), and without the predictions (since my divide-by-two model has none of that):
 
 {% include img.html src="../pics/oak_demo2.gif" %}
 
@@ -112,7 +111,7 @@ After running things, I get what I had earlier, but more dim (as everything is d
 
 At this point, we can get models on the OAK-1 very easily with the code we've setup (by running just one script!).
 
-Though it seems this step was easy, I definitely lost many hours earlier this year trying to get this to work. I think a big part of this is because depthAI and the OAK-1 is very young (I backed the kickstarter a bit over a year ago). This means that some of the things that I got working more recently were a huge pain back in March. For one, the blob converter and model optimizer did not all show up in all versions of OpenVINO. Additionally, I ran into wierd compatibility issues that I could not figure out. I also ended up digging through the depthai C and Python code back then to try to find the usage that I wanted.
+Though it seems this step was easy, I definitely lost many hours earlier this year trying to get this to work. I think a big part of this is because depthAI and the OAK-1 is very young (I backed the kickstarter a bit over a year ago). This means that some of the things that I got working more recently were a huge pain back in March. For one, the blob converter and model optimizer did not all show up in all versions of OpenVINO. Additionally, I ran into wierd compatibility issues that I could not figure out. I also ended up having to dig through the depthai C and Python code back then to try to find the usage that I wanted.
 
 But trying to do all of that more recently, it just seems to work, and the documentation is much clearer. Which in retrospect, is to be expected of a budding project.
 
