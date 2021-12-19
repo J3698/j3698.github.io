@@ -3,7 +3,7 @@ layout: post
 title: "Symbol Recognition in Overleaf: The Frontend and a Simple Backend"
 date: 2021-08-31
 categories: extexify
-thumb: /pics/thumb31.png
+thumb: /pics/thumb30.png
 ---
 
 Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks, especially an hour before a deadline. There are solutions to convert from mouse drawings or handwriting to LaTeX (like detexify), but none integrate seamlesly with Overleaf, the dominant LaTeX editor.

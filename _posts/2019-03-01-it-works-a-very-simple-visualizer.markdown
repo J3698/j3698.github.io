@@ -23,9 +23,9 @@ The next step was to reinstall JACK. First I ran the following command to instal
 Next I cloned, built and installed JACK2 by running the following commands from <span class="code">/home/pi</span>:
 <div class="code">git clone https://github.com/jackaudio/jack2.git
 cd jack2
-./waf configure 
-./waf build 
-sudo ./waf install 
+./waf configure
+./waf build
+sudo ./waf install
 </div>
 
 ## Setting Up PulseAudio for JACK

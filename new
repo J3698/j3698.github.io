@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+thor jekyll:new $1

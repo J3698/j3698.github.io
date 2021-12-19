@@ -1,0 +1,13 @@
+% equation.tex
+\documentclass{standalone}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage[charter]{mathdesign}
+\begin{document}
+\begin{minipage}{178pt}
+\begin{align*}
+L(Input, Style, Out)=&\sum_i \lambda_{style, i} ||encoder_i(Input)- encoder_i(Out)||_2^2 + \\ & \sum_i \lambda_{content,i} ||stats(encoder_i(Style))- stats(encoder_i(Out))||_2^2
+\end{align*}
+\end{minipage}
+\end{document}
