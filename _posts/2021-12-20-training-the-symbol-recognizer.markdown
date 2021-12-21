@@ -1,22 +1,26 @@
 ---
 layout: post
 title: "Training the Symbol Recognizer"
-date: 2021-09-09
+date: 2021-12-20
 categories: extexify
 thumb: /pics/thumb31.png
 ---
 
-Time to train a model! As a recap, right now we have a backend talking to a frontend Overleaf extension:
+Time to train a model! In this post, we will do a bunch of work preparing data, and then we'll train a deep neural network to classify symbols.
 
+As a recap, right now we have a backend talking to a frontend Overleaf extension:
 {% include img.html src="../pics/rerender.gif" %}
 
-Now, we will do a bunch of work preparing a data, and then we'll train a model. Next, we will revamp the server so that it can pass the data it recieves through our model.
+## Stroke VS Image Representation 
 
-## Some Design Decisions
+I want to explain one of my design decisions right out of the gate. Note that the digital symbol drawings can be represented either as lists of points in mouse strokes, or as images.
 
-I've made some interesting design decisions, so I want to explain those right out of the gate. First of all, the dataset I'll be using has information about how users draw the symbols. However, I will render everything into images, which will lose this information. I expect this may work better in purpose, as different people might draw symbols in a lot of different ways.
+{% include img.html src="../pics/stroke_v_image.png" %}
 
-Second, I have not split up the model computation and the web server. This means that if the model takes a long time, the server will get backed up. I'm allowing for this because I don't know if I'll ever have hundreds of users, so it's not worth being able to support them right now (I'm building Lean).
+The dataset I'll be using uses the stroke information, but I will be transforming it into image representation. Although this loses information about the order in which strokes were drawn, I expect this may be more robust, as different people might draw symbols in lots of different ways.
+
+Also, ONNX, which can be used to deploy models in the browser, did not properly support LSTM models (preferred for stroke representation)  when I started this project. That's the real reason.
+
 
 ## Reading the Data From a Databse
 
@@ -52,12 +56,11 @@ datasX = []
 datasY = []
 pbar = tqdm(total=number_of_data) # make our progress bar</div>
 
-After this, I actually go through all of the data and append it to a big list. Note that I have a lof of assertions here, just to make sure I understand the format of the data. I save the data as (N, 3) arrays. N represents the number of points in the drawing. The first two dimensions are the X and Y positions of each point in the drawing. The last dimension represents whether the user picked up their mouse / stylus at a given point.
+After this, I actually go through all of the data and store it in a large list. Note that I have a lof of assertions here, just to make sure I understand the format of the data. For each point in each stroke, I store the x coordinate, y coordinate, and then a 1 or a 0 depending on whether the user ended the stroke at the given point.
 
 <div class="code">while data != []:
     assert isinstance(data, list)
     for i in data:
-        breakpoint()
         assert isinstance(i, tuple)
         assert len(i) == 3
         assert isinstance(i[0], int), type(i[0])
@@ -90,7 +93,7 @@ At this point, I had a <span class="code">dataX.npy</span> and a <span class="co
 
 As I'm viewing this as an image classification problem, the next step was to load these points and convert them into images. In retrospect, I could have combined this step with the previous step. However, initially I wasn't sure I wanted to convert from points to images, so these are separate steps.
 
-I created a dataset class to hold the strokes, as initially I wasn't going to use images. Here's the constructor, which just normalizes each drawn symbol so that it's minimum and maximum coordinates are 0 and 1:
+I created a dataset class to hold the strokes, as initially I wasn't going to use images. Here's the constructor, which just normalizes each drawn symbol so that it's minimum and maximum coordinates are 0 and 1 respectively:
 
 <div class="code">class ExtexifyDataset(torch.utils.data.Dataset):
     def __init__(self, strokes_file = "data_processed/dataX.npy",\
@@ -155,9 +158,17 @@ The other important function in this file was <span class="code">create_image</s
 
 Here I'm looping through the strokes, and drawing them to the image. I also have to manually draw the last point in the image, otherwise it won't always appear.
 
-Another important bit here is that I had to split up the images into three sets: the train set, validation set, and test set. I won't show this, as it's not super involved. However, it turns out that because of how the image dataset class in PyTorch works, I had to be careful that every class of symbol was present in all three sets; otherwise I would get errors or unexpected results.
+## Train / Val / Test Splits
 
-After I'd done this, one folder of images might look like so:
+Another important bit here is that I had to split up the images into three sets: the train set to learn the model, the validation set to tune the model, and the test set (which I never really used). I won't show [this script](https://gist.github.com/J3698/e8435a161de4ffc5d5fcfdda948f1f1e), as it's not super involved.
+
+However, there was one sticking point on account of how the image dataset class in PyTorch works. Note that the PyTorch image dataset class first orders the classes by name, and then assigns a number to each class. Here's how that might play out if we have a training dataset, validation dataset, and test dataset:
+
+{% include img.html src="../pics/split_error.png" %}
+
+Note that since the test dataset doesn't have the "Equals" class, it assigns Nabla the number 3, instead of 4. This will cause all sorts of pain later on. For this reason, I had to ensure that each symbol was in all three sets. I found this out the hard way, and ended up having to read through the source code of PyTorch's image dataset. I might try to update their documentation later.
+
+However, after I'd fixed this issue, one folder of images might look like so:
 
 {% include img.html src="../pics/rendered_images.png" %}
 
@@ -165,41 +176,32 @@ At this point, I was ready to train.
 
 ## Training
 
-<div class="code">criterion = nn.CrossEntropyLoss()
+I'll go over some high-level details of training, but the [pytorch tutorials](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) explain things better than I can. I use the Adam to optimize the model since it's well known, and I also use weight decay to prevent the model from just memorizing the training data. During training, I put batches of 512 images through the model at once.
 
-dataset_train = ImageFolder("./images_data32/train", transform = ToTensor())
-dataset_val = ImageFolder("./images_data32/val", transform = ToTensor())
-dataset_test = ImageFolder("./images_data32/test", transform = ToTensor())
-train_loader = DataLoader(dataset_train, batch_size = batch_size,\
-                          shuffle = True, num_workers = os.cpu_count())
-val_loader = DataLoader(dataset_val, batch_size = batch_size, shuffle = False)
-test_loader = DataLoader(dataset_test, batch_size = batch_size, shuffle = False)
+I stop training the model once the top-5 accuracy levels off. In other words, if the correct symbol is one of the models top 5 predictions, I count the model output as correct. I choose top-5 accuracy as my metric since I show the user the top 5 predictions.
 
-model = Model()
-model.load_state_dict(torch.load("Test.pt", map_location = torch.device("cpu"))["model"])
-optimizer = optim.Adam(model.parameters(), weight_decay = 1e-4)
-scheduler = lr_scheduler.StepLR(optimizer, step_size)
-run_name = "Test"
-train_model(run_name, model, criterion, optimizer, \
-            scheduler, epochs, train_loader, val_loader, test_loader)
+For the model itself, I use the following architecture:
+
+<div class="code">2D Convolution (64 channels, filter size 3x3) ->
+ReLU -> BatchNorm ->
+2D Convolution (64 channels, filter size 3x3, stride 2) ->
+ReLU -> BatchNorm ->
+2D Convolution (128 channels, filter size 3x3, stride 2) ->
+ReLU -> BatchNorm ->
+2D Convolution (256 channels, filter size 3x3, stride 2) ->
+ReLU -> BatchNorm ->
+2D Convolution (512 channels, filter size 3x3, stride 2) ->
+ReLU -> BatchNorm ->
+Average Pool to 1x1 ->
+Linear (1098 outputs)
 </div>
 
-<div class="code">class Model(nn.Module):
-    def __init__(self):
-        super().__init__()
 
-        self.layers = nn.Sequential(
-                nn.Conv2d(3, 64, 3, 1, 1), nn.ReLU(), nn.BatchNorm2d(64),
-                nn.Conv2d(64, 64, 3, 2, 1), nn.ReLU(), nn.BatchNorm2d(64),
-                nn.Conv2d(64, 128, 3, 2, 1), nn.ReLU(), nn.BatchNorm2d(128),
-                nn.Conv2d(128, 256, 3, 2, 1), nn.ReLU(), nn.BatchNorm2d(256),
-                nn.Conv2d(256, 512, 3, 2, 1), nn.ReLU(), nn.BatchNorm2d(512),
+There isn't much rhyme or reason to this model; it's simple, and works. Before the average pooling layer the network output is 2x2x512; the pooling averages the image so that it is 1x1x512. The linear layer has 1098 outputs, one for every symbol in the dataset.
 
-                nn.AdaptiveAvgPool2d((1, 1)), nn.Flatten(),
-                nn.Linear(512, 1098)
-        )
 
-    def forward(self, x):
-        return self.layers(x)</div>
+This models ends up getting; almost 99% top-5 accuracy, which seems good enough for me. I used Google Colab to train the model in 20 minutes. I pay for Colab, but it's also available free. There should be a public Colab recitation available at [this course website](https://deeplearning.cs.cmu.edu/F20/index.html) if you would like to learn how to use it.
 
+
+Again, if you're interested in training an image model, the [pytorch tutorials](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) are great. My own code for training the model should be public soon [here](https://github.com/J3698/extexify/blob/main/train2.py). 
 
