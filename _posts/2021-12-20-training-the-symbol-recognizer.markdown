@@ -3,7 +3,7 @@ layout: post
 title: "Training the Symbol Recognizer"
 date: 2021-12-20
 categories: extexify
-thumb: /pics/thumb31.png
+thumb: /pics/thumb32.png
 ---
 
 Time to train a model! In this post, we will do a bunch of work preparing data, and then we'll train a deep neural network to classify symbols.
