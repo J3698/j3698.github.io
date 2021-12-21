@@ -26,7 +26,7 @@ Also, ONNX, which can be used to deploy models in the browser, did not properly 
 
 The dataset I'm using is from [here](https://github.com/kirel/detexify-data). It's the dataset from detexify, the project I'm emulating / improving upon. The author decided to use a database to store the data, however I'm more comfortable with numpy, so my first order of action was to export this database to numpy.
 
-Note that I already have Postgres installed so that I can work with the SQL databse easily; if you don't, you would have to setup Postgres or another SQL databse first.
+Note that I already have Postgres installed so that I can work with the SQL database easily; if you don't, you would have to setup Postgres or another SQL databse first.
 
 After downloading the database, I ran the following command to save the databse:
 
