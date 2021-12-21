@@ -19,7 +19,7 @@ I want to explain one of my design decisions right out of the gate. Note that th
 
 The dataset I'll be using uses the stroke information, but I will be transforming it into image representation. Although this loses information about the order in which strokes were drawn, I expect this may be more robust, as different people might draw symbols in lots of different ways.
 
-Also, ONNX, which can be used to deploy models in the browser, did not properly support LSTM models (preferred for stroke representation)  when I started this project. That's the real reason.
+Also, ONNX, which can be used to deploy models in the browser, did not properly support LSTM models (preferred for stroke representation)  when I started this project. That's the real reason I'm using images.
 
 
 ## Reading the Data From a Databse
@@ -137,7 +137,7 @@ The next two functions for the dataset class are the \_\_len\_\_ and \_\_getitem
     def __getitem__(self, idx):
         return self.strokes[idx], self.labels[idx]</div>
 
-The other important function in this file was <span class="code">create_image</span>. When I loop through the dataset, I call this function to create the images before I save them to a directory. Here it is:
+The other important function for rendering the imwas was <span class="code">create_image</span>. When I loop through the dataset, I call this function to create the images before I save them to a directory. Here it is:
 
 <div class="code">def create_image(size, stroke):
     image = Image.new("L", (size, size), color = 0)
@@ -176,9 +176,9 @@ At this point, I was ready to train.
 
 ## Training
 
-I'll go over some high-level details of training, but the [pytorch tutorials](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) explain things better than I can. I use the Adam to optimize the model since it's well known, and I also use weight decay to prevent the model from just memorizing the training data. During training, I put batches of 512 images through the model at once.
+I'll go over some high-level details of training, but the [pytorch tutorials](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) explain things better than I can. I use the well-known Adam optimizer to optimize the model, and I also use weight decay to prevent the model from simply memorizing the training data. During training, I put batches of 512 images through the model at once.
 
-I stop training the model once the top-5 accuracy levels off. In other words, if the correct symbol is one of the models top 5 predictions, I count the model output as correct. I choose top-5 accuracy as my metric since I show the user the top 5 predictions.
+I stop training the model once the top-5 accuracy levels off. In other words, if the correct symbol is one of the model's top 5 predictions, I count the model output as correct. I chose top-5 accuracy to evaluate the model since I show the user the top 5 predictions.
 
 For the model itself, I use the following architecture:
 
@@ -200,8 +200,15 @@ Linear (1098 outputs)
 There isn't much rhyme or reason to this model; it's simple, and works. Before the average pooling layer the network output is 2x2x512; the pooling averages the image so that it is 1x1x512. The linear layer has 1098 outputs, one for every symbol in the dataset.
 
 
-This models ends up getting; almost 99% top-5 accuracy, which seems good enough for me. I used Google Colab to train the model in 20 minutes. I pay for Colab, but it's also available free. There should be a public Colab recitation available at [this course website](https://deeplearning.cs.cmu.edu/F20/index.html) if you would like to learn how to use it.
+This models ends up getting almost 99% top-5 accuracy on the validation set, which seems good enough for me. I used Google Colab to train the model in 20 minutes. I pay for Colab, but it's also available free. There should be a public Colab recitation available at [this course website](https://deeplearning.cs.cmu.edu/F20/index.html) if you would like to learn how to use it.
 
 
 Again, if you're interested in training an image model, the [pytorch tutorials](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) are great. My own code for training the model should be public soon [here](https://github.com/J3698/extexify/blob/main/train2.py). 
+
+
+## Goodbye
+
+All in all, the most interesting parts of this post were downloading the data, converting the data to images, and creating the training splits. The actual training is mostly copy-pastable from other image-classification tutorials, and can be done on the cheap online.
+
+Next time, I'll modify the server to use the model, and then talk through hosting the server on Heroku. Until then!
 
