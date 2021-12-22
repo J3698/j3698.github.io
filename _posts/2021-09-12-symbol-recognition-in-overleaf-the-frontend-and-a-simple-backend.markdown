@@ -3,7 +3,7 @@ layout: post
 title: "Symbol Recognition in Overleaf: The Frontend and a Simple Backend"
 date: 2021-08-31
 categories: extexify
-thumb: /pics/thumb31.png
+thumb: /pics/thumb30.png
 ---
 
 Last spring, I felt typesetting proofs in LaTeX significantly slowed me down on homeworks, especially an hour before a deadline. There are solutions to convert from mouse drawings or handwriting to LaTeX (like detexify), but none integrate seamlesly with Overleaf, the dominant LaTeX editor.
@@ -132,6 +132,7 @@ After naming this file <span class="code">app.py</span>, I could run it with the
 
 This runs things on port 80, which for whatever reason, is the only port that a local server can use to communicate with an extension. Navigating to <span class="code">http://localhost/classify</span> in a browser, I could see the basic predictions of A, B, C, D E F.
 
+Note that this server might cause the extension to throw CORS errors later on; a simple fix for this is shown [here](https://stackoverflow.com/questions/25594893/how-to-enable-cors-in-flask).
 
 ## Bridging the Frontend and Backend
 
